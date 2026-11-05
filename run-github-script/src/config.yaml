@@ -1,0 +1,43 @@
+name: run-github-script
+description: Configuration file for the run-github-script project.
+
+module-path: modules
+
+env-file: .env
+
+modules:
+  - name: Hello World
+    description: A local test wrapper module.
+    id: hello-world
+    path: hello-world.cjs
+
+  - name: API Metadata
+    description: Fetch metadata about the GitHub API.
+    id: api-metadata
+    path: api-metadata.cjs
+
+  - name: User Metadata
+    description: Fetch metadata about the authenticated user.
+    id: user-metadata
+    path: user-metadata.cjs
+
+  - name: List Repositories
+    description: List all repositories for the authenticated user.
+    id: list-repositories
+    path: list-repos.cjs
+
+  - name: Changed Files
+    description: Determine which files have changed in the current GitHub event context.
+    id: changed-files
+    path: changed-files.cjs
+    inputs:
+      show-summary: true
+      only-specified-paths: true
+    env:
+      # BRANCH_NAME: main
+      INPUT_IGNORE-EVENTS: ''
+      INPUT_IGNORE-AUTHORS: |
+        semantic-release-bot
+        github-actions[bot]
+      INPUT_SPECIFIED-PATHS: |
+        **/package*.json
