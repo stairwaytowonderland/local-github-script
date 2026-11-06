@@ -1,17 +1,29 @@
 {
-	"extends": "./jsdoc.clean-jsdoc-theme.json",
 	"source": {
-		"include": ["./src", "./README.md"],
+		"include": ["./src", "package.json", "./README.md"],
 		"includePattern": ".+\\.(js|cjs|mjs)$",
 		"excludePattern": "(^|\\/|\\\\)_"
 	},
 	"plugins": ["plugins/markdown"],
-	"tags": {
-		"allowUnknownTags": true
-	},
 	"opts": {
-		"destination": "docs",
+		"encoding": "utf8",
+		"readme": "./README.md",
+		"destination": ".docs",
 		"recurse": true,
-		"template": "node_modules/clean-jsdoc-theme/dist"
+		"verbose": true,
+		"template": "node_modules/clean-jsdoc-theme/dist",
+		"basePath": "http://localhost:3000/",
+		"siteName": "Local GitHub Script",
+		"menu": [
+			{"id": "home", "title": "Home"},
+			{"title": "GitHub", "link": "https://github.com/andrewhaller", "icon": "simpleicons:github"}
+		],
+		"sectionOrder": ["Globals", "Namespaces", "Classes", "Modules", "GitHub Script Modules", "Utilities", "Typedefs"],
+		"colors": {"bg": "oklch(0.99 0.00 95)", "accent": "oklch(0.55 0.2 250)"},
+		"darkColors": {"bg": "oklch(0.18 0.01 250)", "accent": "oklch(0.7 0.16 250)"}
+	},
+	"markdown": {
+		"hardwrap": false,
+		"idInHeadings": true
 	}
 }

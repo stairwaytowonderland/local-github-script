@@ -20,14 +20,13 @@
 		"@github/prettier-config": "^0.0.6",
 		"clean-jsdoc-theme": "^5.2.1",
 		"concurrently": "^10.0.6",
-		"docdash": "^2.0.2",
 		"jsdoc": "^4.0.5"
 	},
 	"prettier": "@github/prettier-config",
 	"scripts": {
 		"start": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} node src/index.js",
 		"build:docs": "npx jsdoc -c jsdoc.json",
-		"bundle": "npm run check",
+		"bundle": "npm run check && npm run build:docs",
 		"test": "echo 'No tests specified.'",
 		"check": "printf '\\033[1;32m%s\\033[0m\n' 'Running checks...' && concurrently -n check: -g npm:check:*",
 		"check:format": "npx prettier --check .",
@@ -38,8 +37,9 @@
 		"clean:dist": "printf '\\033[1;32m%s\\033[0m\n' 'Cleaning dist directory...' && rm -rf dist",
 		"clean-cache": "printf '\\033[1;32m%s\\033[0m\n' 'Cleaning npm cache...' && npm cache clean --force",
 		"clean-all": "npm run clean && npm run clean-cache",
-		"docs": "rm -rf docs && npm run build:docs",
-		"docs:serve": "npx serve docs",
+		"docs": "rm -rf docs && npm run build:docs && npm run docs:local",
+		"docs:local": "rm -rf .docs && npx jsdoc -c jsdoc.local.json",
+		"docs:serve": "npx serve .docs",
 		"package-lock:install": "npm install --package-lock-only --ignore-scripts",
 		"package-lock:fix": "node -e \"const fs = require('fs'); const f = 'package-lock.json'; const c = fs.readFileSync(f, 'utf8').trimEnd(); fs.writeFileSync(f, c + '\\n');\"",
 		"prettierrc:generate": "node -e \"import('@github/prettier-config').then(m => console.log(JSON.stringify(m.default || m, null, 2)))\" | tee .prettierrc",
@@ -47,6 +47,6 @@
 		"preinstall": "printf '\\033[1;32m%s\\033[0m\n' 'Starting installation...'",
 		"postinstall": "npm run package-lock:fix && printf '\\033[1;32m%s\\033[0m\n' 'Installation complete.'",
 		"prep": "npm run prettierrc:generate && npm run fix && npm test",
-		"all": "npm run install:clean && npm run prep && npm run bundle && npm run docs"
+		"all": "npm run install:clean && npm run prep && npm run bundle"
 	}
 }

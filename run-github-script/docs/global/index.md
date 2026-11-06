@@ -10,7 +10,7 @@ longname: Globals
 
 ## Other
 
-<MemberHeading id="indexjs" depth="3" name="index.js" sig="index.js" />
+<MemberHeading id="srcindexjs" depth="3" name="src/index.js" sig="src/index.js" />
 
 <MemberMeta sourceHref="/source/index-js/#L7" sourceLabel="index.js:7" />
 
