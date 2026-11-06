@@ -1,0 +1,17 @@
+{
+	"extends": "./jsdoc.clean-jsdoc-theme.json",
+	"source": {
+		"include": ["./src", "./README.md"],
+		"includePattern": ".+\\.(js|cjs|mjs)$",
+		"excludePattern": "(^|\\/|\\\\)_"
+	},
+	"plugins": ["plugins/markdown"],
+	"tags": {
+		"allowUnknownTags": true
+	},
+	"opts": {
+		"destination": "docs",
+		"recurse": true,
+		"template": "node_modules/clean-jsdoc-theme/dist"
+	}
+}
