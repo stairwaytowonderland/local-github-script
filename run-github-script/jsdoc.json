@@ -12,6 +12,6 @@
 		"destination": "docs",
 		"recurse": true,
 		"template": "node_modules/clean-jsdoc-theme/dist",
-		"base_url": "https://stairwaytowonderland.github.io/local-github-script/"
+		"base_url": "https://stairwaytowonderland.github.io/local-github-script/run-github-script/"
 	}
 }
