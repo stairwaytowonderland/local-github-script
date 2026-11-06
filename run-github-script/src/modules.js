@@ -1,94 +1,192 @@
+/**
+ * Module loader for the GitHub Script environment.
+ * Handles dynamic loading and execution of custom modules based on configuration.
+ *
+ * @module ModuleLoader (Modules)
+ */
+
 import * as path from 'node:path'
 
 // Import pre-parsed configuration structures directly
 import {__dirname} from './config.js'
 
-export default async ({github, context, core, exec, glob, io, getOctokit}, config) => {
+/**
+ * Loads custom modules based on the provided configuration.
+ * @param {Object} dependencies - The standard GitHub Script dependencies required by the modules.
+ * @param {Object} config - The configuration object containing module details.
+ */
+export const load = async ({github, context, core, exec, glob, io, getOctokit}, config) => {
 	try {
 		console.log(`\nLoading custom modules for: ${config.name}`)
 
 		for (const module of config.modules) {
-			const absoluteModulePath = path.resolve(__dirname, config['module-path'], module.path)
-
-			console.log(`\nLoading "${module.name}" from: ${absoluteModulePath}`)
-			const moduleUrl = `file://${absoluteModulePath}`
-
-			// This matches your existing format precisely:
-			// Dynamically import the module and destructure 'default' as 'run'
-			const {default: run} = await import(moduleUrl)
-
-			// Keep track of dynamically modified env keys and their prior values for perfect cleanup
-			const activeEnvKeys = []
-			const fallbackEnvValues = {}
-
-			// Process Inputs Block: INPUT_<uppercase>
-			if (module.inputs && typeof module.inputs === 'object') {
-				for (const [key, value] of Object.entries(module.inputs)) {
-					const envKey = `INPUT_${key.toUpperCase()}`
-
-					// Save fallback state if it already existed in process.env
-					if (Object.prototype.hasOwnProperty.call(process.env, envKey)) {
-						fallbackEnvValues[envKey] = process.env[envKey]
-					}
-
-					process.env[envKey] = String(value)
-					activeEnvKeys.push(envKey)
-				}
-			}
-
-			// Process Env Overrides Block: Exact key match
-			if (module.env && typeof module.env === 'object') {
-				for (const [key, value] of Object.entries(module.env)) {
-					// Save fallback state to protect global/dotenv configurations from permanent mutation
-					if (
-						Object.prototype.hasOwnProperty.call(process.env, key) &&
-						!Object.prototype.hasOwnProperty.call(fallbackEnvValues, key)
-					) {
-						fallbackEnvValues[key] = process.env[key]
-					}
-
-					process.env[key] = String(value)
-					activeEnvKeys.push(key)
-				}
-			}
-
-			// Helper function to safely restore environment state
-			const cleanupEnvironment = () => {
-				for (const envKey of activeEnvKeys) {
-					if (Object.prototype.hasOwnProperty.call(fallbackEnvValues, envKey)) {
-						process.env[envKey] = fallbackEnvValues[envKey]
-					} else {
-						delete process.env[envKey]
-					}
-				}
-			}
-
-			// Verify it's a function before calling it
-			if (typeof run === 'function') {
-				await run({github, context, core, exec, glob, io, getOctokit})
-					.then(result =>
-						console.log(
-							`\n\x1b[1;92m"${module.name}" succeeded results ...\x1b[0m\n"${module.id || module.name}":`,
-							result,
-							`\n`,
-						),
-					)
-					.catch(err =>
-						console.error(
-							`\n\x1b[1;91m"${module.name}" failed results ...\x1b[0m\n"${module.id || module.name}":`,
-							err,
-							`\n`,
-						),
-					)
-					.finally(() => {
-						cleanupEnvironment(activeEnvKeys)
-					})
-			} else {
-				cleanupEnvironment(activeEnvKeys)
-				console.error(`Error: "${module.id || module.name}" does not export a default function.`)
-			}
+			await Module.load({github, context, core, exec, glob, io, getOctokit}, module, config['module-path'])
 		}
 	} catch (error) {
 		console.error('Error loading configuration or modules:', error)
 	}
 }
+
+/**
+ * Represents a dynamically loaded module with its configuration and environment.
+ */
+class Module {
+	/**
+	 * Dynamically loads, instantiates, and executes a module.
+	 *
+	 * @param {GitHubToolkit} toolkit - The GitHub Actions toolkit containing utilities.
+	 * @param {ModuleConfig} moduleConfig - The configuration object for the module.
+	 * @param {string} modulesPath - The relative path directory containing the modules.
+	 * @returns {Promise<void>}
+	 */
+	static async load({github, context, core, exec, glob, io, getOctokit}, moduleConfig, modulesPath) {
+		const absoluteModulePath = path.resolve(__dirname, modulesPath, moduleConfig.path)
+		const module = new Module(moduleConfig, absoluteModulePath)
+		await module.loadModule({github, context, core, exec, glob, io, getOctokit})
+	}
+
+	/**
+	 * Constructs a new Module instance.
+	 *
+	 * @param {ModuleConfig} moduleConfig - The configuration object for the module.
+	 * @param {string} modulePath - The absolute path to the module file.
+	 */
+	constructor(moduleConfig, modulePath) {
+		/**
+		 * The name of the module.
+		 * @type {string}
+		 */
+		this.name = moduleConfig.name
+
+		/**
+		 * The ID of the module.
+		 * @type {string}
+		 */
+		this.id = moduleConfig.id
+
+		/**
+		 * The input parameters for the module.
+		 * @type {Record<string, *>}
+		 */
+		this.inputs = moduleConfig.inputs
+
+		/**
+		 * The environment variables for the module.
+		 * @type {Record<string, string>}
+		 */
+		this.env = moduleConfig.env
+
+		/**
+		 * The absolute path to the module file.
+		 * @type {string}
+		 */
+		this.modulePath = modulePath
+	}
+
+	/**
+	 * Injects the module configuration into `process.env`, dynamically imports
+	 * the module file, runs its default export, and cleans up the environment.
+	 *
+	 * @param {GitHubToolkit} toolkit - The GitHub Actions toolkit containing utilities.
+	 * @returns {Promise<void>}
+	 */
+	async loadModule({github, context, core, exec, glob, io, getOctokit}) {
+		const module = this
+		const absoluteModulePath = module.modulePath
+		console.log(`\nLoading "${module.name}" from: ${absoluteModulePath}`)
+		const moduleUrl = `file://${absoluteModulePath}`
+
+		// Dynamically import the module and destructure 'default' as 'run'
+		const {default: run} = await import(moduleUrl)
+
+		// Keep track of dynamically modified env keys and their prior values for perfect cleanup
+		const activeEnvKeys = []
+		const fallbackEnvValues = {}
+
+		// Process Inputs Block: INPUT_<uppercase>
+		if (module.inputs && typeof module.inputs === 'object') {
+			for (const [key, value] of Object.entries(module.inputs)) {
+				const envKey = `INPUT_${key.toUpperCase()}`
+				// Save fallback state if it already existed in process.env
+				if (Object.prototype.hasOwnProperty.call(process.env, envKey)) {
+					fallbackEnvValues[envKey] = process.env[envKey]
+				}
+				process.env[envKey] = String(value)
+				activeEnvKeys.push(envKey)
+			}
+		}
+
+		// Process Env Overrides Block: Exact key match
+		if (module.env && typeof module.env === 'object') {
+			for (const [key, value] of Object.entries(module.env)) {
+				// Save fallback state to protect global/dotenv configurations from permanent mutation
+				if (
+					Object.prototype.hasOwnProperty.call(process.env, key) &&
+					!Object.prototype.hasOwnProperty.call(fallbackEnvValues, key)
+				) {
+					fallbackEnvValues[key] = process.env[key]
+				}
+				process.env[key] = String(value)
+				activeEnvKeys.push(key)
+			}
+		}
+
+		// Helper function to safely restore environment state
+		const cleanupEnvironment = () => {
+			for (const envKey of activeEnvKeys) {
+				if (Object.prototype.hasOwnProperty.call(fallbackEnvValues, envKey)) {
+					process.env[envKey] = fallbackEnvValues[envKey]
+				} else {
+					delete process.env[envKey]
+				}
+			}
+		}
+
+		// Verify it's a function before calling it
+		if (typeof run === 'function') {
+			await run({github, context, core, exec, glob, io, getOctokit})
+				.then(result =>
+					console.log(
+						`\n\x1b[1;92m"${module.name}" succeeded results ...\x1b[0m\n"${module.id || module.name}":`,
+						result,
+						`\n`,
+					),
+				)
+				.catch(err =>
+					console.error(
+						`\n\x1b[1;91m"${module.name}" failed results ...\x1b[0m\n"${module.id || module.name}":`,
+						err,
+						`\n`,
+					),
+				)
+				.finally(() => {
+					cleanupEnvironment(activeEnvKeys)
+				})
+		} else {
+			cleanupEnvironment(activeEnvKeys)
+			console.error(`Error: "${module.id || module.name}" does not export a default function.`)
+		}
+	}
+}
+
+/**
+ * @typedef {Object} GitHubToolkit
+ * @property {Object} github - Pre-authenticated octokit client.
+ * @property {Object} context - The workflow run context.
+ * @property {Object} core - Actions core task library.
+ * @property {Object} exec - Actions exec tool utilities.
+ * @property {Object} glob - Actions glob tool utilities.
+ * @property {Object} io - Actions core I/O utilities.
+ * @property {Function} getOctokit - Returns an authenticated Octokit client.
+ */
+
+/**
+ * @typedef {Object} ModuleConfig
+ * @property {string} name - The user-friendly name of the module.
+ * @property {string} id - Unique identifier for the module block.
+ * @property {string} path - The relative file path to the target module executable.
+ * @property {Record<string, *>} [inputs] - Input options mapping to standard action `INPUT_` parameters.
+ * @property {Record<string, string>} [env] - Custom environment overrides injected into `process.env`.
+ */
+
+export default load

@@ -1,5 +1,22 @@
+/**
+ * Utility functions for the GitHub script.
+ *
+ * @module utils
+ * @category Utilities
+ */
+
+/**
+ * Converts a kebab-case string to camelCase.
+ * @param {string} str - The kebab-case string.
+ * @returns {string} The camelCase string.
+ */
 const kebabToCamel = str => str.replace(/-./g, m => m[1].toUpperCase())
 
+/**
+ * Dynamically imports modules if they are not already provided.
+ * @param {Array<string|object>} args - An array of tuples containing the module name and an optional existing module object.
+ * @returns {Promise<object>} An object containing the ensured modules keyed by their names.
+ */
 const dynamicModules = async (...args) => {
 	const results = {}
 	for (const [moduleName, moduleVar = undefined] of [...args]) {

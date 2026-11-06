@@ -1,3 +1,22 @@
+/**
+ * Module to determine changed files in a GitHub repository.
+ * Handles ignore events, shallow clone fallbacks, and glob pattern filtering.
+ *
+ * @module modules/changed-files
+ * @category GitHub Script Modules
+ *
+ * @async
+ * @param {object} GitHubToolkit - The context object containing GitHub script utilities.
+ * @param {object} GitHubToolkit.github - The GitHub client.
+ * @param {object} GitHubToolkit.context - The GitHub Action context.
+ * @param {object} GitHubToolkit.core - The GitHub Actions core module.
+ * @param {object} GitHubToolkit.exec - The GitHub Actions exec module.
+ * @param {object} GitHubToolkit.glob - The GitHub Actions glob module.
+ * @param {object} GitHubToolkit.io - The GitHub Actions io module.
+ * @param {function} GitHubToolkit.getOctokit - The function to get an authenticated Octokit instance.
+ * @returns {Promise<boolean>} Indicates whether processing was skipped due to ignore events.
+ */
+
 const {basename} = require('node:path')
 
 require('../step-summary.cjs')(__filename)
