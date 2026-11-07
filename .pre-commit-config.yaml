@@ -9,13 +9,13 @@ repos:
     hooks:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
-        exclude: ^dist/index\.c?js$
+        exclude: ^(dist\/index\.[cm]?(?:js|ts)(?:\.map)?|(dist\/licenses\.txt)|(.*\.csv|(?:.*\/)?badges\/.*\.svg)|(package-lock\.json)|((?:.*\/)?docs(?:-site)?\/.*))$
       - id: mixed-line-ending
       - id: end-of-file-fixer
-        exclude: ^(dist\/index\.[cm]?(?:js|ts)(?:\.map)?|(dist\/licenses\.txt)|.*\.csv|badges\/.*\.svg)|(package-lock\.json)$
+        exclude: ^(dist\/index\.[cm]?(?:js|ts)(?:\.map)?|(dist\/licenses\.txt)|(.*\.csv|(?:.*\/)?badges\/.*\.svg)|(package-lock\.json)|((?:.*\/)?docs(?:-site)?\/.*))$
       - id: check-added-large-files
         args: ['--maxkb=1000']
-        exclude: ^(dist\/index\.[cm]?(?:js|ts)(?:\.map)?|(dist\/licenses\.txt)|.*\.csv|badges\/.*\.svg)$
+        exclude: ^(dist\/index\.[cm]?(?:js|ts)(?:\.map)?)$
       - id: check-ast
       - id: check-json
         exclude: ^(\.vscode\/.*\.json|\.?devcontainer(?:\/.*)?\.json)$
