@@ -16,7 +16,21 @@
 		"siteName": "Local GitHub Script",
 		"menu": [
 			{"id": "home", "title": "Home"},
-			{"title": "GitHub", "link": "https://github.com/andrewhaller", "icon": "simpleicons:github"}
+			{
+				"title": "GitHub",
+				"link": "https://github.com/stairwaytowonderland/local-github-script",
+				"icon": "simpleicons:github"
+			},
+			{
+				"title": "Author Profile",
+				"link": "https://github.com/andrewhaller",
+				"icon": "simpleicons:github"
+			},
+			{
+				"title": "Clean JSDoc Theme",
+				"link": "https://ankdev.me/clean-jsdoc-theme",
+				"icon": "lucide:book-open-text"
+			}
 		],
 		"sectionOrder": ["Globals", "Namespaces", "Classes", "Modules", "GitHub Script Modules", "Utilities", "Typedefs"],
 		"colors": {"bg": "oklch(0.99 0.00 95)", "accent": "oklch(0.55 0.2 250)"},

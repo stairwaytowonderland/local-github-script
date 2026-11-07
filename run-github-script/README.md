@@ -1,5 +1,7 @@
 # Run GitHub Script
 
+[![Deploy JSDoc to GitHub Pages](https://github.com/stairwaytowonderland/local-github-script/actions/workflows/docs.yaml/badge.svg)](https://github.com/stairwaytowonderland/local-github-script/actions/workflows/docs.yaml)
+
 ## Overview
 
 This basic template demonstrates how to run a GitHub script (locally) using a personal access token for authentication.
