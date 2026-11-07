@@ -25,7 +25,8 @@
 	"prettier": "@github/prettier-config",
 	"scripts": {
 		"start": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} node src/index.js",
-		"build:docs": "npx jsdoc -c jsdoc.json",
+		"build:docs": "jsdoc -c jsdoc.json",
+		"build:docs:pre-commit": "tmp_dir=$(mktemp -d) && log_file=$(mktemp) && trap 'rm -rf \"$tmp_dir\" \"$log_file\"' EXIT INT TERM && if ! jsdoc -c jsdoc.json -d \"$tmp_dir\" >\"$log_file\" 2>&1; then cat \"$log_file\"; exit 1; else rm -rf docs && mv \"$tmp_dir\" docs; fi",
 		"bundle": "npm run check && npm run build:docs",
 		"test": "echo 'No tests specified.'",
 		"check": "printf '\\033[1;32m%s\\033[0m\n' 'Running checks...' && concurrently -n check: -g npm:check:*",
@@ -38,7 +39,7 @@
 		"clean-cache": "printf '\\033[1;32m%s\\033[0m\n' 'Cleaning npm cache...' && npm cache clean --force",
 		"clean-all": "npm run clean && npm run clean-cache",
 		"docs": "rm -rf docs && npm run build:docs && npm run docs:local",
-		"docs:local": "rm -rf .docs && npx jsdoc -c jsdoc.local.json",
+		"docs:local": "rm -rf .docs && jsdoc -c jsdoc.local.json",
 		"docs:serve": "npx serve .docs",
 		"package-lock:install": "npm install --package-lock-only --ignore-scripts",
 		"package-lock:fix": "node -e \"const fs = require('fs'); const f = 'package-lock.json'; const c = fs.readFileSync(f, 'utf8').trimEnd(); fs.writeFileSync(f, c + '\\n');\"",

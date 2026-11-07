@@ -50,3 +50,12 @@ repos:
     hooks:
       - id: shellcheck
         args: ['-x']
+
+  # - repo: local
+  #   hooks:
+  #     - id: docs
+  #       name: Build Docs
+  #       entry: npm run build:docs:pre-commit --prefix run-github-script
+  #       language: system
+  #       pass_filenames: false
+  #       files: ^(run-github-script/src/.*)$

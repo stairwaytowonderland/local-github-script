@@ -30,16 +30,10 @@ const defaultConfigFileName = 'config.yaml'
  * @type {string}
  */
 const configPath = getConfigPath()
-/**
- * The absolute path to the configuration file.
- * @type {string}
- */
+
 const fileContents = fs.readFileSync(configPath, 'utf8')
-/**
- * The parsed configuration object from the YAML file.
- * @type {Config}
- */
 const config = YAML.parse(fileContents)
+
 /**
  * The dotenv configuration options.
  * @type {DotEnvOptions}
@@ -93,11 +87,6 @@ function getConfigPath() {
 
 export default config
 export {__dirname}
-
-/**
- * @typedef {Object} Config
- * @property {string} [env-file] - The path to the environment file.
- */
 
 /**
  * @typedef {Object} DotEnvOptions
