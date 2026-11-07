@@ -2,9 +2,20 @@
 
 [![Deploy JSDoc to GitHub Pages](https://github.com/stairwaytowonderland/local-github-script/actions/workflows/docs.yaml/badge.svg)](https://github.com/stairwaytowonderland/local-github-script/actions/workflows/docs.yaml)
 
+A playground to test GitHub scripts (`@actions/github-script`) *(locally)*.
+
 ## Overview
 
-This basic template demonstrates how to run a GitHub script (locally) using a personal access token for authentication.
+This basic template demonstrates how to run a GitHub script *(locally)* using a personal access token for authentication.
+
+## Features
+
+- Run GitHub scripts locally using a personal access token.
+- Easy setup with npm dependencies.
+- Optional integration with GitHub CLI for token management.
+- Wrapper script (`main.sh`) for simplified execution.
+- Supports environment variable configuration for authentication and repository settings.
+- Uses a `yaml` configuration file for defining script inputs and settings.
 
 ## Prerequisites
 
@@ -42,7 +53,7 @@ npm install
 > The `GITHUB_TOKEN` environment variable is used for authentication. If you have a personal access token, or do not
 > wish to use the GitHub CLI (`gh`), you can set it directly in the environment variable before running the script.
 
-### Using `main.sh` _(recommended)_
+### Using `main.sh` *(recommended)*
 
 > [!IMPORTANT]
 >
