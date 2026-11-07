@@ -29,12 +29,7 @@
 			{
 				"title": "Clean JSDoc Theme",
 				"link": "https://ankdev.me/clean-jsdoc-theme",
-				"icon": "simpleicons:javascript"
-			},
-			{
-				"title": "Clean JSDoc Theme Configuration",
-				"link": "https://ankdev.me/clean-jsdoc-theme/theme/configuration/",
-				"icon": "simpleicons:javascript"
+				"icon": "lucide:book-open-text"
 			}
 		],
 		"sectionOrder": ["Globals", "Namespaces", "Classes", "Modules", "GitHub Script Modules", "Utilities", "Typedefs"],
