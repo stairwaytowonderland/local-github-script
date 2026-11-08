@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main # Change this to 'master' if your default branch uses the old naming
+    paths:
+      - '.github/workflows/docs.yaml'
+      - 'run-github-script/src/**'
+  workflow_dispatch:
 
 # Set minimum required permissions for the workflow
 permissions:
