@@ -2,7 +2,7 @@
  * Module loader for the GitHub Script environment.
  * Handles dynamic loading and execution of custom modules based on configuration.
  *
- * @module ModuleLoader (Modules)
+ * @module modules
  */
 
 import * as path from 'node:path'
@@ -15,6 +15,7 @@ const __dirname = import.meta.dirname
 
 /**
  * Represents a dynamically loaded module with its configuration and environment.
+ * @alias ModuleLoader
  */
 export default class ModuleLoader {
 	/**
@@ -206,10 +207,14 @@ export default class ModuleLoader {
  */
 
 /**
- * @typedef {Object} ModuleConfig
+ * @typedef {Object} ModuleLoader
  * @property {string} name - The user-friendly name of the module.
  * @property {string} id - Unique identifier for the module block.
  * @property {string} path - The relative file path to the target module executable.
  * @property {Record<string, *>} [inputs] - Input options mapping to standard action `INPUT_` parameters.
  * @property {Record<string, string>} [env] - Custom environment overrides injected into `process.env`.
+ * @property {string} modulePath - The absolute path to the module file.
+ * @property {string} summaryPath - The path to the module's step summary file.
+ * @property {string} workspacePath - The path to the module's workspace directory.
+ * @property {string} moduleCamelId - The camelCase version of the module ID.
  */
