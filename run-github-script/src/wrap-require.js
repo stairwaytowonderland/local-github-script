@@ -2,7 +2,7 @@
  * Wraps the Node.js require function to resolve relative module paths
  * and handle module resolution in a Webpack-compatible way.
  *
- * @see https://github.com/actions/github-script/blob/main/src/wrap-require.ts
+ * **See:** https://github.com/actions/github-script/blob/main/src/wrap-require.ts
  *
  * @module wrap-require
  * @category Module Utilities

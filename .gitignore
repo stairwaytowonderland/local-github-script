@@ -89,7 +89,7 @@ logs
 *.log
 out/
 
-**/src/*.md
+**/src/**/*.md
 
 **/.prettierrc
 

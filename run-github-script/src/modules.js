@@ -6,17 +6,17 @@
  */
 
 import * as path from 'node:path'
-import {realpath} from 'node:fs/promises'
+import {realpathSync} from 'node:fs'
 import {pathToFileURL} from 'node:url'
-import {initStepSummary} from './step-summary.mjs'
-import {kebabToCamel} from './utils.mjs'
+import {initStepSummary} from './step-summary.js'
+import {kebabToCamel} from './utils.js'
 
 const __dirname = import.meta.dirname
 
 /**
  * Represents a dynamically loaded module with its configuration and environment.
  */
-export class ModuleLoader {
+export default class ModuleLoader {
 	/**
 	 * Loads custom modules based on the provided configuration.
 	 * @param {Object} dependencies - The standard GitHub Script dependencies required by the modules.
@@ -71,11 +71,24 @@ export class ModuleLoader {
 		 * The absolute path to the module file.
 		 * @type {string}
 		 */
-		this.modulePath = modulePath
+		this.modulePath = path.resolve(realpathSync(modulePath))
 	}
 
 	get moduleCamelId() {
 		return kebabToCamel(this.id)
+	}
+
+	get summaryPath() {
+		const moduleFileWithoutExt = path.basename(this.modulePath, path.extname(this.modulePath))
+
+		// Resolve path safely using CommonJS __dirname
+		// const summaryPath = path.resolve(__dirname, `./.${moduleFileWithoutExt}-step-summary.md`)
+		const summaryPath = path.resolve(path.dirname(this.modulePath), `./.${moduleFileWithoutExt}-step-summary.md`)
+		return summaryPath
+	}
+
+	get workspacePath() {
+		return path.resolve(realpathSync(process.env.GITHUB_WORKSPACE))
 	}
 
 	/**
@@ -86,14 +99,16 @@ export class ModuleLoader {
 	 * @returns {Promise<void>}
 	 */
 	async loadModule(defaultArgs) {
-		const workspacePath = path.resolve(await realpath(process.env.GITHUB_WORKSPACE)) + '/'
+		const workspacePath = this.workspacePath + '/'
 
 		console.debug(
 			[
 				`\x1b[0;35mModule:\x1b[0m \x1b[1;35m${this.name}\x1b[0m`,
 				`\x1b[0;35mID:\x1b[0m \x1b[1;35m${this.id}\x1b[0m`,
 				`\x1b[0;35mCamel ID:\x1b[0m \x1b[1;35m${this.moduleCamelId}\x1b[0m`,
-				`\x1b[0;35mPath:\x1b[0m \x1b[1;35m${this.modulePath.slice(workspacePath.length)}\x1b[0m`,
+				`\x1b[0;35mWorkspace Path:\x1b[0m \x1b[1;35m${this.workspacePath}\x1b[0m`,
+				`\x1b[0;35mModule Path:\x1b[0m \x1b[1;35m${this.modulePath.slice(workspacePath.length)}\x1b[0m`,
+				`\x1b[0;35mSummary Path:\x1b[0m \x1b[1;35m${this.summaryPath.slice(workspacePath.length)}\x1b[0m`,
 			].join('\n'),
 		)
 
@@ -149,7 +164,7 @@ export class ModuleLoader {
 
 		// Verify it's a function before calling it
 		if (typeof run === 'function') {
-			initStepSummary(absoluteModulePath)
+			initStepSummary.call(this)
 
 			await run
 				.apply(module, Object.values(defaultArgs))
@@ -176,8 +191,6 @@ export class ModuleLoader {
 		}
 	}
 }
-
-export default ModuleLoader
 
 /**
  * @typedef {Object} GitHubToolkit

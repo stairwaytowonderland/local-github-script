@@ -25,12 +25,12 @@ import * as io from '@actions/io'
 /**
  * Import the wrapped require function for module resolution.
  */
-import {wrapRequire} from './wrap-require.mjs'
+import {wrapRequire} from './wrap-require.js'
 
 /**
  * Import the custom module loader.
  */
-import moduleLoader from './modules.js'
+import modules from './modules.js'
 
 let owner, repo
 
@@ -119,7 +119,7 @@ export const run = async () => {
 		console.debug(`Mock context: ${JSON.stringify(context, null, 2)}\n`)
 		// let exec, glob, io
 		// ;({'@actions/exec': exec, '@actions/glob': glob, '@actions/io': io} = await loadAdvancedModules())
-		await moduleLoader.load({github, context, core, exec, glob, io, getOctokit, require: wrapRequire}, config)
+		await modules.load({github, context, core, exec, glob, io, getOctokit, require: wrapRequire}, config)
 		process.exit(0)
 	} catch (err) {
 		core.setFailed(err.message)

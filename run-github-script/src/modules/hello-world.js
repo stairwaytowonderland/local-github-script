@@ -40,7 +40,7 @@ export default async (github, context, core, exec, glob, io, getOctokit, require
 
 	const summary = `\
 **Repository**: ${owner}/${repo}\n
-**Workspace**: ${process.env.GITHUB_WORKSPACE}\n
+**Workspace**: ${workspace}\n
 **Total issues**: ${count}`
 
 	core.summary.addRaw(summary)
