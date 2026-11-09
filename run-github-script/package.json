@@ -1,10 +1,6 @@
 {
 	"type": "module",
 	"main": "src/main.js",
-	"compilerOptions": {
-		"module": "NodeNext",
-		"moduleResolution": "NodeNext"
-	},
 	"dependencies": {
 		"@actions/core": "^3.0.1",
 		"@actions/exec": "^3.0.0",
@@ -12,7 +8,8 @@
 		"@actions/glob": "^0.7.0",
 		"@actions/io": "^3.0.2",
 		"@octokit/rest": "^22.0.1",
-		"dotenv": "^18.0.8",
+		"dotenv": "^18.0.9",
+		"dotenv-expand": "^1000.0.0",
 		"minimatch": "^10.2.6",
 		"yaml": "^2.9.0"
 	},
@@ -25,7 +22,7 @@
 	"prettier": "@github/prettier-config",
 	"scripts": {
 		"start": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} node src/index.js",
-		"build:docs": "npm run docs:build",
+		"build:docs": "npm run docs:generate",
 		"bundle": "npm run check && npm run build:docs",
 		"test": "echo 'No tests specified.'",
 		"check": "printf '\\033[1;32m%s\\033[0m\n' 'Running checks...' && concurrently -n check: -g npm:check:*",
@@ -37,10 +34,10 @@
 		"clean:dist": "printf '\\033[1;32m%s\\033[0m\n' 'Cleaning dist directory...' && rm -rf dist",
 		"clean-cache": "printf '\\033[1;32m%s\\033[0m\n' 'Cleaning npm cache...' && npm cache clean --force",
 		"clean-all": "npm run clean && npm run clean-cache",
-		"docs": "npm run docs:local",
-		"docs:build": "jsdoc -c jsdoc.json",
-		"docs:local": "rm -rf docs && jsdoc -c jsdoc.local.json",
+		"docs": "printf '\\033[1;32m%s\\033[0m\n' 'Generating docs...' && jsdoc -c jsdoc.json",
+		"docs:generate": "rm -rf docs & printf '\\033[1;32m%s\\033[0m\n' 'Preparing documentation...' && npm run docs",
 		"docs:serve": "npx serve docs",
+		"docs:local": "rm -rf docs && printf '\\033[1;32m%s\\033[0m\n' 'Preparing local documentation...' && npm run docs -- -c jsdoc.local.json",
 		"package-lock:install": "npm install --package-lock-only --ignore-scripts",
 		"package-lock:fix": "node -e \"const fs = require('fs'); const f = 'package-lock.json'; const c = fs.readFileSync(f, 'utf8').trimEnd(); fs.writeFileSync(f, c + '\\n');\"",
 		"prettierrc:generate": "node -e \"import('@github/prettier-config').then(m => console.log(JSON.stringify(m.default || m, null, 2)))\" | tee .prettierrc",

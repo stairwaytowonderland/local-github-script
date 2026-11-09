@@ -9,30 +9,34 @@ modules:
   - name: Hello World
     description: A local test wrapper module.
     id: hello-world
-    path: hello-world.cjs
+    path: hello-world.js
+    env:
+      EXAMPLE_ENV_VAR: example_value
+    inputs:
+      example_input: example_value
 
   - name: API Metadata
     description: Fetch metadata about the GitHub API.
     id: api-metadata
-    path: api-metadata.cjs
+    path: api-metadata.js
 
   - name: User Metadata
     description: Fetch metadata about the authenticated user.
     id: user-metadata
-    path: user-metadata.cjs
+    path: user-metadata.js
 
   - name: List Repositories
     description: List all repositories for the authenticated user.
     id: list-repositories
-    path: list-repos.cjs
+    path: list-repos.js
 
   - name: Changed Files
     description: Determine which files have changed in the current GitHub event context.
     id: changed-files
-    path: changed-files.cjs
+    path: changed-files.js
     inputs:
       show-summary: true
-      only-specified-paths: true
+      only-specified-paths: false
     env:
       # BRANCH_NAME: main
       INPUT_IGNORE-EVENTS: ''
@@ -40,4 +44,4 @@ modules:
         semantic-release-bot
         github-actions[bot]
       INPUT_SPECIFIED-PATHS: |
-        **/package*.json
+        **/src/**

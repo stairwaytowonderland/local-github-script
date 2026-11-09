@@ -10,12 +10,11 @@
 // rather than from an external package (e.g. from npm)
 import * as fs from 'node:fs'
 import * as path from 'node:path'
-import {fileURLToPath} from 'node:url'
 import * as YAML from 'yaml'
 import * as dotenv from 'dotenv'
+import * as dotenvExpand from 'dotenv-expand'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+const __dirname = import.meta.dirname
 
 /**
  * The default yaml configuration file name.
@@ -44,14 +43,14 @@ if (config['env-file']) {
 	const envPath = path.resolve(config['env-file'])
 	if (fs.existsSync(envPath)) {
 		console.log(`Loading environment variables from: ${envPath}`)
-		dotenv.config({path: envPath, ...dotenvConfig})
+		dotenvExpand.expand(dotenv.config({path: envPath, ...dotenvConfig}))
 	} else {
 		console.warn(`Environment file "${envPath}" not found. Falling back to default environment variables.`)
-		dotenv.config(dotenvConfig)
+		dotenvExpand.expand(dotenv.config(dotenvConfig))
 	}
 } else {
 	console.warn(`No environment file specified. Loading default environment variables.`)
-	dotenv.config(dotenvConfig)
+	dotenvExpand.expand(dotenv.config(dotenvConfig))
 }
 
 /**
@@ -86,7 +85,6 @@ function getConfigPath() {
 }
 
 export default config
-export {__dirname}
 
 /**
  * @typedef {Object} DotEnvOptions

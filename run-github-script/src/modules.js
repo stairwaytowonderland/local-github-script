@@ -6,43 +6,34 @@
  */
 
 import * as path from 'node:path'
+import {realpath} from 'node:fs/promises'
+import {pathToFileURL} from 'node:url'
+import {initStepSummary} from './step-summary.mjs'
+import {kebabToCamel} from './utils.mjs'
 
-// Import pre-parsed configuration structures directly
-import {__dirname} from './config.js'
-
-/**
- * Loads custom modules based on the provided configuration.
- * @param {Object} dependencies - The standard GitHub Script dependencies required by the modules.
- * @param {Object} config - The configuration object containing module details.
- */
-export const load = async ({github, context, core, exec, glob, io, getOctokit}, config) => {
-	try {
-		console.log(`\nLoading custom modules for: ${config.name}`)
-
-		for (const module of config.modules) {
-			await Module.load({github, context, core, exec, glob, io, getOctokit}, module, config['module-path'])
-		}
-	} catch (error) {
-		console.error('Error loading configuration or modules:', error)
-	}
-}
+const __dirname = import.meta.dirname
 
 /**
  * Represents a dynamically loaded module with its configuration and environment.
  */
-class Module {
+export class ModuleLoader {
 	/**
-	 * Dynamically loads, instantiates, and executes a module.
-	 *
-	 * @param {GitHubToolkit} toolkit - The GitHub Actions toolkit containing utilities.
-	 * @param {ModuleConfig} moduleConfig - The configuration object for the module.
-	 * @param {string} modulesPath - The relative path directory containing the modules.
-	 * @returns {Promise<void>}
+	 * Loads custom modules based on the provided configuration.
+	 * @param {Object} dependencies - The standard GitHub Script dependencies required by the modules.
+	 * @param {Object} config - The configuration object containing module details.
 	 */
-	static async load({github, context, core, exec, glob, io, getOctokit}, moduleConfig, modulesPath) {
-		const absoluteModulePath = path.resolve(__dirname, modulesPath, moduleConfig.path)
-		const module = new Module(moduleConfig, absoluteModulePath)
-		await module.loadModule({github, context, core, exec, glob, io, getOctokit})
+	static load = async (defaultArgs, config) => {
+		try {
+			console.log(`Loading custom modules for: ${config.name}\n`)
+
+			for (const m of config.modules) {
+				const absoluteModulePath = path.resolve(__dirname, config['module-path'], m.path)
+				const module = new ModuleLoader(m, absoluteModulePath)
+				await module.loadModule(defaultArgs)
+			}
+		} catch (error) {
+			console.error('Error loading configuration or modules:', error)
+		}
 	}
 
 	/**
@@ -83,6 +74,10 @@ class Module {
 		this.modulePath = modulePath
 	}
 
+	get moduleCamelId() {
+		return kebabToCamel(this.id)
+	}
+
 	/**
 	 * Injects the module configuration into `process.env`, dynamically imports
 	 * the module file, runs its default export, and cleans up the environment.
@@ -90,11 +85,21 @@ class Module {
 	 * @param {GitHubToolkit} toolkit - The GitHub Actions toolkit containing utilities.
 	 * @returns {Promise<void>}
 	 */
-	async loadModule({github, context, core, exec, glob, io, getOctokit}) {
+	async loadModule(defaultArgs) {
+		const workspacePath = path.resolve(await realpath(process.env.GITHUB_WORKSPACE)) + '/'
+
+		console.debug(
+			[
+				`\x1b[0;35mModule:\x1b[0m \x1b[1;35m${this.name}\x1b[0m`,
+				`\x1b[0;35mID:\x1b[0m \x1b[1;35m${this.id}\x1b[0m`,
+				`\x1b[0;35mCamel ID:\x1b[0m \x1b[1;35m${this.moduleCamelId}\x1b[0m`,
+				`\x1b[0;35mPath:\x1b[0m \x1b[1;35m${this.modulePath.slice(workspacePath.length)}\x1b[0m`,
+			].join('\n'),
+		)
+
 		const module = this
 		const absoluteModulePath = module.modulePath
-		console.log(`\nLoading "${module.name}" from: ${absoluteModulePath}`)
-		const moduleUrl = `file://${absoluteModulePath}`
+		const moduleUrl = pathToFileURL(absoluteModulePath)
 
 		// Dynamically import the module and destructure 'default' as 'run'
 		const {default: run} = await import(moduleUrl)
@@ -144,7 +149,10 @@ class Module {
 
 		// Verify it's a function before calling it
 		if (typeof run === 'function') {
-			await run({github, context, core, exec, glob, io, getOctokit})
+			initStepSummary(absoluteModulePath)
+
+			await run
+				.apply(module, Object.values(defaultArgs))
 				.then(result =>
 					console.log(
 						`\n\x1b[1;92m"${module.name}" succeeded results ...\x1b[0m\n"${module.id || module.name}":`,
@@ -169,6 +177,8 @@ class Module {
 	}
 }
 
+export default ModuleLoader
+
 /**
  * @typedef {Object} GitHubToolkit
  * @property {Object} github - Pre-authenticated octokit client.
@@ -188,5 +198,3 @@ class Module {
  * @property {Record<string, *>} [inputs] - Input options mapping to standard action `INPUT_` parameters.
  * @property {Record<string, string>} [env] - Custom environment overrides injected into `process.env`.
  */
-
-export default load

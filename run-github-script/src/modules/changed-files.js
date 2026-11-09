@@ -17,17 +17,11 @@
  * @returns {Promise<boolean>} Indicates whether processing was skipped due to ignore events.
  */
 
-const {basename} = require('node:path')
+console.debug(`\x1b[36mRunning module \x1b[1m${import.meta.filename.split('/').pop()}\x1b[0;36m...\x1b[0m`)
 
-require('../step-summary.cjs')(__filename)
-
-console.debug(`\x1b[36mRunning module \x1b[1m${basename(__filename)}\x1b[0;36m...\x1b[0m`)
-
-// process.env['INPUT_SHOW-SUMMARY'] = true
-
-module.exports = async ({github, context, core, exec, glob, io, getOctokit}) => {
+export default async (github, context, core, exec, glob, io, getOctokit, require) => {
 	// Require the minimatch package for glob pattern matching
-	const {minimatch} = require('minimatch')
+	const {minimatch} = await import('minimatch')
 
 	// Reusable input tokenizer to safely split environment variables by commas, spaces, or lines
 	const parseInput = name =>
@@ -193,16 +187,16 @@ module.exports = async ({github, context, core, exec, glob, io, getOctokit}) => 
 	try {
 		if (showSummary) {
 			core.summary.addRaw(`<table>
-				<tr><th>Specified Path Patterns</th><td>${inputPaths.join(', ')}</td></tr>
-				<tr><th>Changed Files</th><td>${changedFilesList.join(', ')}</td></tr>
-				<tr><th>Filtered Files</th><td>${filteredFilesList.join(', ')}</td></tr>
-				<tr><th>Only Specified Paths</th><td>${onlySpecifiedPaths}</td></tr>
-				<tr><th>Ignore Authors</th><td>${ignoreAuthors.join(', ')}</td></tr>
-				<tr><th>Author Is Allowed</th><td>${authorIsAllowed}</td></tr>
-				<tr><th>Ignore Events</th><td>${ignoreEvents.join(', ')}</td></tr>
-				<tr><th>Event Is Allowed</th><td>${!eventIsIgnored}</td></tr>
-				<tr><th>Result</th><td>${result}</td></tr>
-				</table>`)
+<tr><th>Specified Path Patterns</th><td>${inputPaths.join(', ')}</td></tr>
+<tr><th>Changed Files</th><td>${changedFilesList.join(', ')}</td></tr>
+<tr><th>Filtered Files</th><td>${filteredFilesList.join(', ')}</td></tr>
+<tr><th>Only Specified Paths</th><td>${onlySpecifiedPaths}</td></tr>
+<tr><th>Ignore Authors</th><td>${ignoreAuthors.join(', ')}</td></tr>
+<tr><th>Author Is Allowed</th><td>${authorIsAllowed}</td></tr>
+<tr><th>Ignore Events</th><td>${ignoreEvents.join(', ')}</td></tr>
+<tr><th>Event Is Allowed</th><td>${!eventIsIgnored}</td></tr>
+<tr><th>Result</th><td>${result}</td></tr>
+</table>`)
 
 			await core.summary.write({overwrite: true})
 		}

@@ -6,16 +6,31 @@
  * @order 1
  */
 
-// MUST BE FIRST: Bootstrap environment variables immediately
+/**
+ * Bootstrap environment variables immediately.
+ *
+ * ! This must be done before importing any other modules to ensure environment variables are available.
+ */
 import config from './config.js'
 
-const {Octokit} = await import('@octokit/rest')
-const {getOctokit, context: githubContext} = await import('@actions/github')
-const core = await import('@actions/core')
-const exec = await import('@actions/exec')
-const glob = await import('@actions/glob')
-const io = await import('@actions/io')
-const {default: load} = await import('./modules.js')
+/**
+ * Import GitHub `@actions/` modules.
+ */
+import * as core from '@actions/core'
+import * as exec from '@actions/exec'
+import {getOctokit, context as githubContext} from '@actions/github'
+import * as glob from '@actions/glob'
+import * as io from '@actions/io'
+
+/**
+ * Import the wrapped require function for module resolution.
+ */
+import {wrapRequire} from './wrap-require.mjs'
+
+/**
+ * Import the custom module loader.
+ */
+import moduleLoader from './modules.js'
 
 let owner, repo
 
@@ -68,10 +83,16 @@ const mocks = () => {
 		},
 	}
 
-	// Instantiate Octokit using a local Personal Access Token
-	const github = new Octokit({
-		auth: process.env.GITHUB_TOKEN, // Ensure this env variable is set locally
-	})
+	/**
+	 * Instantiate Octokit using a local Personal Access Token
+	 */
+
+	// const github = new Octokit({
+	// 	auth: process.env.GITHUB_TOKEN, // Ensure this env variable is set locally
+	// })
+
+	// Ensure the GITHUB_TOKEN environment variable is set for local testing
+	const github = getOctokit(process.env.GITHUB_TOKEN)
 
 	return {
 		github,
@@ -95,10 +116,10 @@ const mocks = () => {
 export const run = async () => {
 	try {
 		const {github, context} = mocks()
-		console.debug(`Mock context: ${JSON.stringify(context, null, 2)}`)
-		let exec, glob, io
-		;({'@actions/exec': exec, '@actions/glob': glob, '@actions/io': io} = await loadAdvancedModules())
-		await load({github, context, core, exec, glob, io, getOctokit}, config)
+		console.debug(`Mock context: ${JSON.stringify(context, null, 2)}\n`)
+		// let exec, glob, io
+		// ;({'@actions/exec': exec, '@actions/glob': glob, '@actions/io': io} = await loadAdvancedModules())
+		await moduleLoader.load({github, context, core, exec, glob, io, getOctokit, require: wrapRequire}, config)
 		process.exit(0)
 	} catch (err) {
 		core.setFailed(err.message)
@@ -106,20 +127,10 @@ export const run = async () => {
 	}
 }
 
-export default run
-
 /**
- * Dynamically loads advanced GitHub Actions modules if they are not already available.
- * @returns {Promise<AdvancedModules>} The loaded advanced modules.
+ * * The default export is the run function.
  */
-async function loadAdvancedModules() {
-	const {dynamicModules} = await import('./utils.cjs')
-	return dynamicModules(
-		['@actions/exec', typeof exec !== 'undefined' ? exec : undefined],
-		['@actions/glob', typeof glob !== 'undefined' ? glob : undefined],
-		['@actions/io', typeof io !== 'undefined' ? io : undefined],
-	)
-}
+export default run
 
 /**
  * @typedef {Object} AdvancedModules

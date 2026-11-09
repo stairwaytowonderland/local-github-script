@@ -17,6 +17,11 @@ This repository contains various utilities for local GitHub testing.
 
 ```none
 ./
+├── .github/
+│   ├── workflows/
+│   │   └── docs.yaml
+│   ├── CODEOWNERS
+│   └── dependabot.yml
 ├── generate-app-token/
 │   ├── src/
 │   │   ├── generate-github-app-jwt.py*
@@ -36,15 +41,18 @@ This repository contains various utilities for local GitHub testing.
 │   │   ├── step-summary.cjs
 │   │   └── utils.cjs
 │   ├── .env.sample
+│   ├── .prettierignore
+│   ├── jsdoc.json
+│   ├── jsdoc.local.json
 │   ├── main.sh
 │   ├── package-lock.json
 │   ├── package.json
 │   └── README.md
 ├── .editorconfig
+├── .gitattributes
 ├── .gitignore
 ├── .markdownlint.json
-├── .prettierignore
-├── .prettierrc
+├── .pre-commit-config.yaml
 └── README.md
 ```
 
@@ -52,6 +60,6 @@ This repository contains various utilities for local GitHub testing.
 
 ## :books: References
 
-### @actions/github-script
+### `@actions/github-script`
 
 **Global Vars/Args:** <https://github.com/marketplace/actions/github-script#this-action>

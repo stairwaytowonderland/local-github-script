@@ -74,3 +74,22 @@ To run the script directly using npm, you can use the following command:
 ```bash
 GITHUB_TOKEN=$(gh auth token) GITHUB_REPOSITORY=your_github_username/your_repo_name npm start
 ```
+
+## Usage Notes
+
+### CommonJS vs. ES Modules
+
+> [!NOTE]
+>
+> github-script wraps inline scripts in a CommonJS context,
+> meaning top-level import syntax is not supported.
+
+If your external file uses ES Modules
+(`export default` or `.mjs`), load it with dynamic `await import('./path/to/script.mjs')`
+rather than `require()`.
+
+## References
+
+### `@actions/github-script`
+
+**Global Vars/Args:** [Official Documentation](https://github.com/marketplace/actions/github-script#this-action)
