@@ -13,6 +13,7 @@
  * @param {object} GitHubToolkit.glob - The GitHub Actions glob module.
  * @param {object} GitHubToolkit.io - The GitHub Actions io module.
  * @param {function} GitHubToolkit.getOctokit - The function to get an authenticated Octokit instance.
+ * @param {function} require - The CommonJS require function for importing modules.
  * @returns {Promise<object>} The response from the GitHub API.
  */
 
