@@ -24,7 +24,7 @@ export default class ModuleLoader {
 	 * @param {Object} dependencies - The standard GitHub Script dependencies required by the modules.
 	 * @param {Object} config - The configuration object containing module details.
 	 */
-	static load = async (defaultArgs, config) => {
+	static async load(defaultArgs, config) {
 		try {
 			console.log(`Loading custom modules for: ${config.name}\n`)
 

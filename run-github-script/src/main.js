@@ -85,13 +85,9 @@ const mocks = () => {
 
 	/**
 	 * Instantiate Octokit using a local Personal Access Token
+	 *
+	 * Ensure the GITHUB_TOKEN environment variable is set for local testing.
 	 */
-
-	// const github = new Octokit({
-	// 	auth: process.env.GITHUB_TOKEN, // Ensure this env variable is set locally
-	// })
-
-	// Ensure the GITHUB_TOKEN environment variable is set for local testing
 	const github = getOctokit(process.env.GITHUB_TOKEN)
 
 	return {
@@ -132,13 +128,6 @@ export const run = async () => {
  * * The default export is the run function.
  */
 export default run
-
-/**
- * @typedef {Object} AdvancedModules
- * @property {Object} exec - The GitHub Actions exec module.
- * @property {Object} glob - The GitHub Actions glob module.
- * @property {Object} io - The GitHub Actions io module.
- */
 
 /**
  * @typedef {Object} Mocks

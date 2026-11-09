@@ -26,10 +26,10 @@ export const kebabToCamel = str => str.replace(/-./g, m => m[1].toUpperCase())
  *
  * @example
  * const customModules = dynamicModules(
- *		['@actions/exec', typeof exec !== 'undefined' ? exec : undefined],
- *		['@actions/glob', typeof glob !== 'undefined' ? glob : undefined],
- *		['@actions/io', typeof io !== 'undefined' ? io : undefined],
- *	)
+ *	['@actions/exec', typeof exec !== 'undefined' ? exec : undefined],
+ *	['@actions/glob', typeof glob !== 'undefined' ? glob : undefined],
+ *	['@actions/io', typeof io !== 'undefined' ? io : undefined],
+ * )
  *
  * @param {Array<string|object>} args - An array of tuples containing the module name and an optional existing module object.
  * @returns {Promise<object>} An object containing the ensured modules keyed by their names.
