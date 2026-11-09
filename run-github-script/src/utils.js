@@ -1,8 +1,7 @@
 /**
  * Utility functions for the GitHub script.
  *
- * @module utils
- * @category Utilities
+ * @module Utils
  */
 
 /**
