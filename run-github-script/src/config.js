@@ -2,7 +2,7 @@
  * @file Configuration loader for the GitHub Script environment.
  * Handles parsing of YAML configuration files and environment variables.
  *
- * @module Config
+ * @module config
  * @order 2
  */
 

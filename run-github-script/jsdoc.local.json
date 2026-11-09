@@ -38,8 +38,8 @@
 			"Classes",
 			"Modules",
 			"GitHub Script Modules",
+			"Helpers",
 			"Utilities",
-			"Module Utilities",
 			"Typedefs"
 		],
 		"colors": {"bg": "oklch(0.99 0.00 95)", "accent": "oklch(0.55 0.2 250)"},

@@ -19,6 +19,7 @@ const __dirname = import.meta.dirname
 export default class ModuleLoader {
 	/**
 	 * Loads custom modules based on the provided configuration.
+	 * @async
 	 * @param {Object} dependencies - The standard GitHub Script dependencies required by the modules.
 	 * @param {Object} config - The configuration object containing module details.
 	 */
@@ -94,7 +95,7 @@ export default class ModuleLoader {
 	/**
 	 * Injects the module configuration into `process.env`, dynamically imports
 	 * the module file, runs its default export, and cleans up the environment.
-	 *
+	 * @async
 	 * @param {GitHubToolkit} toolkit - The GitHub Actions toolkit containing utilities.
 	 * @returns {Promise<void>}
 	 */
@@ -201,6 +202,7 @@ export default class ModuleLoader {
  * @property {Object} glob - Actions glob tool utilities.
  * @property {Object} io - Actions core I/O utilities.
  * @property {Function} getOctokit - Returns an authenticated Octokit client.
+ * @property {Function} require - The CommonJS require wrapper for importing modules.
  */
 
 /**

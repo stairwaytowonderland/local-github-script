@@ -2,7 +2,7 @@
  * Initializes the GitHub step summary for a given module file.
  *
  * @module step-summary
- * @category Module Utilities
+ * @category Helpers
  */
 
 import path from 'node:path'

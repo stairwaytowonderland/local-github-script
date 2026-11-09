@@ -19,7 +19,7 @@
  * @param {object} GitHubToolkit.glob - The GitHub Actions glob module.
  * @param {object} GitHubToolkit.io - The GitHub Actions io module.
  * @param {function} GitHubToolkit.getOctokit - The function to get an authenticated Octokit instance.
- * @param {function} require - The CommonJS require function for importing modules.
+ * @param {function} GitHubToolkit.require - The CommonJS require wrapper for importing modules.
  * @example
  * const {default: run} = await import('./hello-world.cjs')
  * const result = await run(github, context, core, exec, glob, io, getOctokit)

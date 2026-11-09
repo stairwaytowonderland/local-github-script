@@ -5,7 +5,7 @@
  * **See:** https://github.com/actions/github-script/blob/main/src/wrap-require.ts
  *
  * @module wrap-require
- * @category Module Utilities
+ * @category Helpers
  */
 
 import * as path from 'node:path'

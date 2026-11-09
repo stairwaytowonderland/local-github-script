@@ -1,7 +1,8 @@
 /**
  * Utility functions for the GitHub script.
  *
- * @module Utils
+ * @module utils
+ * @category Utilities
  */
 
 /**
@@ -18,7 +19,7 @@ export const kebabToCamel = str => str.replace(/-./g, m => m[1].toUpperCase())
 
 /**
  * Dynamically imports modules if they are not already provided.
- *
+ * @async
  * @example
  * const modules = await dynamicModules(['fs'], ['path'])
  * console.log(modules.fs, modules.path)

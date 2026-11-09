@@ -2,7 +2,7 @@
  * @file Main entry point for the GitHub Script runner.
  * It sets up the environment, mocks the GitHub context, and loads the necessary modules.
  *
- * @module Main
+ * @module main
  * @order 1
  */
 
@@ -112,6 +112,7 @@ const mocks = () => {
 /**
  * Runs the main GitHub Script logic with mocked context and modules.
  * Exits the process with code 0 on success and 1 on failure.
+ * @async
  */
 export const run = async () => {
 	try {
