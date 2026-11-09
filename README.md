@@ -38,8 +38,9 @@ This repository contains various utilities for local GitHub testing.
 │   │   ├── index.js
 │   │   ├── main.js
 │   │   ├── modules.js
-│   │   ├── step-summary.cjs
-│   │   └── utils.cjs
+│   │   ├── step-summary.js
+│   │   ├── utils.js
+│   │   └── wrap-require.js
 │   ├── .env.sample
 │   ├── .prettierignore
 │   ├── jsdoc.json
