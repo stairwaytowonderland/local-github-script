@@ -11,18 +11,17 @@
  * @order -1
  *
  * @async
- * @param {object} GitHubToolkit - The context object containing GitHub script utilities.
- * @param {object} GitHubToolkit.github - The GitHub client.
- * @param {object} GitHubToolkit.context - The GitHub Action context.
- * @param {object} GitHubToolkit.core - The GitHub Actions core module.
- * @param {object} GitHubToolkit.exec - The GitHub Actions exec module.
- * @param {object} GitHubToolkit.glob - The GitHub Actions glob module.
- * @param {object} GitHubToolkit.io - The GitHub Actions io module.
- * @param {function} GitHubToolkit.getOctokit - The function to get an authenticated Octokit instance.
- * @param {function} GitHubToolkit.require - The CommonJS require wrapper for importing modules.
+ * @param {object} github - The GitHub client.
+ * @param {object} context - The GitHub Action context.
+ * @param {object} core - The GitHub Actions core module.
+ * @param {object} exec - The GitHub Actions exec module.
+ * @param {object} glob - The GitHub Actions glob module.
+ * @param {object} io - The GitHub Actions io module.
+ * @param {function} getOctokit - The function to get an authenticated Octokit instance.
+ * @param {function} require - The CommonJS require wrapper for importing modules.
  * @example
  * const {default: run} = await import('./hello-world.cjs')
- * const result = await run(github, context, core, exec, glob, io, getOctokit)
+ * const result = await run(github, context, core, exec, glob, io, getOctokit, require)
  * console.log(result)
  * @returns {Promise<string>} A greeting message.
  */
