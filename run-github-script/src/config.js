@@ -91,7 +91,7 @@ export default config
 /**
  * Options for configuring dotenv behavior.
  * @category Configuration
- * @memberof config
+ * @global
  * @typedef {Object} DotEnvOptions
  * @property {boolean} [override=false] - Whether to override existing environment variables.
  * @property {boolean} [debug=false] - Whether to enable debug mode.
@@ -100,7 +100,7 @@ export default config
 /**
  * Options for the module object.
  * @category Configuration
- * @memberof config
+ * @global
  * @typedef {Object} Module
  * @property {string} name - The name of the module.
  * @property {string} [description] - The description of the module.
@@ -114,7 +114,7 @@ export default config
 /**
  * Options for the main configuration object.
  * @category Configuration
- * @memberof config
+ * @global
  * @typedef {Object} Config
  * @property {string} name - The name of the configuration.
  * @property {string} description - The description of the configuration.

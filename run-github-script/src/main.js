@@ -137,6 +137,7 @@ export default run
 /**
  * Represents the GitHub Actions context object.
  * @category GitHub Context
+ * @global
  * @typedef {Object} GitHubContext
  * @property {string} actor - The username of the user that triggered the workflow.
  * @property {string} eventName - The name of the webhook event that triggered the workflow.

@@ -37,7 +37,7 @@ export default class ModuleLoader {
 	 * Loads custom modules based on the provided configuration.
 	 * @async
 	 * @param {GitHubToolkit} toolkit - The GitHub Actions toolkit containing utilities.
-	 * @param {module:config~Config} config - The configuration object containing module details.
+	 * @param {Config} config - The configuration object containing module details.
 	 * @returns {Promise<void>} Resolves when all modules are loaded successfully.
 	 */
 	static async load(toolkit, config) {
@@ -57,7 +57,7 @@ export default class ModuleLoader {
 	/**
 	 * Constructs a new Module instance.
 	 *
-	 * @param {module:config~Module} moduleConfig - The configuration object for the module.
+	 * @param {Module} moduleConfig - The configuration object for the module.
 	 * @param {string} modulePath - The absolute path to the module file.
 	 */
 	constructor(moduleConfig, modulePath) {
