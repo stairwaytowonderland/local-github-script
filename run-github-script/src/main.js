@@ -1,6 +1,6 @@
 /**
  * @file Main entry point for the GitHub Script runner.
- * It sets up the environment, mocks the GitHub context, and loads the necessary modules.
+ * It sets up the environment, mocks the GitHub context, instantiates Octokit, and loads the necessary modules.
  */
 
 /**
@@ -46,10 +46,10 @@ if (!owner || !repo) {
 }
 
 /**
- * Mocks the GitHub context and Octokit instance for local testing.
- * @returns {Mocks} The mocked GitHub context and Octokit instance.
+ * Mocks the GitHub context for local testing.
+ * @returns {GitHubContext} The mocked GitHub context.
  */
-function mocks() {
+function mockContext() {
 	const actor = process.env.GITHUB_ACTOR || 'localhost'
 
 	// Mock the context payload
@@ -80,9 +80,7 @@ function mocks() {
 		},
 	}
 
-	return {
-		context: mockContext,
-	}
+	return mockContext
 }
 
 // load({ ...mocks(), core }, config)
@@ -98,13 +96,14 @@ function mocks() {
  * Runs the main GitHub Script logic with mocked context and modules.
  * Exits the process with code 0 on success and 1 on failure.
  * @async
+ * @returns {Promise<void>} Resolves when the script completes successfully.
  */
 export async function run() {
 	try {
 		/**
 		 * Retrieve the mocked context for local testing.
 		 */
-		const {context} = mocks()
+		const context = mockContext()
 
 		/**
 		 * Instantiate Octokit using a local Personal Access Token
@@ -128,37 +127,43 @@ export async function run() {
 export default run
 
 /**
- * Represents the structure of the mocked context returned by the `mocks` function.
- * @category GitHub Context
- * @typedef {Object} Mocks
- * @property {GitHubContext} context - The mocked GitHub context.
+ * Represents the structure of the mocked context returned by the `mockContext` function.
+ * @typedef {Object} GitHubContext
+ * @property {WebhookPayload} payload - The webhook payload.
+ * @property {string} eventName - The name of the webhook event that triggered the workflow.
+ * @property {string} sha - The commit SHA that triggered the workflow.
+ * @property {string} ref - The git ref that triggered the workflow.
+ * @property {string} workflow - The name of the workflow.
+ * @property {string} action - The name of the action currently running.
+ * @property {string} actor - The username of the user that triggered the workflow.
+ * @property {string} job - The ID of the current job.
+ * @property {number} runAttempt - The run attempt number.
+ * @property {number} runId - The run ID.
+ * @property {number} runNumber - The run number.
+ * @property {IssueContext} issue - The issue context, if applicable.
+ * @property {RepositoryContext} repo - The repository context.
  */
 
 /**
  * Represents the GitHub Actions context object.
+ *
+ * Also see: {@link https://github.com/actions/toolkit/blob/main/packages/github/src/context.ts}
  * @category GitHub Context
  * @global
  * @typedef {Object} GitHubContext
- * @property {string} actor - The username of the user that triggered the workflow.
+ * @property {WebhookPayload} payload - The webhook payload.
  * @property {string} eventName - The name of the webhook event that triggered the workflow.
- * @property {string} [ref] - The git ref that triggered the workflow.
  * @property {string} sha - The commit SHA that triggered the workflow.
+ * @property {string} ref - The git ref that triggered the workflow.
  * @property {string} workflow - The name of the workflow.
  * @property {string} action - The name of the action currently running.
- * @property {string} [job] - The ID of the current job.
+ * @property {string} actor - The username of the user that triggered the workflow.
+ * @property {string} job - The ID of the current job.
  * @property {number} runAttempt - The run attempt number.
  * @property {number} runId - The run ID.
  * @property {number} runNumber - The run number.
- * @property {IssueContext} [issue] - The issue context, if applicable.
- * @property {RepositoryContext} [repo] - The repository context.
- * @property {EventPayload} payload - The webhook payload.
- */
-
-/**
- * Represents the payload of the GitHub webhook event.
- * @category GitHub Context
- * @typedef {Object} EventPayload
- * @property {RepositoryContext} repository - The repository context.
+ * @property {IssueContext} issue - The issue context, if applicable.
+ * @property {RepositoryContext} repo - The repository context.
  */
 
 /**
@@ -174,22 +179,33 @@ export default run
  * Represents the context of a repository within the GitHub Actions workflow.
  * @category GitHub Context
  * @typedef {Object} RepositoryContext
- * @property {string} name - The repository name.
  * @property {string} owner - The repository owner.
+ * @property {Object} repo - The repository full name.
  */
 
 /**
- * Represents the context of a pull request within the GitHub Actions workflow.
+ * Represents the payload of a GitHub webhook event.
+ *
+ * Also see: {@link https://github.com/actions/toolkit/blob/main/packages/github/src/interfaces.ts}
  * @category GitHub Context
- * @typedef {Object} PullRequestContext
- * @property {number} number - The pull request number.
- * @property {string} title - The pull request title.
- * @property {string} body - The pull request body.
+ * @typedef {Object} WebhookPayload
+ * @property {PayloadRepository} repository - The repository associated with the webhook event.
  */
 
 /**
- * Represents the context of the sender within the GitHub Actions workflow.
+ * Represents the context of a repository within the GitHub Actions workflow.
  * @category GitHub Context
- * @typedef {Object} SenderContext
- * @property {string} login - The username of the sender.
+ * @typedef {Object} PayloadRepository
+ * @property {string} [full_name] - The full name of the repository (e.g., "owner/repo").
+ * @property {string} name - The name of the repository.
+ * @property {PayloadRepositoryOwner} owner - The owner of the repository.
+ * @property {string} [html_url] - The HTML URL of the repository.
+ */
+
+/**
+ * Represents the owner of a repository within the GitHub Actions workflow.
+ * @category GitHub Context
+ * @typedef {Object} PayloadRepositoryOwner
+ * @property {string} login - The username of the repository owner.
+ * @property {string} [name] - The name of the repository owner.
  */

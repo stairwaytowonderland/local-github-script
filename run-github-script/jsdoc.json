@@ -40,7 +40,8 @@
 			"Module Loading",
 			"GitHub Script Modules",
 			"Configuration",
-			"GitHub Context"
+			"GitHub Context",
+			"Typedefs"
 		],
 		"colors": {"bg": "oklch(1.00 0.00 95)", "accent": "oklch(0.55 0.2 250)"},
 		"darkColors": {"bg": "oklch(0.18 0.01 250)", "accent": "oklch(0.7 0.16 250)"}

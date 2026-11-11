@@ -1,5 +1,5 @@
 /**
- * Configuration loader for the GitHub Script environment.
+ * @file Configuration loader for the GitHub Script environment.
  * Handles parsing of YAML configuration files and environment variables.
  *
  * @module config
@@ -24,13 +24,14 @@ const defaultConfigFileName = 'config.yaml'
 // Read and parse YAML synchronously during initial module compilation/load
 
 /**
- * Determines the configuration file path based on command-line arguments and environment variables.
+ * Uses {@link getConfigPath} to determine the configuration file path based on command-line arguments and environment variables.
  * @type {string}
  */
 const configPath = getConfigPath()
 
 /**
- * The parsed YAML configuration object. (See {@link Config})
+ * The parsed YAML configuration object.
+ * @module Config
  * @type {Config}
  */
 const config = YAML.parse(fs.readFileSync(configPath, 'utf8'))
