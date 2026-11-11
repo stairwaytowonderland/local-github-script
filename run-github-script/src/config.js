@@ -1,9 +1,8 @@
 /**
- * @file Configuration loader for the GitHub Script environment.
+ * Configuration loader for the GitHub Script environment.
  * Handles parsing of YAML configuration files and environment variables.
  *
  * @module config
- * @order 2
  */
 
 // Ensure the node built-in core path module is imported

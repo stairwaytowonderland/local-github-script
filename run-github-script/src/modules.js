@@ -19,22 +19,12 @@ const __dirname = import.meta.dirname
  */
 export default class ModuleLoader {
 	/**
-	 * @typedef {import('./config.js').Config} Config
-	 * @memberof ModuleLoader
-	 */
-
-	/**
-	 * @typedef {import('./config.js').Module} Module
-	 * @memberof ModuleLoader
-	 */
-
-	/**
 	 * Represents the GitHub Actions default args passed to modules.
 	 * @typedef {Object} GitHubToolkit
 	 * @memberof ModuleLoader
-	 * @category Loader
+	 * @category Module Loading
 	 * @property {Octokit} github - Pre-authenticated octokit client.
-	 * @property {main.GitHubContext} context - The workflow run context.
+	 * @property {GitHubContext} context - The workflow run context.
 	 * @property {Object} core - Actions core task library.
 	 * @property {Object} exec - Actions exec tool utilities.
 	 * @property {Object} glob - Actions glob tool utilities.
@@ -47,7 +37,7 @@ export default class ModuleLoader {
 	 * Loads custom modules based on the provided configuration.
 	 * @async
 	 * @param {GitHubToolkit} toolkit - The GitHub Actions toolkit containing utilities.
-	 * @param {Config} config - The configuration object containing module details.
+	 * @param {module:config~Config} config - The configuration object containing module details.
 	 * @returns {Promise<void>} Resolves when all modules are loaded successfully.
 	 */
 	static async load(toolkit, config) {
@@ -67,7 +57,7 @@ export default class ModuleLoader {
 	/**
 	 * Constructs a new Module instance.
 	 *
-	 * @param {Module} moduleConfig - The configuration object for the module.
+	 * @param {module:config~Module} moduleConfig - The configuration object for the module.
 	 * @param {string} modulePath - The absolute path to the module file.
 	 */
 	constructor(moduleConfig, modulePath) {

@@ -1,8 +1,6 @@
 /**
  * @file Main entry point for the GitHub Script runner.
  * It sets up the environment, mocks the GitHub context, and loads the necessary modules.
- *
- * @order 1
  */
 
 /**
@@ -116,8 +114,6 @@ export async function run() {
 		const github = getOctokit(process.env.GITHUB_TOKEN)
 
 		console.debug(`Mock context: ${JSON.stringify(context, null, 2)}\n`)
-		// let exec, glob, io
-		// ;({'@actions/exec': exec, '@actions/glob': glob, '@actions/io': io} = await loadAdvancedModules())
 		await modules.load({github, context, core, exec, glob, io, getOctokit, require: wrapRequire}, config)
 		process.exit(0)
 	} catch (err) {
@@ -133,16 +129,14 @@ export default run
 
 /**
  * Represents the structure of the mocked context returned by the `mocks` function.
- * @category Mocks
- * @memberof main
+ * @category GitHub Context
  * @typedef {Object} Mocks
  * @property {GitHubContext} context - The mocked GitHub context.
  */
 
 /**
  * Represents the GitHub Actions context object.
- * @category Mocks
- * @memberof main
+ * @category GitHub Context
  * @typedef {Object} GitHubContext
  * @property {string} actor - The username of the user that triggered the workflow.
  * @property {string} eventName - The name of the webhook event that triggered the workflow.
@@ -161,16 +155,14 @@ export default run
 
 /**
  * Represents the payload of the GitHub webhook event.
- * @category Mocks
- * @memberof main
+ * @category GitHub Context
  * @typedef {Object} EventPayload
  * @property {RepositoryContext} repository - The repository context.
  */
 
 /**
  * Represents the context of an issue within the GitHub Actions workflow.
- * @category Mocks
- * @memberof main
+ * @category GitHub Context
  * @typedef {Object} IssueContext
  * @property {number} number - The issue number.
  * @property {string} title - The issue title.
@@ -179,8 +171,7 @@ export default run
 
 /**
  * Represents the context of a repository within the GitHub Actions workflow.
- * @category Mocks
- * @memberof main
+ * @category GitHub Context
  * @typedef {Object} RepositoryContext
  * @property {string} name - The repository name.
  * @property {string} owner - The repository owner.
@@ -188,8 +179,7 @@ export default run
 
 /**
  * Represents the context of a pull request within the GitHub Actions workflow.
- * @category Mocks
- * @memberof main
+ * @category GitHub Context
  * @typedef {Object} PullRequestContext
  * @property {number} number - The pull request number.
  * @property {string} title - The pull request title.
@@ -198,8 +188,7 @@ export default run
 
 /**
  * Represents the context of the sender within the GitHub Actions workflow.
- * @category Mocks
- * @memberof main
+ * @category GitHub Context
  * @typedef {Object} SenderContext
  * @property {string} login - The username of the sender.
  */
