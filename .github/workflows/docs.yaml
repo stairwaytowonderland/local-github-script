@@ -43,12 +43,6 @@ jobs:
       - name: Install Dependencies
         run: npm --prefix run-github-script ci
 
-      - name: Verify JSDoc Configuration
-        run: npx jsdoc -c run-github-script/jsdoc.json --explain
-
-      - name: Verify JSDoc Version
-        run: npx jsdoc --version
-
       - name: Generate JSDoc Site
         run: npm --prefix run-github-script run build:docs
 
