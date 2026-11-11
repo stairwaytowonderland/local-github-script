@@ -31,13 +31,13 @@ const defaultConfigFileName = 'config.yaml'
 const configPath = getConfigPath()
 
 /**
- * The parsed YAML configuration object.
+ * The parsed YAML configuration object. (See {@link Config})
  * @type {Config}
  */
 const config = YAML.parse(fs.readFileSync(configPath, 'utf8'))
 
 /**
- * The dotenv configuration options.
+ * The dotenv configuration options. (See {@link DotEnvOptions})
  * @type {DotEnvOptions}
  */
 const dotenvConfig = {override: true, debug: true}
@@ -90,27 +90,36 @@ function getConfigPath() {
 export default config
 
 /**
+ * Options for configuring dotenv behavior.
+ * @category Configuration
+ * @memberof config
  * @typedef {Object} DotEnvOptions
- * @property {boolean} [override] - Whether to override existing environment variables.
- * @property {boolean} [debug] - Whether to enable debug mode.
+ * @property {boolean} [override=false] - Whether to override existing environment variables.
+ * @property {boolean} [debug=false] - Whether to enable debug mode.
  */
 
 /**
+ * Options for the module object.
+ * @category Configuration
+ * @memberof config
+ * @typedef {Object} Module
+ * @property {string} name - The name of the module.
+ * @property {string} [description] - The description of the module.
+ * @property {string} id - The identifier of the module.
+ * @property {string} path - The path to the module file.
+ * @property {boolean} [step-summary=false] - Whether to enable step summary for the module.
+ * @property {array} [env] - The list of environment variables used by the module.
+ * @property {array} [inputs] - The list of input parameters for the module.
+ */
+
+/**
+ * Options for the main configuration object.
+ * @category Configuration
+ * @memberof config
  * @typedef {Object} Config
  * @property {string} name - The name of the configuration.
  * @property {string} description - The description of the configuration.
  * @property {string} module-path - The path to the module file.
  * @property {string} [env-file] - The path to the environment file.
  * @property {Module[]} modules - The imported module objects.
- */
-
-/**
- * @typedef {Object} Module
- * @property {string} name - The name of the module.
- * @property {string} [description] - The description of the module.
- * @property {string} id - The identifier of the module.
- * @property {string} path - The path to the module file.
- * @property {boolean} [step-summary] - Whether to enable step summary for the module.
- * @property {array} [env] - The list of environment variables used by the module.
- * @property {array} [inputs] - The list of input parameters for the module.
  */

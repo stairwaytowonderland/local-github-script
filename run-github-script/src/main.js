@@ -2,7 +2,6 @@
  * @file Main entry point for the GitHub Script runner.
  * It sets up the environment, mocks the GitHub context, and loads the necessary modules.
  *
- * @module main
  * @order 1
  */
 
@@ -52,7 +51,7 @@ if (!owner || !repo) {
  * Mocks the GitHub context and Octokit instance for local testing.
  * @returns {Mocks} The mocked GitHub context and Octokit instance.
  */
-const mocks = () => {
+function mocks() {
 	const actor = process.env.GITHUB_ACTOR || 'localhost'
 
 	// Mock the context payload
@@ -83,15 +82,7 @@ const mocks = () => {
 		},
 	}
 
-	/**
-	 * Instantiate Octokit using a local Personal Access Token
-	 *
-	 * Ensure the GITHUB_TOKEN environment variable is set for local testing.
-	 */
-	const github = getOctokit(process.env.GITHUB_TOKEN)
-
 	return {
-		github,
 		context: mockContext,
 	}
 }
@@ -110,9 +101,20 @@ const mocks = () => {
  * Exits the process with code 0 on success and 1 on failure.
  * @async
  */
-export const run = async () => {
+export async function run() {
 	try {
-		const {github, context} = mocks()
+		/**
+		 * Retrieve the mocked context for local testing.
+		 */
+		const {context} = mocks()
+
+		/**
+		 * Instantiate Octokit using a local Personal Access Token
+		 *
+		 * Ensure the GITHUB_TOKEN environment variable is set for local testing.
+		 */
+		const github = getOctokit(process.env.GITHUB_TOKEN)
+
 		console.debug(`Mock context: ${JSON.stringify(context, null, 2)}\n`)
 		// let exec, glob, io
 		// ;({'@actions/exec': exec, '@actions/glob': glob, '@actions/io': io} = await loadAdvancedModules())
@@ -130,14 +132,18 @@ export const run = async () => {
 export default run
 
 /**
+ * Represents the structure of the mocked context returned by the `mocks` function.
+ * @category Mocks
+ * @memberof main
  * @typedef {Object} Mocks
- * @property {Octokit} github - The mocked Octokit instance.
- * @property {Object} context - The mocked GitHub context.
+ * @property {GitHubContext} context - The mocked GitHub context.
  */
 
 /**
- * @typedef {Object} GitHubContext
  * Represents the GitHub Actions context object.
+ * @category Mocks
+ * @memberof main
+ * @typedef {Object} GitHubContext
  * @property {string} actor - The username of the user that triggered the workflow.
  * @property {string} eventName - The name of the webhook event that triggered the workflow.
  * @property {string} [ref] - The git ref that triggered the workflow.
@@ -154,28 +160,46 @@ export default run
  */
 
 /**
+ * Represents the payload of the GitHub webhook event.
+ * @category Mocks
+ * @memberof main
  * @typedef {Object} EventPayload
  * @property {RepositoryContext} repository - The repository context.
  */
 
 /**
+ * Represents the context of an issue within the GitHub Actions workflow.
+ * @category Mocks
+ * @memberof main
  * @typedef {Object} IssueContext
  * @property {number} number - The issue number.
  * @property {string} title - The issue title.
  * @property {string} body - The issue body.
  */
+
 /**
+ * Represents the context of a repository within the GitHub Actions workflow.
+ * @category Mocks
+ * @memberof main
  * @typedef {Object} RepositoryContext
  * @property {string} name - The repository name.
  * @property {string} owner - The repository owner.
  */
+
 /**
+ * Represents the context of a pull request within the GitHub Actions workflow.
+ * @category Mocks
+ * @memberof main
  * @typedef {Object} PullRequestContext
  * @property {number} number - The pull request number.
  * @property {string} title - The pull request title.
  * @property {string} body - The pull request body.
  */
+
 /**
+ * Represents the context of the sender within the GitHub Actions workflow.
+ * @category Mocks
+ * @memberof main
  * @typedef {Object} SenderContext
  * @property {string} login - The username of the sender.
  */

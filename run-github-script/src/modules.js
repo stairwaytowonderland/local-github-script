@@ -2,7 +2,7 @@
  * Module loader for the GitHub Script environment.
  * Handles dynamic loading and execution of custom modules based on configuration.
  *
- * @module modules
+ * @module ModuleLoader
  */
 
 import * as path from 'node:path'
@@ -15,23 +15,49 @@ const __dirname = import.meta.dirname
 
 /**
  * Represents a dynamically loaded module with its configuration and environment.
- * @alias ModuleLoader
+ * @class
  */
 export default class ModuleLoader {
 	/**
+	 * @typedef {import('./config.js').Config} Config
+	 * @memberof ModuleLoader
+	 */
+
+	/**
+	 * @typedef {import('./config.js').Module} Module
+	 * @memberof ModuleLoader
+	 */
+
+	/**
+	 * Represents the GitHub Actions default args passed to modules.
+	 * @typedef {Object} GitHubToolkit
+	 * @memberof ModuleLoader
+	 * @category Loader
+	 * @property {Octokit} github - Pre-authenticated octokit client.
+	 * @property {main.GitHubContext} context - The workflow run context.
+	 * @property {Object} core - Actions core task library.
+	 * @property {Object} exec - Actions exec tool utilities.
+	 * @property {Object} glob - Actions glob tool utilities.
+	 * @property {Object} io - Actions core I/O utilities.
+	 * @property {Function} getOctokit - Returns an authenticated Octokit client.
+	 * @property {Function} require - The CommonJS require wrapper for importing modules.
+	 */
+
+	/**
 	 * Loads custom modules based on the provided configuration.
 	 * @async
-	 * @param {Object} dependencies - The standard GitHub Script dependencies required by the modules.
-	 * @param {Object} config - The configuration object containing module details.
+	 * @param {GitHubToolkit} toolkit - The GitHub Actions toolkit containing utilities.
+	 * @param {Config} config - The configuration object containing module details.
+	 * @returns {Promise<void>} Resolves when all modules are loaded successfully.
 	 */
-	static async load(defaultArgs, config) {
+	static async load(toolkit, config) {
 		try {
 			console.log(`Loading custom modules for: ${config.name}\n`)
 
 			for (const m of config.modules) {
 				const absoluteModulePath = path.resolve(__dirname, config['module-path'], m.path)
 				const module = new ModuleLoader(m, absoluteModulePath)
-				await module.loadModule(defaultArgs)
+				await module.loadModule(toolkit)
 			}
 		} catch (error) {
 			console.error('Error loading configuration or modules:', error)
@@ -41,7 +67,7 @@ export default class ModuleLoader {
 	/**
 	 * Constructs a new Module instance.
 	 *
-	 * @param {ModuleConfig} moduleConfig - The configuration object for the module.
+	 * @param {Module} moduleConfig - The configuration object for the module.
 	 * @param {string} modulePath - The absolute path to the module file.
 	 */
 	constructor(moduleConfig, modulePath) {
@@ -106,7 +132,7 @@ export default class ModuleLoader {
 	 * @param {GitHubToolkit} toolkit - The GitHub Actions toolkit containing utilities.
 	 * @returns {Promise<void>}
 	 */
-	async loadModule(defaultArgs) {
+	async loadModule(toolkit) {
 		const workspacePath = this.workspacePath + '/'
 
 		console.debug(
@@ -175,7 +201,7 @@ export default class ModuleLoader {
 			initStepSummary.call(this, this.summaryPath, this.stepSummary)
 
 			await run
-				.apply(module, Object.values(defaultArgs))
+				.apply(module, Object.values(toolkit))
 				.then(result =>
 					console.log(
 						`\n\x1b[1;92m"${module.name}" succeeded results ...\x1b[0m\n"${module.id || module.name}":`,
@@ -199,29 +225,3 @@ export default class ModuleLoader {
 		}
 	}
 }
-
-/**
- * @typedef {Object} GitHubToolkit
- * @property {Object} github - Pre-authenticated octokit client.
- * @property {Object} context - The workflow run context.
- * @property {Object} core - Actions core task library.
- * @property {Object} exec - Actions exec tool utilities.
- * @property {Object} glob - Actions glob tool utilities.
- * @property {Object} io - Actions core I/O utilities.
- * @property {Function} getOctokit - Returns an authenticated Octokit client.
- * @property {Function} require - The CommonJS require wrapper for importing modules.
- */
-
-/**
- * @typedef {Object} ModuleLoader
- * @property {string} name - The user-friendly name of the module.
- * @property {string} id - Unique identifier for the module block.
- * @property {string} path - The relative file path to the target module executable.
- * @property {boolean} [stepSummary] - Whether to enable step summary for the module.
- * @property {Record<string, *>} [inputs] - Input options mapping to standard action `INPUT_` parameters.
- * @property {Record<string, string>} [env] - Custom environment overrides injected into `process.env`.
- * @property {string} modulePath - The absolute path to the module file.
- * @property {string} summaryPath - The path to the module's step summary file.
- * @property {string} workspacePath - The path to the module's workspace directory.
- * @property {string} moduleCamelId - The camelCase version of the module ID.
- */
