@@ -127,24 +127,6 @@ export async function run() {
 export default run
 
 /**
- * Represents the structure of the mocked context returned by the `mockContext` function.
- * @typedef {Object} GitHubContext
- * @property {WebhookPayload} payload - The webhook payload.
- * @property {string} eventName - The name of the webhook event that triggered the workflow.
- * @property {string} sha - The commit SHA that triggered the workflow.
- * @property {string} ref - The git ref that triggered the workflow.
- * @property {string} workflow - The name of the workflow.
- * @property {string} action - The name of the action currently running.
- * @property {string} actor - The username of the user that triggered the workflow.
- * @property {string} job - The ID of the current job.
- * @property {number} runAttempt - The run attempt number.
- * @property {number} runId - The run ID.
- * @property {number} runNumber - The run number.
- * @property {IssueContext} issue - The issue context, if applicable.
- * @property {RepositoryContext} repo - The repository context.
- */
-
-/**
  * Represents the GitHub Actions context object.
  *
  * Also see: {@link https://github.com/actions/toolkit/blob/main/packages/github/src/context.ts}
