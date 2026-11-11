@@ -74,6 +74,12 @@ export default class ModuleLoader {
 		 * @type {string}
 		 */
 		this.modulePath = path.resolve(realpathSync(modulePath))
+
+		/**
+		 * Whether to enable step summary for the module.
+		 * @type {boolean}
+		 */
+		this.stepSummary = moduleConfig['step-summary'] == true
 	}
 
 	get moduleCamelId() {
@@ -166,7 +172,7 @@ export default class ModuleLoader {
 
 		// Verify it's a function before calling it
 		if (typeof run === 'function') {
-			initStepSummary.call(this)
+			initStepSummary.call(this, this.summaryPath, this.stepSummary)
 
 			await run
 				.apply(module, Object.values(defaultArgs))
@@ -211,6 +217,7 @@ export default class ModuleLoader {
  * @property {string} name - The user-friendly name of the module.
  * @property {string} id - Unique identifier for the module block.
  * @property {string} path - The relative file path to the target module executable.
+ * @property {boolean} [stepSummary] - Whether to enable step summary for the module.
  * @property {Record<string, *>} [inputs] - Input options mapping to standard action `INPUT_` parameters.
  * @property {Record<string, string>} [env] - Custom environment overrides injected into `process.env`.
  * @property {string} modulePath - The absolute path to the module file.

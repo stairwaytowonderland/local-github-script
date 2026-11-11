@@ -10,6 +10,7 @@ modules:
     description: A local test wrapper module.
     id: hello-world
     path: hello-world.js
+    step-summary: true
     env:
       EXAMPLE_ENV_VAR: example_value
     inputs:
@@ -34,6 +35,7 @@ modules:
     description: Determine which files have changed in the current GitHub event context.
     id: changed-files
     path: changed-files.js
+    step-summary: true
     inputs:
       show-summary: true
       only-specified-paths: false

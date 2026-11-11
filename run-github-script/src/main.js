@@ -138,44 +138,44 @@ export default run
 /**
  * @typedef {Object} GitHubContext
  * Represents the GitHub Actions context object.
- * @property {string} [actor] - The username of the user that triggered the workflow.
- * @property {string} [eventName] - The name of the webhook event that triggered the workflow.
+ * @property {string} actor - The username of the user that triggered the workflow.
+ * @property {string} eventName - The name of the webhook event that triggered the workflow.
  * @property {string} [ref] - The git ref that triggered the workflow.
- * @property {string} [sha] - The commit SHA that triggered the workflow.
- * @property {string} [workflow] - The name of the workflow.
- * @property {string} [action] - The name of the action currently running.
+ * @property {string} sha - The commit SHA that triggered the workflow.
+ * @property {string} workflow - The name of the workflow.
+ * @property {string} action - The name of the action currently running.
  * @property {string} [job] - The ID of the current job.
- * @property {number} [runAttempt] - The run attempt number.
- * @property {number} [runId] - The run ID.
- * @property {number} [runNumber] - The run number.
+ * @property {number} runAttempt - The run attempt number.
+ * @property {number} runId - The run ID.
+ * @property {number} runNumber - The run number.
  * @property {IssueContext} [issue] - The issue context, if applicable.
  * @property {RepositoryContext} [repo] - The repository context.
- * @property {EventPayload} [payload] - The webhook payload.
+ * @property {EventPayload} payload - The webhook payload.
  */
 
 /**
  * @typedef {Object} EventPayload
- * @property {RepositoryContext} [repository] - The repository context.
+ * @property {RepositoryContext} repository - The repository context.
  */
 
 /**
  * @typedef {Object} IssueContext
- * @property {number} [number] - The issue number.
- * @property {string} [title] - The issue title.
- * @property {string} [body] - The issue body.
+ * @property {number} number - The issue number.
+ * @property {string} title - The issue title.
+ * @property {string} body - The issue body.
  */
 /**
  * @typedef {Object} RepositoryContext
- * @property {string} [name] - The repository name.
- * @property {string} [owner] - The repository owner.
+ * @property {string} name - The repository name.
+ * @property {string} owner - The repository owner.
  */
 /**
  * @typedef {Object} PullRequestContext
- * @property {number} [number] - The pull request number.
- * @property {string} [title] - The pull request title.
- * @property {string} [body] - The pull request body.
+ * @property {number} number - The pull request number.
+ * @property {string} title - The pull request title.
+ * @property {string} body - The pull request body.
  */
 /**
  * @typedef {Object} SenderContext
- * @property {string} [login] - The username of the sender.
+ * @property {string} login - The username of the sender.
  */

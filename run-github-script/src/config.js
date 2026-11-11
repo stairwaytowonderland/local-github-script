@@ -30,8 +30,11 @@ const defaultConfigFileName = 'config.yaml'
  */
 const configPath = getConfigPath()
 
-const fileContents = fs.readFileSync(configPath, 'utf8')
-const config = YAML.parse(fileContents)
+/**
+ * The parsed YAML configuration object.
+ * @type {Config}
+ */
+const config = YAML.parse(fs.readFileSync(configPath, 'utf8'))
 
 /**
  * The dotenv configuration options.
@@ -90,4 +93,24 @@ export default config
  * @typedef {Object} DotEnvOptions
  * @property {boolean} [override] - Whether to override existing environment variables.
  * @property {boolean} [debug] - Whether to enable debug mode.
+ */
+
+/**
+ * @typedef {Object} Config
+ * @property {string} name - The name of the configuration.
+ * @property {string} description - The description of the configuration.
+ * @property {string} module-path - The path to the module file.
+ * @property {string} [env-file] - The path to the environment file.
+ * @property {Module[]} modules - The imported module objects.
+ */
+
+/**
+ * @typedef {Object} Module
+ * @property {string} name - The name of the module.
+ * @property {string} [description] - The description of the module.
+ * @property {string} id - The identifier of the module.
+ * @property {string} path - The path to the module file.
+ * @property {boolean} [step-summary] - Whether to enable step summary for the module.
+ * @property {array} [env] - The list of environment variables used by the module.
+ * @property {array} [inputs] - The list of input parameters for the module.
  */
