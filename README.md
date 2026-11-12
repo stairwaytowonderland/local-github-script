@@ -1,8 +1,18 @@
-# Local GitHub Testing
+# Local GitHub Script Testing
+
+A playground to test GitHub Scripts locally.
+
+[![Deploy JSDoc to GitHub Pages](https://github.com/stairwaytowonderland/local-github-script/actions/workflows/docs.yaml/badge.svg)](https://github.com/stairwaytowonderland/local-github-script/actions/workflows/docs.yaml)
 
 ## :pushpin: Overview
 
-This repository contains various utilities for local GitHub testing.
+This repository contains various utilities for local GitHub Script testing.
+
+## :rocket: Features
+
+- :white_check_mark: Simulated GitHub Script environment for local testing.
+- :white_check_mark: Authentication support for GitHub Apps and personal access tokens.
+- :white_check_mark: Supports multiple GitHub Script modules defined in separate files.
 
 ## :cactus: Project structure
 
