@@ -5,6 +5,12 @@
  * @module ModuleLoader
  */
 
+/**
+ * @external Octokit
+ * @see https://github.com/octokit/core.js/blob/main/src/index.ts
+ */
+
+import {getOctokit} from '@actions/github'
 import * as path from 'node:path'
 import {realpathSync} from 'node:fs'
 import {pathToFileURL} from 'node:url'
@@ -19,24 +25,26 @@ const __dirname = import.meta.dirname
  */
 export default class ModuleLoader {
 	/**
-	 * Represents the GitHub Actions default args passed to modules.
-	 * @typedef {Object} GitHubToolkit
+	 * Represents the GitHub Actions toolkit passed to modules.
+	 *
+	 * Also see: {@link https://github.com/actions/github-script#this-action}
+	 * @typedef GitHubToolkit
 	 * @memberof ModuleLoader
 	 * @category Module Loading
-	 * @property {Octokit} github - Pre-authenticated octokit client.
-	 * @property {GitHubContext} context - The workflow run context.
-	 * @property {Object} core - Actions core task library.
-	 * @property {Object} exec - Actions exec tool utilities.
-	 * @property {Object} glob - Actions glob tool utilities.
-	 * @property {Object} io - Actions core I/O utilities.
-	 * @property {Function} getOctokit - Returns an authenticated Octokit client.
+	 * @property {Octokit} [github] - Pre-authenticated [octokit/rest.js]{@link https://octokit.github.io/rest.js/} client.
+	 * @property {GitHubContext} context - The workflow run [context]{@link https://github.com/actions/toolkit/blob/main/packages/github/src/context.ts}.
+	 * @property {Object} core - Actions [core]{@link https://github.com/actions/toolkit/tree/main/packages/core} task library.
+	 * @property {Object} exec - Actions [exec]{@link https://github.com/actions/toolkit/tree/main/packages/exec} tool utilities.
+	 * @property {Object} glob - Actions [glob]{@link https://github.com/actions/toolkit/tree/main/packages/glob} tool utilities.
+	 * @property {Object} io - Actions [io]{@link https://github.com/actions/toolkit/tree/main/packages/io} core I/O utilities.
+	 * @property {Function} getOctokit - A factory function to create additional authenticated [Octokit]{@link https://github.com/actions/toolkit/blob/main/packages/github/src/github.ts} clients with different tokens (see [Creating additional clients]{@link https://github.com/marketplace/actions/github-script#creating-additional-clients-with-getoctokit}).
 	 * @property {Function} require - The CommonJS require wrapper for importing modules.
 	 */
 
 	/**
 	 * Loads custom modules based on the provided configuration.
 	 * @async
-	 * @param {GitHubToolkit} toolkit - The GitHub Actions toolkit containing utilities.
+	 * @param {GitHubToolkit} toolkit - The GitHub Actions toolkit.
 	 * @param {Config} config - The configuration object containing module details.
 	 * @returns {Promise<void>} Resolves when all modules are loaded successfully.
 	 */
@@ -95,7 +103,7 @@ export default class ModuleLoader {
 		 * Whether to enable step summary for the module.
 		 * @type {boolean}
 		 */
-		this.stepSummary = moduleConfig['step-summary'] == true
+		this.stepSummaryEnabled = moduleConfig['step-summary'] == true
 	}
 
 	get moduleCamelId() {
@@ -116,10 +124,19 @@ export default class ModuleLoader {
 	}
 
 	/**
+	 * The authenticated GitHub client.
+	 * @type {Octokit|null}
+	 */
+	get github() {
+		console.debug(`\x1b[0;33mModule initializing GitHub client with token\x1b[0m`)
+		return process.env.GITHUB_TOKEN ? getOctokit(process.env.GITHUB_TOKEN) : null
+	}
+
+	/**
 	 * Injects the module configuration into `process.env`, dynamically imports
 	 * the module file, runs its default export, and cleans up the environment.
 	 * @async
-	 * @param {GitHubToolkit} toolkit - The GitHub Actions toolkit containing utilities.
+	 * @param {GitHubToolkit} toolkit - The GitHub Actions toolkit.
 	 * @returns {Promise<void>}
 	 */
 	async loadModule(toolkit) {
@@ -188,10 +205,29 @@ export default class ModuleLoader {
 
 		// Verify it's a function before calling it
 		if (typeof run === 'function') {
-			initStepSummary.call(this, this.summaryPath, this.stepSummary)
+			initStepSummary.call(this, this.summaryPath, this.stepSummaryEnabled)
+
+			/**
+			 * Initialized GitHub client for the module.
+			 *
+			 * Falls back to the existing client if already initialized.
+			 */
+			const github = toolkit?.github ?? this.github
 
 			await run
-				.apply(module, Object.values(toolkit))
+				.apply(
+					module,
+					Object.values({
+						github,
+						context: toolkit.context,
+						core: toolkit.core,
+						exec: toolkit.exec,
+						glob: toolkit.glob,
+						io: toolkit.io,
+						getOctokit: toolkit.getOctokit,
+						require: toolkit.require,
+					}),
+				)
 				.then(result =>
 					console.log(
 						`\n\x1b[1;92m"${module.name}" succeeded results ...\x1b[0m\n"${module.id || module.name}":`,

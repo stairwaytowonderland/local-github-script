@@ -73,4 +73,11 @@ This repository contains various utilities for local GitHub Script testing.
 
 ### `@actions/github-script`
 
-**Global Vars/Args:** <https://github.com/marketplace/actions/github-script#this-action>
+- [Global Vars/Args](https://github.com/actions/github-script#this-action)
+
+### Actions Toolkit
+
+- [GitHub Interfaces](https://github.com/actions/toolkit/blob/main/packages/github/src/interfaces.ts)
+- [GitHub Context](https://github.com/actions/toolkit/blob/main/packages/github/src/context.ts)
+- [GitHub Client](https://github.com/actions/toolkit/blob/main/packages/github/src/github.ts)
+- [Rest Guide](https://octokit.github.io/rest.js/)

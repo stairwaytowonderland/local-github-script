@@ -4,11 +4,11 @@
 
 A playground to test GitHub scripts (`@actions/github-script`) locally.
 
-## Overview
+## 📌 Overview
 
 This basic template demonstrates how to run a GitHub Script *(locally)* using a personal access token for authentication.
 
-## Features
+## :rocket: Features
 
 - ✅ Run GitHub Scripts locally using a personal access token.
 - ✅ Easy setup with npm dependencies.
@@ -20,7 +20,7 @@ This basic template demonstrates how to run a GitHub Script *(locally)* using a 
 - ✅ Supports dynamic import and execution of custom modules.
 - ✅ Uses a `yaml` configuration file for defining script inputs and settings.
 
-## Prerequisites
+## 🛠️ Prerequisites
 
 - Node.js and npm installed.
 - A personal access token with the necessary permissions for your GitHub repository.
@@ -29,7 +29,7 @@ This basic template demonstrates how to run a GitHub Script *(locally)* using a 
 
 - `gh` (GitHub CLI) installed and authenticated with your user. This is optional but recommended for easier token management.
 
-## NPM Dependencies
+## 📦 NPM Dependencies
 
 ### Core Dependencies
 
@@ -51,7 +51,7 @@ This basic template demonstrates how to run a GitHub Script *(locally)* using a 
 - `concurrently`: Module for running multiple commands concurrently in the terminal.
 - `jsdoc`: Tool for generating documentation from JavaScript source code comments.
 
-## Setup
+## ⚙️ Setup
 
 1. Clone the repository containing the GitHub script.
 2. Navigate to the repository directory.
@@ -65,7 +65,7 @@ cd local-github-script/run-github-script
 npm install
 ```
 
-## Usage
+## 💻 Usage
 
 > [!NOTE]
 >
@@ -94,7 +94,7 @@ To run the script directly using npm, you can use the following command:
 GITHUB_TOKEN=$(gh auth token) GITHUB_REPOSITORY=your_github_username/your_repo_name npm start
 ```
 
-## Usage Notes
+## 📖 Usage Notes
 
 ### CommonJS vs. ES Modules
 
@@ -107,8 +107,15 @@ If your external file uses ES Modules
 (`export default` or `.mjs`), load it with dynamic `await import('./path/to/script.mjs')`
 rather than `require()`.
 
-## References
+## 📚 References
 
 ### `@actions/github-script`
 
-**Global Vars/Args:** [Official Documentation](https://github.com/marketplace/actions/github-script#this-action)
+- [Global Vars/Args](https://github.com/actions/github-script#this-action)
+
+### Actions Toolkit
+
+- [GitHub Interfaces](https://github.com/actions/toolkit/blob/main/packages/github/src/interfaces.ts)
+- [GitHub Context](https://github.com/actions/toolkit/blob/main/packages/github/src/context.ts)
+- [GitHub Client](https://github.com/actions/toolkit/blob/main/packages/github/src/github.ts)
+- [Rest Guide](https://octokit.github.io/rest.js/)

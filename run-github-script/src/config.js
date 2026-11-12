@@ -42,8 +42,8 @@ const config = YAML.parse(fs.readFileSync(configPath, 'utf8'))
  */
 const dotenvConfig = {override: true, debug: true}
 
-if (config['env-file']) {
-	const envPath = path.resolve(config['env-file'])
+if (config?.['env-file']) {
+	const envPath = path.resolve(config?.['env-file'])
 	if (fs.existsSync(envPath)) {
 		console.log(`Loading environment variables from: ${envPath}`)
 		dotenvExpand.expand(dotenv.config({path: envPath, ...dotenvConfig}))
@@ -121,5 +121,6 @@ export default config
  * @property {string} description - The description of the configuration.
  * @property {string} module-path - The path to the module file.
  * @property {string} [env-file] - The path to the environment file.
+ * @property {boolean} [global-octokit=false] - Whether to use a global Octokit instance for all modules.
  * @property {Module[]} modules - The imported module objects.
  */

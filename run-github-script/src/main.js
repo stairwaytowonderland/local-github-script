@@ -46,41 +46,34 @@ if (!owner || !repo) {
 }
 
 /**
- * Mocks the GitHub context for local testing.
- * @returns {GitHubContext} The mocked GitHub context.
+ * Represents the mocked GitHub [context]{@link GitHubContext} for local testing.
+ * @type {GitHubContext}
  */
-function mockContext() {
-	const actor = process.env.GITHUB_ACTOR || 'localhost'
-
-	// Mock the context payload
-	const mockContext = {
-		...githubContext,
-		actor: actor,
-		eventName: githubContext.eventName || 'push',
-		ref: githubContext.ref || 'refs/heads/main',
-		sha: githubContext.sha || 'HEAD',
-		workflow: githubContext.workflow || 'mock-workflow',
-		action: githubContext.action || 'mock-action',
-		job: githubContext.job || 'mock-job',
-		runAttempt: githubContext.runAttempt || 1,
-		runId: githubContext.runId || 1,
-		runNumber: githubContext.runNumber || 1,
-		issue: githubContext.issue?.number ? {...githubContext.issue} : {}, // { owner, repo, number: 1 },
-		repo: {...githubContext.repo},
-		payload: {
-			repository: {
-				owner: {
-					login: owner,
-					name: owner,
-				},
-				name: repo,
-				full_name: `${owner}/${repo}`,
-				html_url: `https://github.com/${owner}/${repo}`,
+const context = {
+	...githubContext,
+	actor: process.env.GITHUB_ACTOR || 'localhost',
+	eventName: githubContext.eventName || 'push',
+	ref: githubContext.ref || 'refs/heads/main',
+	sha: githubContext.sha || 'HEAD',
+	workflow: githubContext.workflow || 'mock-workflow',
+	action: githubContext.action || 'mock-action',
+	job: githubContext.job || 'mock-job',
+	runAttempt: githubContext.runAttempt || 1,
+	runId: githubContext.runId || 1,
+	runNumber: githubContext.runNumber || 1,
+	issue: githubContext.issue?.number ? {...githubContext.issue} : {}, // { owner, repo, number: 1 },
+	repo: {...githubContext.repo},
+	payload: {
+		repository: {
+			owner: {
+				login: owner,
+				name: owner,
 			},
+			name: repo,
+			full_name: `${owner}/${repo}`,
+			html_url: `https://github.com/${owner}/${repo}`,
 		},
-	}
-
-	return mockContext
+	},
 }
 
 // load({ ...mocks(), core }, config)
@@ -100,31 +93,30 @@ function mockContext() {
  */
 export async function run() {
 	try {
-		/**
-		 * Retrieve the mocked context for local testing.
-		 */
-		const context = mockContext()
+		let toolkit
 
-		/**
-		 * Instantiate Octokit using a local Personal Access Token
-		 *
-		 * Ensure the GITHUB_TOKEN environment variable is set for local testing.
-		 */
-		const github = getOctokit(process.env.GITHUB_TOKEN)
+		if (config?.['global-octokit']) {
+			console.debug(`Global Octokit enabled.`)
+			/**
+			 * Instantiate Octokit using a local Personal Access Token
+			 *
+			 * Ensure the GITHUB_TOKEN environment variable is set for local testing.
+			 */
+			const github = getOctokit(process.env.GITHUB_TOKEN)
+			toolkit = {github, context, core, exec, glob, io, getOctokit, require: wrapRequire}
+		} else {
+			console.debug(`Global Octokit not enabled.`)
+			toolkit = {context, core, exec, glob, io, getOctokit, require: wrapRequire}
+		}
 
 		console.debug(`Mock context: ${JSON.stringify(context, null, 2)}\n`)
-		await modules.load({github, context, core, exec, glob, io, getOctokit, require: wrapRequire}, config)
+		await modules.load(toolkit, config)
 		process.exit(0)
 	} catch (err) {
 		core.setFailed(err.message)
 		process.exit(1)
 	}
 }
-
-/**
- * * The default export is the run function.
- */
-export default run
 
 /**
  * Represents the GitHub Actions context object.

@@ -1,9 +1,14 @@
-name: run-github-script
+name: '🐙 Run GitHub Script'
 description: Configuration file for the run-github-script project.
 
+# Path to the directory containing custom modules.
 module-path: modules
 
+# Path to the environment file containing necessary variables.
 env-file: .env
+
+# Whether to use a global Octokit instance for all modules.
+global-octokit: true
 
 modules:
   - name: Hello World
