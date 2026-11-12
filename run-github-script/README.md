@@ -28,9 +28,25 @@ This basic template demonstrates how to run a GitHub script *(locally)* using a 
 
 ## NPM Dependencies
 
-- `@actions/github`: Official GitHub Actions toolkit for interacting with the GitHub API.
+### Core Dependencies
+
 - `@actions/core`: Official GitHub Actions toolkit for core functionalities like setting outputs and handling errors.
+- `@actions/exec`: Official GitHub Actions toolkit for executing commands in a shell.
+- `@actions/github`: Official GitHub Actions toolkit for interacting with the GitHub API.
+- `@actions/glob`: Official GitHub Actions toolkit for matching file paths using glob patterns.
+- `@actions/io`: Official GitHub Actions toolkit for filesystem operations like copying, moving, and removing files.
 - `@octokit/rest`: Official GitHub REST API client for JavaScript.
+- `dotenv`: Module to load environment variables from a `.env` file into `process.env`.
+- `dotenv-expand`: Module to expand environment variables defined in a `.env` file.
+- `minimatch`: Module for matching file paths against glob patterns.
+- `yaml`: Module for parsing and stringifying YAML files.
+
+### Development Dependencies
+
+- `@github/prettier-config`: Prettier configuration provided by GitHub for consistent code style.
+- `clean-jsdoc-theme`: JSDoc theme for generating clean and readable documentation.
+- `concurrently`: Module for running multiple commands concurrently in the terminal.
+- `jsdoc`: Tool for generating documentation from JavaScript source code comments.
 
 ## Setup
 
@@ -39,8 +55,8 @@ This basic template demonstrates how to run a GitHub script *(locally)* using a 
 3. Install the necessary dependencies using npm:
 
 ```bash
-# Navigate to the run-github-script in the local-github-testing directory (or wherever you cloned the repository)
-cd local-github-testing/run-github-script
+# Navigate to the run-github-script in the local-github-script directory (or wherever you cloned the repository)
+cd local-github-script/run-github-script
 
 # Install the necessary npm dependencies
 npm install

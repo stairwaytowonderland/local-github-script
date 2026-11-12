@@ -8,7 +8,7 @@
  *
  * @module modules/hello-world
  * @category GitHub Script Modules
- * @order -1
+ * @order 0
  *
  * @async
  * @param {object} github - The GitHub client.
