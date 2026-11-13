@@ -58,31 +58,38 @@ if (!owner || !repo) {
  * Represents the mocked GitHub [context]{@link GitHubContext} for local testing.
  * @type {GitHubContext}
  */
-const context = {
-  ...githubContext,
-  actor: process.env.GITHUB_ACTOR || 'localhost',
-  eventName: githubContext.eventName || 'push',
-  ref: githubContext.ref || 'refs/heads/main',
-  sha: githubContext.sha || 'HEAD',
-  workflow: githubContext.workflow || 'mock-workflow',
-  action: githubContext.action || 'mock-action',
-  job: githubContext.job || 'mock-job',
-  runAttempt: githubContext.runAttempt || 1,
-  runId: githubContext.runId || 1,
-  runNumber: githubContext.runNumber || 1,
-  issue: githubContext.issue?.number ? {...githubContext.issue} : {}, // { owner, repo, number: 1 },
-  repo: {...githubContext.repo},
-  payload: {
-    repository: {
-      owner: {
-        login: owner,
-        name: owner,
+let context
+
+if (process.env.CI) {
+  context = githubContext
+} else {
+  const mockContext = {
+    actor: githubContext.actor || 'localhost',
+    eventName: 'push',
+    ref: 'refs/heads/main',
+    sha: githubContext.sha || 'HEAD',
+    workflow: 'mock-workflow',
+    action: 'mock-action',
+    job: 'mock-job',
+    runAttempt: 1,
+    runId: 1,
+    runNumber: 1,
+    issue: githubContext.issue?.number ? {...githubContext.issue} : {}, // { owner, repo, number: 1 }
+    repo: githubContext.repo ? {...githubContext.repo} : {owner, repo}, // { owner, repo } (also derived from GITHUB_REPOSITORY if available, which is why referencing githubContext.repo is safe)
+    payload: {
+      repository: {
+        owner: {
+          login: owner,
+          name: owner,
+        },
+        name: repo,
+        full_name: `${owner}/${repo}`,
+        html_url: `https://github.com/${owner}/${repo}`,
       },
-      name: repo,
-      full_name: `${owner}/${repo}`,
-      html_url: `https://github.com/${owner}/${repo}`,
     },
-  },
+  }
+
+  context = {...githubContext, ...mockContext}
 }
 
 /**
@@ -122,7 +129,8 @@ async function loadModules(config) {
     let toolkit
 
     if (config?.['global-octokit']) {
-      console.debug(`Global Octokit enabled.`)
+      console.debug(`Global Octokit: enabled`)
+      console.debug(`Using actor: @${context.actor}`)
       /**
        * Instantiate Octokit using a local Personal Access Token
        *
@@ -131,7 +139,7 @@ async function loadModules(config) {
       const github = getOctokit(process.env.GITHUB_TOKEN)
       toolkit = {github, context, core, exec, glob, io, getOctokit, require: wrapRequire}
     } else {
-      console.debug(`Global Octokit not enabled.`)
+      console.debug(`Global Octokit: not enabled`)
       toolkit = {context, core, exec, glob, io, getOctokit, require: wrapRequire}
     }
 
