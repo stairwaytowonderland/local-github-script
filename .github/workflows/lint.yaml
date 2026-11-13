@@ -27,7 +27,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - id: set-matrix
-        uses: ./.github/actions/input-to-json
+        uses: $/./.github/actions/input-to-json
         with:
           value: ${{ inputs.node-version }}
 
