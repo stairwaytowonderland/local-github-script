@@ -99,9 +99,9 @@ To run the script directly using npm, you can use the following command:
 GITHUB_TOKEN=$(gh auth token) GITHUB_REPOSITORY=your_github_username/your_repo_name npm start
 ```
 
-## 📖 Usage Notes
+### Usage Notes
 
-### CommonJS vs. ES Modules
+#### CommonJS vs. ES Modules
 
 > [!NOTE]
 >
