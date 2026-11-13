@@ -128,7 +128,7 @@ async function loadModules(config) {
   try {
     let toolkit
 
-    if (config?.['global-octokit']) {
+    if (config?.['global-octokit'] && !process.env.CI) {
       console.debug(`Global Octokit: enabled`)
       console.debug(`Using actor: @${context.actor}`)
       /**
