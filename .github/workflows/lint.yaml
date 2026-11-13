@@ -31,7 +31,7 @@ jobs:
         with:
           value: ${{ inputs.node-version }}
 
-  test:
+  lint:
     runs-on: ubuntu-latest
     needs: parse
     strategy:
@@ -46,8 +46,8 @@ jobs:
           cache: 'npm'
           cache-dependency-path: run-github-script/package-lock.json
       - name: Install dependencies
-        run: npm --prefix run-github-script ci
-      - name: Test sample module
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm --prefix run-github-script start
+        run: npm --prefix run-github-script ci --ignore-scripts
+      - name: Run lint
+        run: npm --prefix run-github-script run check:lint
+      - name: Run prettier
+        run: npm --prefix run-github-script run check:format
