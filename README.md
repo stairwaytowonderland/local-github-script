@@ -2,6 +2,7 @@
 
 A playground to test GitHub Scripts locally.
 
+[![CI](https://github.com/stairwaytowonderland/local-github-script/actions/workflows/ci.yaml/badge.svg)](https://github.com/stairwaytowonderland/local-github-script/actions/workflows/ci.yaml)
 [![Deploy JSDoc to GitHub Pages](https://github.com/stairwaytowonderland/local-github-script/actions/workflows/docs.yaml/badge.svg)](https://github.com/stairwaytowonderland/local-github-script/actions/workflows/docs.yaml)
 
 ## :pushpin: Overview

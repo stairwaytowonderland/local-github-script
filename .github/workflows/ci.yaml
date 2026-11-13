@@ -25,3 +25,8 @@ jobs:
         run: npm --prefix run-github-script run check:lint
       - name: Run prettier
         run: npm --prefix run-github-script run check:format
+
+  test:
+    uses: ./.github/workflows/test.yaml
+    with:
+      node-version: 20,22,24

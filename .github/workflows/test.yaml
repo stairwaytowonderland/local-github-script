@@ -1,0 +1,55 @@
+name: Test
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      node-version:
+        required: true
+        type: choice
+        options:
+          - '20'
+          - '22'
+          - '24'
+  workflow_call:
+    inputs:
+      node-version:
+        required: true
+        type: string
+
+jobs:
+  parse:
+    if: ${{ github.event_name != 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: |
+          # Split by comma, trim whitespace, and format as a JSON array
+          IFS=',' read -r -a array <<< "${{ inputs.node-version }}"
+          # Clean spaces and build JSON array like ["18","20","22"]
+          json_array=$(printf '%s\n' "${array[@]}" | jq -R . | jq -s -c .)
+          echo "matrix=$json_array" >> $GITHUB_OUTPUT
+
+  test:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'workflow_dispatch' || always() }}
+    needs: parse
+    strategy:
+      matrix:
+        node-version: ${{ fromJSON(needs.parse.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: run-github-script/package-lock.json
+      - name: Install dependencies
+        run: npm --prefix run-github-script ci
+      - name: Run tests
+        run: npm --prefix run-github-script start
