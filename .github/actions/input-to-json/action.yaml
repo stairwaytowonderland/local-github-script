@@ -7,9 +7,9 @@ inputs:
     type: string
 
 outputs:
-  value:
+  json:
     description: The JSON formatted value
-    value: ${{ steps.convert.outputs.value }}
+    value: ${{ steps.convert.outputs.json_array }}
 
 runs:
   using: composite
@@ -24,4 +24,4 @@ runs:
         # json_array=$(jq -n --arg v "$NODE_VERSIONS" '[$v]')
 
         # Convert the input string to a JSON array, splitting by whitespace and removing empty entries
-        echo "value=$(jq -R -s -c '[splits("\\s+")] | map(gsub("^\\s+|\\s+$"; "")) | map(select(length > 0))' <<< "$VALUE")" >> $GITHUB_OUTPUT
+        echo "json_array=$(jq -R -s -c '[splits("\\s+")] | map(gsub("^\\s+|\\s+$"; "")) | map(select(length > 0))' <<< "$VALUE")" >> $GITHUB_OUTPUT
