@@ -1,0 +1,53 @@
+name: 🧹 Lint & Format Check
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      node-version:
+        required: true
+        type: choice
+        options:
+          - '20'
+          - '22'
+          - '24'
+          - '26'
+  workflow_call:
+    inputs:
+      node-version:
+        required: true
+        type: string
+
+jobs:
+  parse:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        uses: ./.github/actions/input-to-json
+        with:
+          value: ${{ inputs.node-version }}
+
+  test:
+    runs-on: ubuntu-latest
+    needs: parse
+    strategy:
+      matrix:
+        node-version: ${{ fromJSON(needs.parse.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: run-github-script/package-lock.json
+      - name: Install dependencies
+        run: npm --prefix run-github-script ci
+      - name: Test sample module
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm --prefix run-github-script start

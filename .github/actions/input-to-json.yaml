@@ -1,0 +1,26 @@
+name: Input to JSON
+description: Converts workflow input to JSON format
+
+inputs:
+  value:
+    required: true
+    type: string
+
+outputs:
+  value:
+    description: The JSON formatted value
+    value: ${{ steps.convert.outputs.value }}
+
+runs:
+  using: composite
+  steps:
+    - name: Convert input to JSON
+      id: convert
+      env:
+        VALUE: ${{ inputs.value }}
+      run: |
+        # Convert a single string to a JSON array
+        # json_array=$(jq -n --arg v "$NODE_VERSIONS" '[$v]')
+
+        # Convert the input string to a JSON array, splitting by whitespace and removing empty entries
+        echo "value=$(jq -R -s -c '[splits("\\s+")] | map(gsub("^\\s+|\\s+$"; "")) | map(select(length > 0))' <<< "$VALUE")" >> $GITHUB_OUTPUT

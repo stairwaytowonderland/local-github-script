@@ -32,7 +32,8 @@ jobs:
           IS_WORKFLOW_DISPATCH: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           if [ "$IS_WORKFLOW_DISPATCH" = "true" ]; then
-            json_array=[\"$NODE_VERSIONS\"]
+            # json_array=[\"$NODE_VERSIONS\"]
+            json_array=$(jq -n --arg v "$NODE_VERSIONS" '[$v]')
           else
             # Read raw text, split by any whitespace/newlines, remove empty strings, and compact to JSON
             json_array=$(printf '%s' "$NODE_VERSIONS" | jq -R -s -c '[splits("\\s+")] | map(gsub("^\\s+|\\s+$"; "")) | map(select(length > 0))')
