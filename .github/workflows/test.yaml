@@ -40,7 +40,7 @@ jobs:
     needs: parse
     strategy:
       matrix:
-        node-version: ${{ github.event_name != 'workflow_dispatch' && fromJSON(needs.parse.outputs.matrix) || inputs.node-version }}
+        node-version: ${{ github.event_name != 'workflow_dispatch' && fromJSON(needs.parse.outputs.matrix) || fromJSON(inputs.node-version) }}
     steps:
       - uses: actions/checkout@v7
       - name: Set up Node.js
