@@ -105,7 +105,9 @@ if (process.env.CI) {
  */
 export async function run() {
   try {
-    console.debug(`Mock context: ${JSON.stringify(context, null, 2)}\n`)
+    if (process.env.CI) {
+      console.debug(`GitHub Context: ${JSON.stringify(context, null, 2)}\n`)
+    }
     await loadModules(config)
     process.exit(0)
   } catch (err) {
@@ -119,6 +121,7 @@ export async function run() {
  * @async
  * @param {ModulesYAMLConfig} config - The configuration object containing module details.
  * @returns {Promise<void>} Resolves when all modules are loaded successfully.
+ * @throws {Error} Throws an error if module loading fails.
  * @example
  * ```js
  * await loadModules(config)
@@ -157,6 +160,7 @@ async function loadModules(config) {
     }
   } catch (error) {
     console.error('Error loading configuration or modules:', error)
+    throw error
   }
 }
 
