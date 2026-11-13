@@ -17,10 +17,6 @@ This repository contains various utilities for local GitHub Script testing.
 
 ## :cactus: Project structure
 
-> [!TIP]
->
-> For the complete `.github` folder file structure, see its [`index.md`](./.github/index.md).
-
 <details>
 <summary><b>Project file structure</b> <i>(Click to expand) ...</i></summary><br>
 
