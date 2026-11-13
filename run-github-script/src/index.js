@@ -5,7 +5,8 @@
  *
  * @example
  * ```bash
- * node index.js
+ * # From a shell with Node.js installed
+ * $ node index.js
  * ```
  */
 
