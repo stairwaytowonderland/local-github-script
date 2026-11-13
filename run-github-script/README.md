@@ -8,7 +8,7 @@ Official Repo: [🔗 stairwaytowonderland/local-github-script](https://github.co
 
 ## 📌 Overview
 
-This basic template demonstrates how to run a GitHub Script *(locally)* using a personal access token for authentication.
+This project demonstrates how to run a GitHub Script *(locally)* using a personal access token for authentication.
 
 ## 🚀 Features
 
