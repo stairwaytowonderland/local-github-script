@@ -20,8 +20,8 @@ jobs:
           cache: 'npm'
           cache-dependency-path: run-github-script/package-lock.json
       - name: Install dependencies
-        run: npm ci
+        run: npm --prefix run-github-script ci --ignore-scripts
       - name: Run lint
-        run: npm run check:lint
+        run: npm --prefix run-github-script run check:lint
       - name: Run prettier
-        run: npm run check:format
+        run: npm --prefix run-github-script run check:format
