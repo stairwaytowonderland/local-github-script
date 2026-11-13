@@ -8,7 +8,7 @@ A playground to test GitHub scripts (`@actions/github-script`) locally.
 
 This basic template demonstrates how to run a GitHub Script *(locally)* using a personal access token for authentication.
 
-## :rocket: Features
+## 🚀 Features
 
 - ✅ Run GitHub Scripts locally using a personal access token.
 - ✅ Easy setup with npm dependencies.

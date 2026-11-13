@@ -30,14 +30,13 @@ const defaultConfigFileName = 'config.yaml'
 const configPath = getConfigPath()
 
 /**
- * The parsed YAML configuration object.
- * @module Config
- * @type {Config}
+ * The parsed YAML configuration object (See {@link ModulesYAMLConfig}).
+ * @type {ModulesYAMLConfig}
  */
 const config = YAML.parse(fs.readFileSync(configPath, 'utf8'))
 
 /**
- * The dotenv configuration options. (See {@link DotEnvOptions})
+ * The dotenv configuration options (See {@link DotEnvOptions}).
  * @type {DotEnvOptions}
  */
 const dotenvConfig = {override: true, debug: true}
@@ -116,7 +115,7 @@ export default config
  * Options for the main configuration object.
  * @category Configuration
  * @global
- * @typedef {Object} Config
+ * @typedef {Object} ModulesYAMLConfig
  * @property {string} name - The name of the configuration.
  * @property {string} description - The description of the configuration.
  * @property {string} module-path - The path to the module file.

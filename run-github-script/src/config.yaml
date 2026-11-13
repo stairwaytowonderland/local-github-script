@@ -18,6 +18,7 @@ modules:
     step-summary: true
     env:
       EXAMPLE_ENV_VAR: example_value
+      GITHUB_TOKEN: example_token
     inputs:
       example_input: example_value
 

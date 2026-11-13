@@ -3,10 +3,12 @@
  * Handles dynamic loading and execution of custom modules based on configuration.
  *
  * @module ModuleLoader
+ * @category Module Loading
  */
 
 /**
  * @external Octokit
+ * @global
  * @see https://github.com/octokit/core.js/blob/main/src/index.ts
  */
 
@@ -16,8 +18,6 @@ import {realpathSync} from 'node:fs'
 import {pathToFileURL} from 'node:url'
 import {initStepSummary} from './step-summary.js'
 import {kebabToCamel} from './utils.js'
-
-const __dirname = import.meta.dirname
 
 /**
  * Represents a dynamically loaded module with its configuration and environment.
@@ -42,28 +42,7 @@ export default class ModuleLoader {
 	 */
 
 	/**
-	 * Loads custom modules based on the provided configuration.
-	 * @async
-	 * @param {GitHubToolkit} toolkit - The GitHub Actions toolkit.
-	 * @param {Config} config - The configuration object containing module details.
-	 * @returns {Promise<void>} Resolves when all modules are loaded successfully.
-	 */
-	static async load(toolkit, config) {
-		try {
-			console.log(`Loading custom modules for: ${config.name}\n`)
-
-			for (const m of config.modules) {
-				const absoluteModulePath = path.resolve(__dirname, config['module-path'], m.path)
-				const module = new ModuleLoader(m, absoluteModulePath)
-				await module.loadModule(toolkit)
-			}
-		} catch (error) {
-			console.error('Error loading configuration or modules:', error)
-		}
-	}
-
-	/**
-	 * Constructs a new Module instance.
+	 * Constructs a new ModuleLoader instance.
 	 *
 	 * @param {Module} moduleConfig - The configuration object for the module.
 	 * @param {string} modulePath - The absolute path to the module file.
@@ -124,7 +103,7 @@ export default class ModuleLoader {
 	}
 
 	/**
-	 * The authenticated GitHub client.
+	 * The authenticated {@link Octokit} client.
 	 * @type {Octokit|null}
 	 */
 	get github() {
@@ -138,8 +117,13 @@ export default class ModuleLoader {
 	 * @async
 	 * @param {GitHubToolkit} toolkit - The GitHub Actions toolkit.
 	 * @returns {Promise<void>}
+	 * @example
+	 * ```js
+	 * const module = new ModuleLoader(moduleConfig, modulePath)
+	 * await module.load(toolkit)
+	 * ```
 	 */
-	async loadModule(toolkit) {
+	async load(toolkit) {
 		const workspacePath = this.workspacePath + '/'
 
 		console.debug(
@@ -207,27 +191,8 @@ export default class ModuleLoader {
 		if (typeof run === 'function') {
 			initStepSummary.call(this, this.summaryPath, this.stepSummaryEnabled)
 
-			/**
-			 * Initialized GitHub client for the module.
-			 *
-			 * Falls back to the existing client if already initialized.
-			 */
-			const github = toolkit?.github ?? this.github
-
 			await run
-				.apply(
-					module,
-					Object.values({
-						github,
-						context: toolkit.context,
-						core: toolkit.core,
-						exec: toolkit.exec,
-						glob: toolkit.glob,
-						io: toolkit.io,
-						getOctokit: toolkit.getOctokit,
-						require: toolkit.require,
-					}),
-				)
+				.apply(module, Object.values(toolkit?.github ? toolkit : {github: this.github, ...toolkit}))
 				.then(result =>
 					console.log(
 						`\n\x1b[1;92m"${module.name}" succeeded results ...\x1b[0m\n"${module.id || module.name}":`,

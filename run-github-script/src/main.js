@@ -1,14 +1,14 @@
 /**
  * @file Main entry point for the GitHub Script runner.
  * It sets up the environment, mocks the GitHub context, instantiates Octokit, and loads the necessary modules.
+ *
+ * @module main
  */
 
 /**
- * Bootstrap environment variables immediately.
- *
- * ! This must be done before importing any other modules to ensure environment variables are available.
+ * Node.js path module for handling and transforming file paths.
  */
-import config from './config.js'
+import * as path from 'node:path'
 
 /**
  * Import GitHub `@actions/` modules.
@@ -20,6 +20,13 @@ import * as glob from '@actions/glob'
 import * as io from '@actions/io'
 
 /**
+ * Bootstrap environment variables immediately.
+ *
+ * ! This must be done before importing any other custom modules to ensure environment variables are available.
+ */
+import config from './config.js'
+
+/**
  * Import the wrapped require function for module resolution.
  */
 import {wrapRequire} from './wrap-require.js'
@@ -28,6 +35,8 @@ import {wrapRequire} from './wrap-require.js'
  * Import the custom module loader.
  */
 import modules from './modules.js'
+
+const __dirname = import.meta.dirname
 
 let owner, repo
 
@@ -76,22 +85,39 @@ const context = {
 	},
 }
 
-// load({ ...mocks(), core }, config)
-// 	.then(() => {
-// 		process.exit(0)
-// 	})
-// 	.catch((err) => {
-// 		core.setFailed(err.message)
-// 		process.exit(1)
-// 	})
-
 /**
  * Runs the main GitHub Script logic with mocked context and modules.
  * Exits the process with code 0 on success and 1 on failure.
  * @async
  * @returns {Promise<void>} Resolves when the script completes successfully.
+ * @example
+ * ```js
+ * import {run} from './main.js'
+ * run()
+ * ```
  */
 export async function run() {
+	try {
+		console.debug(`Mock context: ${JSON.stringify(context, null, 2)}\n`)
+		await loadModules(config)
+		process.exit(0)
+	} catch (err) {
+		core.setFailed(err.message)
+		process.exit(1)
+	}
+}
+
+/**
+ * Loads custom modules based on the provided configuration.
+ * @async
+ * @param {ModulesYAMLConfig} config - The configuration object containing module details.
+ * @returns {Promise<void>} Resolves when all modules are loaded successfully.
+ * @example
+ * ```js
+ * await loadModules(config)
+ * ```
+ */
+async function loadModules(config) {
 	try {
 		let toolkit
 
@@ -109,12 +135,17 @@ export async function run() {
 			toolkit = {context, core, exec, glob, io, getOctokit, require: wrapRequire}
 		}
 
-		console.debug(`Mock context: ${JSON.stringify(context, null, 2)}\n`)
-		await modules.load(toolkit, config)
-		process.exit(0)
-	} catch (err) {
-		core.setFailed(err.message)
-		process.exit(1)
+		console.log(`Loading custom modules for: ${config.name}\n`)
+
+		for (const m of config.modules) {
+			console.debug(`Loading module: ${m.name}`)
+			console.debug(`Module path: ${m.path}`)
+			const absoluteModulePath = path.resolve(__dirname, config['module-path'], m.path)
+			const module = new modules(m, absoluteModulePath)
+			await module.load(toolkit)
+		}
+	} catch (error) {
+		console.error('Error loading configuration or modules:', error)
 	}
 }
 
@@ -122,8 +153,8 @@ export async function run() {
  * Represents the GitHub Actions context object.
  *
  * Also see: {@link https://github.com/actions/toolkit/blob/main/packages/github/src/context.ts}
- * @category GitHub Context
  * @global
+ * @category GitHub Context
  * @typedef {Object} GitHubContext
  * @property {WebhookPayload} payload - The webhook payload.
  * @property {string} eventName - The name of the webhook event that triggered the workflow.
@@ -142,6 +173,7 @@ export async function run() {
 
 /**
  * Represents the context of an issue within the GitHub Actions workflow.
+ * @global
  * @category GitHub Context
  * @typedef {Object} IssueContext
  * @property {number} number - The issue number.
@@ -151,6 +183,7 @@ export async function run() {
 
 /**
  * Represents the context of a repository within the GitHub Actions workflow.
+ * @global
  * @category GitHub Context
  * @typedef {Object} RepositoryContext
  * @property {string} owner - The repository owner.
@@ -161,6 +194,7 @@ export async function run() {
  * Represents the payload of a GitHub webhook event.
  *
  * Also see: {@link https://github.com/actions/toolkit/blob/main/packages/github/src/interfaces.ts}
+ * @global
  * @category GitHub Context
  * @typedef {Object} WebhookPayload
  * @property {PayloadRepository} repository - The repository associated with the webhook event.
@@ -168,6 +202,7 @@ export async function run() {
 
 /**
  * Represents the context of a repository within the GitHub Actions workflow.
+ * @global
  * @category GitHub Context
  * @typedef {Object} PayloadRepository
  * @property {string} [full_name] - The full name of the repository (e.g., "owner/repo").
@@ -178,6 +213,7 @@ export async function run() {
 
 /**
  * Represents the owner of a repository within the GitHub Actions workflow.
+ * @global
  * @category GitHub Context
  * @typedef {Object} PayloadRepositoryOwner
  * @property {string} login - The username of the repository owner.
