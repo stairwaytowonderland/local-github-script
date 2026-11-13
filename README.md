@@ -29,9 +29,13 @@ This repository contains various utilities for local GitHub Script testing.
 ```none
 ./
 ├── .github/
+│   ├── actions/
+│   │   └── input-to-json/
 │   ├── workflows/
 │   │   ├── ci.yaml
 │   │   ├── docs.yaml
+│   │   ├── lint.yaml
+│   │   ├── stargazers.yaml
 │   │   └── test.yaml
 │   ├── CODEOWNERS
 │   └── dependabot.yml
@@ -48,7 +52,7 @@ This repository contains various utilities for local GitHub Script testing.
 │   │   ├── modules/
 │   │   ├── .editorconfig
 │   │   ├── config.js
-│   │   ├── config.yaml
+│   │   ├── config.sample.yaml
 │   │   ├── index.js
 │   │   ├── main.js
 │   │   ├── modules.js
