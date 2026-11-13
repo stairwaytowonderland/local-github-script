@@ -4,6 +4,8 @@
 
 A playground to test GitHub scripts (`@actions/github-script`) locally.
 
+Official Repo: [stairwaytowonderland/local-github-script](https://github.com/stairwaytowonderland/local-github-script)
+
 ## 📌 Overview
 
 This basic template demonstrates how to run a GitHub Script *(locally)* using a personal access token for authentication.
