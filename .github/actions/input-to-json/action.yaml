@@ -16,6 +16,7 @@ runs:
   steps:
     - name: Convert input to JSON
       id: convert
+      shell: bash
       env:
         VALUE: ${{ inputs.value }}
       run: |
