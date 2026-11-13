@@ -29,17 +29,15 @@ jobs:
       - id: set-matrix
         env:
           NODE_VERSIONS: ${{ inputs.node-version }}
+          IS_WORKFLOW_DISPATCH: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
-          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
-            node_versions="$NODE_VERSIONS"
-            echo "matrix=[\"$node_versions\"]" >> $GITHUB_OUTPUT
+          if [ "$IS_WORKFLOW_DISPATCH" = "true" ]; then
+            json_array=[\"$NODE_VERSIONS\"]
           else
-            # Split by comma, trim whitespace, and format as a JSON array
-            IFS=',' read -r -a array <<< "$NODE_VERSIONS"
-            # Clean spaces and build JSON array like ["20","22","24"]
-            json_array=$(printf '%s\n' "${array[@]}" | jq -R . | jq -s -c .)
-            echo "matrix=$json_array" >> $GITHUB_OUTPUT
+            # Read raw text, split by any whitespace/newlines, remove empty strings, and compact to JSON
+            json_array=$(printf '%s' "$NODE_VERSIONS" | jq -R -s -c '[splits("\\s+")] | map(gsub("^\\s+|\\s+$"; "")) | map(select(length > 0))')
           fi
+          echo "matrix=$json_array" >> $GITHUB_OUTPUT
 
   test:
     runs-on: ubuntu-latest
