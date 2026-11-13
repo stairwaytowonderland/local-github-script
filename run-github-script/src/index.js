@@ -2,6 +2,11 @@
  * @file Barrel file for the GitHub Action.
  *
  * This file simply imports and runs the main logic of the action.
+ *
+ * @example
+ * ```bash
+ * node index.js
+ * ```
  */
 
 import {run} from './main.js'
