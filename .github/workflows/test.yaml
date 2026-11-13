@@ -57,7 +57,7 @@ jobs:
           cache-dependency-path: run-github-script/package-lock.json
       - name: Install dependencies
         run: npm --prefix run-github-script ci
-      - name: Run tests
+      - name: Test sample module
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm --prefix run-github-script start
