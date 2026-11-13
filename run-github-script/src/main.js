@@ -129,24 +129,32 @@ export async function run() {
  */
 async function loadModules(config) {
   try {
-    let toolkit
+    const isCI = Boolean(process.env.CI)
+    const initOctokit = isCI || Boolean(config?.['global-octokit'])
+    const token = process.env.GITHUB_TOKEN
 
-    if (config?.['global-octokit'] && !process.env.CI) {
-      console.debug(`Global Octokit: enabled`)
-      console.debug(`Using actor: @${context.actor}`)
-      /**
-       * Instantiate Octokit using a local Personal Access Token
-       *
-       * Ensure the GITHUB_TOKEN environment variable is set for local testing.
-       */
-      const github = getOctokit(process.env.GITHUB_TOKEN)
-      toolkit = {github, context, core, exec, glob, io, getOctokit, require: wrapRequire}
-    } else if (!process.env.CI) {
-      console.debug(`Global Octokit: not enabled`)
-      toolkit = {context, core, exec, glob, io, getOctokit, require: wrapRequire}
+    if (initOctokit && !token) {
+      throw new Error('GITHUB_TOKEN environment variable is required to initialize Octokit.')
+    }
+
+    if (initOctokit) {
+      console.debug(`Initializing Octokit (CI: ${isCI}, Actor: @${context.actor})`)
     } else {
-      console.debug(`Running in CI`)
-      toolkit = {context, core, exec, glob, io, getOctokit, require: wrapRequire}
+      console.debug('Global Octokit: not enabled')
+    }
+
+    /**
+     * 'github' needs to be the first key when present, so the .apply() works (see ModuleLoader::load()).
+     */
+    const toolkit = {
+      ...(initOctokit ? {github: getOctokit(token)} : {}),
+      context,
+      core,
+      exec,
+      glob,
+      io,
+      getOctokit,
+      require: wrapRequire,
     }
 
     console.log(`Loading custom modules for: ${config.name}\n`)
@@ -154,6 +162,7 @@ async function loadModules(config) {
     for (const m of config.modules) {
       console.debug(`Loading module: ${m.name}`)
       console.debug(`Module path: ${m.path}`)
+
       const absoluteModulePath = path.resolve(__dirname, config['module-path'], m.path)
       const module = new modules(m, absoluteModulePath)
       await module.load(toolkit)

@@ -39,7 +39,7 @@ const config = YAML.parse(fs.readFileSync(configPath, 'utf8'))
  * The dotenv configuration options (See {@link DotEnvOptions}).
  * @type {DotEnvOptions}
  */
-const dotenvConfig = {override: true, debug: true}
+const dotenvConfig = {override: true, debug: true, encoding: 'utf8'}
 
 if (config?.['env-file']) {
   const envPath = path.resolve(config?.['env-file'])
