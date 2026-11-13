@@ -30,7 +30,9 @@ This repository contains various utilities for local GitHub Script testing.
 ./
 ├── .github/
 │   ├── workflows/
-│   │   └── docs.yaml
+│   │   ├── ci.yaml
+│   │   ├── docs.yaml
+│   │   └── test.yaml
 │   ├── CODEOWNERS
 │   └── dependabot.yml
 ├── generate-app-token/
@@ -44,6 +46,7 @@ This repository contains various utilities for local GitHub Script testing.
 ├── run-github-script/
 │   ├── src/
 │   │   ├── modules/
+│   │   ├── .editorconfig
 │   │   ├── config.js
 │   │   ├── config.yaml
 │   │   ├── index.js
@@ -54,6 +57,7 @@ This repository contains various utilities for local GitHub Script testing.
 │   │   └── wrap-require.js
 │   ├── .env.sample
 │   ├── .prettierignore
+│   ├── eslint.config.js
 │   ├── jsdoc.json
 │   ├── jsdoc.local.json
 │   ├── main.sh
@@ -65,6 +69,7 @@ This repository contains various utilities for local GitHub Script testing.
 ├── .gitignore
 ├── .markdownlint.json
 ├── .pre-commit-config.yaml
+├── .prettierrc
 └── README.md
 ```
 

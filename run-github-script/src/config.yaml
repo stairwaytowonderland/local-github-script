@@ -22,34 +22,34 @@ modules:
     inputs:
       example_input: example_value
 
-  - name: API Metadata
-    description: Fetch metadata about the GitHub API.
-    id: api-metadata
-    path: api-metadata.js
+  # - name: API Metadata
+  #   description: Fetch metadata about the GitHub API.
+  #   id: api-metadata
+  #   path: api-metadata.js
 
-  - name: User Metadata
-    description: Fetch metadata about the authenticated user.
-    id: user-metadata
-    path: user-metadata.js
+  # - name: User Metadata
+  #   description: Fetch metadata about the authenticated user.
+  #   id: user-metadata
+  #   path: user-metadata.js
 
-  - name: List Repositories
-    description: List all repositories for the authenticated user.
-    id: list-repositories
-    path: list-repos.js
+  # - name: List Repositories
+  #   description: List all repositories for the authenticated user.
+  #   id: list-repositories
+  #   path: list-repos.js
 
-  - name: Changed Files
-    description: Determine which files have changed in the current GitHub event context.
-    id: changed-files
-    path: changed-files.js
-    step-summary: true
-    inputs:
-      show-summary: true
-      only-specified-paths: false
-    env:
-      # BRANCH_NAME: main
-      INPUT_IGNORE-EVENTS: ''
-      INPUT_IGNORE-AUTHORS: |
-        semantic-release-bot
-        github-actions[bot]
-      INPUT_SPECIFIED-PATHS: |
-        **/src/**
+  # - name: Changed Files
+  #   description: Determine which files have changed in the current GitHub event context.
+  #   id: changed-files
+  #   path: changed-files.js
+  #   step-summary: true
+  #   inputs:
+  #     show-summary: true
+  #     only-specified-paths: false
+  #   env:
+  #     # BRANCH_NAME: main
+  #     INPUT_IGNORE-EVENTS: ''
+  #     INPUT_IGNORE-AUTHORS: |
+  #       semantic-release-bot
+  #       github-actions[bot]
+  #     INPUT_SPECIFIED-PATHS: |
+  #       **/src/**

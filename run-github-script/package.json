@@ -27,7 +27,7 @@
 	},
 	"prettier": "@github/prettier-config",
 	"scripts": {
-		"start": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} node src/index.js",
+		"start": "if [ \"$CI\" != \"true\" ]; then export GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)}; fi && node src/index.js",
 		"build:docs": "npm run docs",
 		"bundle": "npm run check && npm run build:docs",
 		"test": "echo 'No tests specified.'",
