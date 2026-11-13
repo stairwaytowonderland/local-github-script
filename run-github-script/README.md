@@ -59,16 +59,19 @@ This basic template demonstrates how to run a GitHub Script *(locally)* using a 
 ## ⚙️ Setup
 
 1. Clone the repository containing the GitHub script.
-2. Navigate to the repository directory.
-3. Install the necessary dependencies using npm:
+1. Navigate to the repository directory.
+1. Install the necessary dependencies using npm:
 
-```bash
-# Navigate to the run-github-script in the local-github-script directory (or wherever you cloned the repository)
-cd local-github-script/run-github-script
+    ```bash
+    # Navigate to the run-github-script in the local-github-script directory (or wherever you cloned the repository)
+    cd local-github-script/run-github-script
 
-# Install the necessary npm dependencies
-npm install
-```
+    # Install the necessary npm dependencies
+    npm install
+    ```
+
+1. Copy `config.sample.yaml` to `config.yaml` and customize it with your own modules and options.
+1. Optionally copy `.env.sample` to `.env` and customize it with your own environment variables.
 
 ## 💻 Usage
 
@@ -96,7 +99,15 @@ GITHUB_REPOSITORY=your_github_username/your_repo_name sh ./main.sh
 To run the script directly using npm, you can use the following command:
 
 ```bash
-GITHUB_TOKEN=$(gh auth token) GITHUB_REPOSITORY=your_github_username/your_repo_name npm start
+GITHUB_TOKEN=$(gh auth token) GITHUB_REPOSITORY=your_github_username/your_repo_name npm start -- --config config.yaml
+```
+
+### Running the `js` Script Directly *(not recommended)*
+
+To run a JavaScript script directly, you can use Node.js with the appropriate environment variables set. For example:
+
+```bash
+GITHUB_TOKEN=$(gh auth token) npx dotenv-cli -- node ./src/index.js // Config can be specified with `--config config.yaml`
 ```
 
 ### Usage Notes

@@ -19,7 +19,7 @@ const __dirname = import.meta.dirname
  * The default yaml configuration file name.
  * @constant {string} defaultConfigFileName - The default configuration file name.
  */
-const defaultConfigFileName = 'config.yaml'
+const defaultConfigFileName = 'config.sample.yaml'
 
 // Read and parse YAML synchronously during initial module compilation/load
 

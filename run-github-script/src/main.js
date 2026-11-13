@@ -133,7 +133,7 @@ async function loadModules(config) {
   try {
     const isCI = Boolean(process.env.CI)
     const initOctokit = isCI || Boolean(config?.['global-octokit'])
-    const token = process.env.GITHUB_TOKEN
+    const token = process.env.GITHUB_TOKEN.trim()
 
     if (initOctokit && !token) {
       throw new Error('GITHUB_TOKEN environment variable is required to initialize Octokit.')

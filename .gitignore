@@ -89,6 +89,8 @@ logs
 *.log
 out/
 
+config.yaml
+
 **/src/**/*.md
 
 **/.prettierrc
