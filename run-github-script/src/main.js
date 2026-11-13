@@ -55,7 +55,9 @@ if (!owner || !repo) {
 }
 
 /**
- * Represents the mocked GitHub [context]{@link GitHubContext} for local testing.
+ * Represents the GitHub [context]{@link GitHubContext}.
+ *
+ * This context is either derived from the actual GitHub Actions environment or mocked for local development.
  * @type {GitHubContext}
  */
 let context
@@ -105,7 +107,7 @@ if (process.env.CI) {
  */
 export async function run() {
   try {
-    if (process.env.CI) {
+    if (!process.env.CI) {
       console.debug(`GitHub Context: ${JSON.stringify(context, null, 2)}\n`)
     }
     await loadModules(config)
