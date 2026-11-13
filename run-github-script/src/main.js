@@ -138,8 +138,11 @@ async function loadModules(config) {
        */
       const github = getOctokit(process.env.GITHUB_TOKEN)
       toolkit = {github, context, core, exec, glob, io, getOctokit, require: wrapRequire}
-    } else {
+    } else if (!process.env.CI) {
       console.debug(`Global Octokit: not enabled`)
+      toolkit = {context, core, exec, glob, io, getOctokit, require: wrapRequire}
+    } else {
+      console.debug(`Running in CI`)
       toolkit = {context, core, exec, glob, io, getOctokit, require: wrapRequire}
     }
 
