@@ -29,5 +29,5 @@ jobs:
   test:
     uses: ./.github/workflows/test.yaml
     with:
-      node-version: 20,22,24
+      node-version: 24
     secrets: inherit
