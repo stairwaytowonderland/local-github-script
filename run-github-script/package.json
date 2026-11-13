@@ -14,10 +14,16 @@
 		"yaml": "^2.9.0"
 	},
 	"devDependencies": {
+		"@eslint/js": "^10.0.1",
 		"@github/prettier-config": "^0.0.6",
 		"clean-jsdoc-theme": "^5.2.1",
 		"concurrently": "^10.0.6",
-		"jsdoc": "^4.0.5"
+		"eslint": "^10.14.0",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-prettier": "^5.5.7",
+		"globals": "^17.14.0",
+		"jsdoc": "^4.0.5",
+		"prettier": "^3.10.1"
 	},
 	"prettier": "@github/prettier-config",
 	"scripts": {
@@ -27,8 +33,10 @@
 		"test": "echo 'No tests specified.'",
 		"check": "printf '\\033[1;32m%s\\033[0m\n' 'Running checks...' && concurrently -n check: -g npm:check:*",
 		"check:format": "npx prettier --check .",
+		"check:lint": "npx eslint .",
 		"fix": "printf '\\033[1;32m%s\\033[0m\n' 'Formatting and linting...' && concurrently -n fix: -g npm:fix:*",
 		"fix:format": "npx prettier --write .",
+		"fix:lint": "npx eslint --fix .",
 		"clean": "npm run clean:modules && npm run clean:dist",
 		"clean:modules": "printf '\\033[1;32m%s\\033[0m\n' 'Cleaning node_modules...' && rm -rf node_modules",
 		"clean:dist": "printf '\\033[1;32m%s\\033[0m\n' 'Cleaning dist directory...' && rm -rf dist",
@@ -40,10 +48,10 @@
 		"docs:local": "npm run predocs && printf '\\033[1;32m%s\\033[0m\n' 'Generating local documentation...' && jsdoc -c jsdoc.local.json",
 		"package-lock:install": "npm install --package-lock-only --ignore-scripts",
 		"package-lock:fix": "node -e \"const fs = require('fs'); const f = 'package-lock.json'; const c = fs.readFileSync(f, 'utf8').trimEnd(); fs.writeFileSync(f, c + '\\n');\"",
-		"prettierrc:generate": "node -e \"import('@github/prettier-config').then(m => console.log(JSON.stringify(m.default || m, null, 2)))\" | tee .prettierrc",
+		"prettierrc:generate": "if [ ! -f .prettierrc ]; then node -e \"import('@github/prettier-config').then(m => console.log(JSON.stringify(m.default || m, null, 2)))\" | tee .prettierrc; fi",
 		"install:clean": "npm run clean && rm -f package-lock.json && npm run package-lock:install && npm install",
 		"preinstall": "printf '\\033[1;32m%s\\033[0m\n' 'Starting installation...'",
-		"postinstall": "npm run package-lock:fix && printf '\\033[1;32m%s\\033[0m\n' 'Installation complete.'",
+		"postinstall": "npm run package-lock:fix && npm run prettierrc:generate && printf '\\033[1;32m%s\\033[0m\n' 'Installation complete.'",
 		"prep": "npm run prettierrc:generate && npm run fix && npm test",
 		"all": "npm run install:clean && npm run prep && npm run bundle"
 	}

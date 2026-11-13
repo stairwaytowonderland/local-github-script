@@ -29,30 +29,30 @@
 console.debug(`\x1b[36mRunning module \x1b[1m${import.meta.filename.split('/').pop()}\x1b[0;36m...\x1b[0m`)
 
 export default async (github, context, core, exec, glob, io, getOctokit, require) => {
-	const {owner, repo} = context.repo
-	core.info(`Repository:\n  Owner: ${owner}\n  Repo: ${repo}`)
+  const {owner, repo} = context.repo
+  core.info(`Repository:\n  Owner: ${owner}\n  Repo: ${repo}`)
 
-	const workspace = process.env.GITHUB_WORKSPACE
-	core.info(`Workspace: ${workspace}`)
+  const workspace = process.env.GITHUB_WORKSPACE
+  core.info(`Workspace: ${workspace}`)
 
-	const count = await require('./src/modules/_require-test.cjs')({github, context, core})
-	core.info(`Total issues: ${count}`)
+  const count = await require('./src/modules/_require-test.cjs')({github, context, core})
+  core.info(`Total issues: ${count}`)
 
-	const summary = `\
+  const summary = `\
 **Repository**: ${owner}/${repo}\n
 **Workspace**: ${workspace}\n
 **Total issues**: ${count}`
 
-	core.summary.addRaw(summary)
-	await core.summary.write({overwrite: true})
+  core.summary.addRaw(summary)
+  await core.summary.write({overwrite: true})
 
-	// Example API call
-	// const { data: pulls } = await github.rest.pulls.list({
-	// 	owner,
-	// 	repo,
-	// 	state: 'open',
-	// })
-	// return pulls
+  // Example API call
+  // const { data: pulls } = await github.rest.pulls.list({
+  // 	owner,
+  // 	repo,
+  // 	state: 'open',
+  // })
+  // return pulls
 
-	return 'Hello, world!'
+  return 'Hello, world!'
 }

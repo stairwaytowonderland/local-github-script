@@ -41,17 +41,17 @@ const __dirname = import.meta.dirname
 let owner, repo
 
 if (process.env.GITHUB_REPOSITORY) {
-	;[owner, repo] = process.env.GITHUB_REPOSITORY.split('/')
+  ;[owner, repo] = process.env.GITHUB_REPOSITORY.split('/')
 } else if (process.env.REPO_OWNER && process.env.REPO_NAME) {
-	owner = process.env.REPO_OWNER
-	repo = process.env.REPO_NAME
+  owner = process.env.REPO_OWNER
+  repo = process.env.REPO_NAME
 }
 
 if (!owner || !repo) {
-	core.setFailed(
-		`Either \x1b[1m'GITHUB_REPOSITORY'\x1b[0m \x1b[2m(owner/repo)\x1b[0m or \x1b[1m'REPO_OWNER'\x1b[0m + \x1b[1m'REPO_NAME'\x1b[0m variables must be set.`,
-	)
-	process.exit(1)
+  core.setFailed(
+    `Either \x1b[1m'GITHUB_REPOSITORY'\x1b[0m \x1b[2m(owner/repo)\x1b[0m or \x1b[1m'REPO_OWNER'\x1b[0m + \x1b[1m'REPO_NAME'\x1b[0m variables must be set.`,
+  )
+  process.exit(1)
 }
 
 /**
@@ -59,30 +59,30 @@ if (!owner || !repo) {
  * @type {GitHubContext}
  */
 const context = {
-	...githubContext,
-	actor: process.env.GITHUB_ACTOR || 'localhost',
-	eventName: githubContext.eventName || 'push',
-	ref: githubContext.ref || 'refs/heads/main',
-	sha: githubContext.sha || 'HEAD',
-	workflow: githubContext.workflow || 'mock-workflow',
-	action: githubContext.action || 'mock-action',
-	job: githubContext.job || 'mock-job',
-	runAttempt: githubContext.runAttempt || 1,
-	runId: githubContext.runId || 1,
-	runNumber: githubContext.runNumber || 1,
-	issue: githubContext.issue?.number ? {...githubContext.issue} : {}, // { owner, repo, number: 1 },
-	repo: {...githubContext.repo},
-	payload: {
-		repository: {
-			owner: {
-				login: owner,
-				name: owner,
-			},
-			name: repo,
-			full_name: `${owner}/${repo}`,
-			html_url: `https://github.com/${owner}/${repo}`,
-		},
-	},
+  ...githubContext,
+  actor: process.env.GITHUB_ACTOR || 'localhost',
+  eventName: githubContext.eventName || 'push',
+  ref: githubContext.ref || 'refs/heads/main',
+  sha: githubContext.sha || 'HEAD',
+  workflow: githubContext.workflow || 'mock-workflow',
+  action: githubContext.action || 'mock-action',
+  job: githubContext.job || 'mock-job',
+  runAttempt: githubContext.runAttempt || 1,
+  runId: githubContext.runId || 1,
+  runNumber: githubContext.runNumber || 1,
+  issue: githubContext.issue?.number ? {...githubContext.issue} : {}, // { owner, repo, number: 1 },
+  repo: {...githubContext.repo},
+  payload: {
+    repository: {
+      owner: {
+        login: owner,
+        name: owner,
+      },
+      name: repo,
+      full_name: `${owner}/${repo}`,
+      html_url: `https://github.com/${owner}/${repo}`,
+    },
+  },
 }
 
 /**
@@ -97,14 +97,14 @@ const context = {
  * ```
  */
 export async function run() {
-	try {
-		console.debug(`Mock context: ${JSON.stringify(context, null, 2)}\n`)
-		await loadModules(config)
-		process.exit(0)
-	} catch (err) {
-		core.setFailed(err.message)
-		process.exit(1)
-	}
+  try {
+    console.debug(`Mock context: ${JSON.stringify(context, null, 2)}\n`)
+    await loadModules(config)
+    process.exit(0)
+  } catch (err) {
+    core.setFailed(err.message)
+    process.exit(1)
+  }
 }
 
 /**
@@ -118,35 +118,35 @@ export async function run() {
  * ```
  */
 async function loadModules(config) {
-	try {
-		let toolkit
+  try {
+    let toolkit
 
-		if (config?.['global-octokit']) {
-			console.debug(`Global Octokit enabled.`)
-			/**
-			 * Instantiate Octokit using a local Personal Access Token
-			 *
-			 * Ensure the GITHUB_TOKEN environment variable is set for local testing.
-			 */
-			const github = getOctokit(process.env.GITHUB_TOKEN)
-			toolkit = {github, context, core, exec, glob, io, getOctokit, require: wrapRequire}
-		} else {
-			console.debug(`Global Octokit not enabled.`)
-			toolkit = {context, core, exec, glob, io, getOctokit, require: wrapRequire}
-		}
+    if (config?.['global-octokit']) {
+      console.debug(`Global Octokit enabled.`)
+      /**
+       * Instantiate Octokit using a local Personal Access Token
+       *
+       * Ensure the GITHUB_TOKEN environment variable is set for local testing.
+       */
+      const github = getOctokit(process.env.GITHUB_TOKEN)
+      toolkit = {github, context, core, exec, glob, io, getOctokit, require: wrapRequire}
+    } else {
+      console.debug(`Global Octokit not enabled.`)
+      toolkit = {context, core, exec, glob, io, getOctokit, require: wrapRequire}
+    }
 
-		console.log(`Loading custom modules for: ${config.name}\n`)
+    console.log(`Loading custom modules for: ${config.name}\n`)
 
-		for (const m of config.modules) {
-			console.debug(`Loading module: ${m.name}`)
-			console.debug(`Module path: ${m.path}`)
-			const absoluteModulePath = path.resolve(__dirname, config['module-path'], m.path)
-			const module = new modules(m, absoluteModulePath)
-			await module.load(toolkit)
-		}
-	} catch (error) {
-		console.error('Error loading configuration or modules:', error)
-	}
+    for (const m of config.modules) {
+      console.debug(`Loading module: ${m.name}`)
+      console.debug(`Module path: ${m.path}`)
+      const absoluteModulePath = path.resolve(__dirname, config['module-path'], m.path)
+      const module = new modules(m, absoluteModulePath)
+      await module.load(toolkit)
+    }
+  } catch (error) {
+    console.error('Error loading configuration or modules:', error)
+  }
 }
 
 /**

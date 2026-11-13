@@ -49,7 +49,12 @@ This basic template demonstrates how to run a GitHub Script *(locally)* using a 
 - `@github/prettier-config`: Prettier configuration provided by GitHub for consistent code style.
 - `clean-jsdoc-theme`: JSDoc theme for generating clean and readable documentation.
 - `concurrently`: Module for running multiple commands concurrently in the terminal.
+- `eslint`: Linter for identifying and fixing problems in JavaScript code.
+- `eslint-config-prettier`: Disables ESLint rules that conflict with Prettier.
+- `eslint-plugin-prettier`: Runs Prettier as an ESLint rule and reports differences as ESLint issues.
+- `globals`: Provides a set of predefined global variables for different environments like Node.js and browser.
 - `jsdoc`: Tool for generating documentation from JavaScript source code comments.
+- `prettier`: Code formatter for maintaining consistent code style.
 
 ## ⚙️ Setup
 

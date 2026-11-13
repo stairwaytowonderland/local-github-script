@@ -42,17 +42,17 @@ const config = YAML.parse(fs.readFileSync(configPath, 'utf8'))
 const dotenvConfig = {override: true, debug: true}
 
 if (config?.['env-file']) {
-	const envPath = path.resolve(config?.['env-file'])
-	if (fs.existsSync(envPath)) {
-		console.log(`Loading environment variables from: ${envPath}`)
-		dotenvExpand.expand(dotenv.config({path: envPath, ...dotenvConfig}))
-	} else {
-		console.warn(`Environment file "${envPath}" not found. Falling back to default environment variables.`)
-		dotenvExpand.expand(dotenv.config(dotenvConfig))
-	}
+  const envPath = path.resolve(config?.['env-file'])
+  if (fs.existsSync(envPath)) {
+    console.log(`Loading environment variables from: ${envPath}`)
+    dotenvExpand.expand(dotenv.config({path: envPath, ...dotenvConfig}))
+  } else {
+    console.warn(`Environment file "${envPath}" not found. Falling back to default environment variables.`)
+    dotenvExpand.expand(dotenv.config(dotenvConfig))
+  }
 } else {
-	console.warn(`No environment file specified. Loading default environment variables.`)
-	dotenvExpand.expand(dotenv.config(dotenvConfig))
+  console.warn(`No environment file specified. Loading default environment variables.`)
+  dotenvExpand.expand(dotenv.config(dotenvConfig))
 }
 
 /**
@@ -60,11 +60,11 @@ if (config?.['env-file']) {
  * @returns {string} The configuration file path.
  */
 function parseArgs() {
-	const configIndex = process.argv.indexOf('--config')
-	if (configIndex !== -1 && configIndex + 1 < process.argv.length) {
-		return process.argv[configIndex + 1]
-	}
-	return process.env.CONFIG || defaultConfigFileName
+  const configIndex = process.argv.indexOf('--config')
+  if (configIndex !== -1 && configIndex + 1 < process.argv.length) {
+    return process.argv[configIndex + 1]
+  }
+  return process.env.CONFIG || defaultConfigFileName
 }
 
 /**
@@ -72,18 +72,18 @@ function parseArgs() {
  * @returns {string} The absolute path to the configuration file.
  */
 function getConfigPath() {
-	const configFileName = parseArgs()
-	let configPath = path.resolve(__dirname, configFileName)
-	if (!fs.existsSync(configPath)) {
-		console.warn(
-			`Configuration file "${configFileName}" not found. Attempting to load default: "${defaultConfigFileName}"`,
-		)
-		configPath = path.resolve(__dirname, defaultConfigFileName)
-	}
-	if (!fs.existsSync(configPath)) {
-		throw new Error('Configuration file not found.')
-	}
-	return configPath
+  const configFileName = parseArgs()
+  let configPath = path.resolve(__dirname, configFileName)
+  if (!fs.existsSync(configPath)) {
+    console.warn(
+      `Configuration file "${configFileName}" not found. Attempting to load default: "${defaultConfigFileName}"`,
+    )
+    configPath = path.resolve(__dirname, defaultConfigFileName)
+  }
+  if (!fs.existsSync(configPath)) {
+    throw new Error('Configuration file not found.')
+  }
+  return configPath
 }
 
 export default config

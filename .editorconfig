@@ -9,7 +9,7 @@ insert_final_newline = true
 indent_style = tab
 
 [*.{js,cjs,mjs,ts}]
-indent_size = tab
+indent_style = space
 
 [*.csv]
 insert_final_newline = false

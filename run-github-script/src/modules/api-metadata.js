@@ -20,16 +20,16 @@
 console.debug(`\x1b[36mRunning module \x1b[1m${import.meta.filename.split('/').pop()}\x1b[0;36m...\x1b[0m`)
 
 export default async (github, context, core, exec, glob, io, getOctokit, require) => {
-	// Get API metadata (like allowed scopes or GitHub Action IP ranges)
-	// (Retrieve general metadata like hypermedia links to various API services)
-	const response = await github.request('GET /')
-	const {headers} = response
-	core.info(`Scopes: ${headers['x-oauth-scopes']}`)
-	core.info(`Rate Limit:`)
-	core.info(`  Used: ${headers['x-ratelimit-used']}`)
-	core.info(`  Remaining: ${headers['x-ratelimit-remaining']}`)
-	core.info(`  Total: ${headers['x-ratelimit-limit']}`)
-	core.info(`  Reset: ${new Date(headers['x-ratelimit-reset'] * 1000).toLocaleString()})`)
+  // Get API metadata (like allowed scopes or GitHub Action IP ranges)
+  // (Retrieve general metadata like hypermedia links to various API services)
+  const response = await github.request('GET /')
+  const {headers} = response
+  core.info(`Scopes: ${headers['x-oauth-scopes']}`)
+  core.info(`Rate Limit:`)
+  core.info(`  Used: ${headers['x-ratelimit-used']}`)
+  core.info(`  Remaining: ${headers['x-ratelimit-remaining']}`)
+  core.info(`  Total: ${headers['x-ratelimit-limit']}`)
+  core.info(`  Reset: ${new Date(headers['x-ratelimit-reset'] * 1000).toLocaleString()})`)
 
-	return response
+  return response
 }

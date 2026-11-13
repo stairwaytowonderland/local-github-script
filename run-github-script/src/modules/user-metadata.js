@@ -19,13 +19,13 @@
 console.debug(`\x1b[36mRunning module \x1b[1m${import.meta.filename.split('/').pop()}\x1b[0;36m...\x1b[0m`)
 
 export default async (github, context, core, exec, glob, io, getOctokit, require) => {
-	// Get metadata about the user who owns the token
-	// (Retrieve profile details for the currently authenticated user)
-	const response = await github.rest.users.getAuthenticated()
-	const {data: userMetadata} = response
-	core.info(`User:`) // e.g., "The Octocat"
-	core.info(`  Login: ${userMetadata.login}`) // e.g., "octocat"
-	core.info(`  Public Repos: ${userMetadata.public_repos}`)
+  // Get metadata about the user who owns the token
+  // (Retrieve profile details for the currently authenticated user)
+  const response = await github.rest.users.getAuthenticated()
+  const {data: userMetadata} = response
+  core.info(`User:`) // e.g., "The Octocat"
+  core.info(`  Login: ${userMetadata.login}`) // e.g., "octocat"
+  core.info(`  Public Repos: ${userMetadata.public_repos}`)
 
-	return response
+  return response
 }
