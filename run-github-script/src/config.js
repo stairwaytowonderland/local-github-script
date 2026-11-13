@@ -104,6 +104,7 @@ export default config
  * @typedef {Object} Module
  * @property {string} name - The name of the module.
  * @property {string} [description] - The description of the module.
+ * @property {boolean} [ci=false] - Whether the module should run in CI.
  * @property {string} id - The identifier of the module.
  * @property {string} path - The path to the module file.
  * @property {boolean} [step-summary=false] - Whether to enable step summary for the module.

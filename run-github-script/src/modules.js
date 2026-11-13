@@ -55,6 +55,18 @@ export default class ModuleLoader {
     this.name = moduleConfig.name
 
     /**
+     * The description of the module.
+     * @type {string}
+     */
+    this.description = moduleConfig.description
+
+    /**
+     * Whether the module should run in CI.
+     * @type {boolean}
+     */
+    this.ci = moduleConfig.ci == true
+
+    /**
      * The ID of the module.
      * @type {string}
      */

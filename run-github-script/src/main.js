@@ -160,6 +160,7 @@ async function loadModules(config) {
     console.log(`Loading custom modules for: ${config.name}\n`)
 
     for (const m of config.modules) {
+      if (process.env.CI && !m.ci) continue
       console.debug(`Loading module: ${m.name}`)
       console.debug(`Module path: ${m.path}`)
 
