@@ -22,6 +22,7 @@ import {kebabToCamel, reorderKeys} from './utils.js'
 /**
  * Represents a dynamically loaded module with its configuration and environment.
  * @class
+ * @implements {Module}
  */
 export default class ModuleLoader {
   /**
@@ -49,6 +50,12 @@ export default class ModuleLoader {
    */
   constructor(moduleConfig, modulePath) {
     /**
+     * The ID of the module.
+     * @type {string}
+     */
+    this.id = moduleConfig.id
+
+    /**
      * The name of the module.
      * @type {string}
      */
@@ -58,43 +65,37 @@ export default class ModuleLoader {
      * The description of the module.
      * @type {string}
      */
-    this.description = moduleConfig.description
+    this.description = moduleConfig?.description
 
     /**
      * Whether the module should run in CI.
      * @type {boolean}
      */
-    this.ci = moduleConfig.ci == true
-
-    /**
-     * The ID of the module.
-     * @type {string}
-     */
-    this.id = moduleConfig.id
+    this.ci = moduleConfig?.ci == true
 
     /**
      * The input parameters for the module.
      * @type {Record<string, *>}
      */
-    this.inputs = moduleConfig.inputs
+    this.inputs = moduleConfig?.inputs
 
     /**
      * The environment variables for the module.
      * @type {Record<string, string>}
      */
-    this.env = moduleConfig.env
+    this.env = moduleConfig?.env
 
     /**
      * The absolute path to the module file.
      * @type {string}
      */
-    this.modulePath = path.resolve(realpathSync(modulePath))
+    this.path = path.resolve(realpathSync(modulePath))
 
     /**
      * Whether to enable step summary for the module.
      * @type {boolean}
      */
-    this.stepSummaryEnabled = moduleConfig['step-summary'] == true
+    this.summary = moduleConfig?.summary == true
   }
 
   get moduleCamelId() {
@@ -102,11 +103,11 @@ export default class ModuleLoader {
   }
 
   get summaryPath() {
-    const moduleFileWithoutExt = path.basename(this.modulePath, path.extname(this.modulePath))
+    const moduleFileWithoutExt = path.basename(this.path, path.extname(this.path))
 
     // Resolve path safely using CommonJS __dirname
     // const summaryPath = path.resolve(__dirname, `./.${moduleFileWithoutExt}-step-summary.md`)
-    const summaryPath = path.resolve(path.dirname(this.modulePath), `./.${moduleFileWithoutExt}-step-summary.md`)
+    const summaryPath = path.resolve(path.dirname(this.path), `./.${moduleFileWithoutExt}-step-summary.md`)
     return summaryPath
   }
 
@@ -150,13 +151,13 @@ export default class ModuleLoader {
         `\x1b[0;35mID:\x1b[0m \x1b[1;35m${this.id}\x1b[0m`,
         `\x1b[0;35mCamel ID:\x1b[0m \x1b[1;35m${this.moduleCamelId}\x1b[0m`,
         `\x1b[0;35mWorkspace Path:\x1b[0m \x1b[1;35m${this.workspacePath}\x1b[0m`,
-        `\x1b[0;35mModule Path:\x1b[0m \x1b[1;35m${this.modulePath.slice(workspacePath.length)}\x1b[0m`,
+        `\x1b[0;35mModule Path:\x1b[0m \x1b[1;35m${this.path.slice(workspacePath.length)}\x1b[0m`,
         `\x1b[0;35mSummary Path:\x1b[0m \x1b[1;35m${this.summaryPath.slice(workspacePath.length)}\x1b[0m`,
       ].join('\n'),
     )
 
     const module = this
-    const absoluteModulePath = module.modulePath
+    const absoluteModulePath = module.path
     const moduleUrl = pathToFileURL(absoluteModulePath)
 
     // Dynamically import the module and destructure 'default' as 'run'
@@ -207,7 +208,7 @@ export default class ModuleLoader {
 
     // Verify it's a function before calling it
     if (typeof run === 'function') {
-      initStepSummary.call(this, this.summaryPath, this.stepSummaryEnabled)
+      initStepSummary.call(this, this.summaryPath, this.summary)
 
       await run
         .apply(

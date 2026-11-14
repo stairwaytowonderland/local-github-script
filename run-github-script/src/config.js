@@ -130,7 +130,6 @@ function getConfigPath(configFile = [parseArgs().config, defaultConfigFileName, 
 
 /**
  * Options for the module object.
- * @category Configuration
  * @global
  * @typedef {Object} Module
  * @property {string} name - The name of the module.
@@ -138,7 +137,7 @@ function getConfigPath(configFile = [parseArgs().config, defaultConfigFileName, 
  * @property {boolean} [ci=false] - Whether the module should run in CI.
  * @property {string} id - The identifier of the module.
  * @property {string} path - The path to the module file.
- * @property {boolean} [step-summary=false] - Whether to enable step summary for the module.
+ * @property {boolean} [summary=false] - Whether to enable step summary for the module.
  * @property {array} [env] - The list of environment variables used by the module.
  * @property {array} [inputs] - The list of input parameters for the module.
  */

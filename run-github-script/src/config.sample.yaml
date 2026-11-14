@@ -16,7 +16,7 @@ modules:
     ci: true
     id: hello-world
     path: hello-world.js
-    step-summary: true
+    summary: true
     env:
       EXAMPLE_ENV_VAR: example_value
       GITHUB_TOKEN: example_bad_token
