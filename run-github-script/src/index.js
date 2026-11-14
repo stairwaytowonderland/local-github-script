@@ -6,7 +6,7 @@
  * @example
  * ```bash
  * # From a shell with Node.js installed
- * $ node index.js
+ * $ node index.js [--config <config-file>]
  * ```
  */
 

@@ -17,7 +17,7 @@ import * as path from 'node:path'
 import {realpathSync} from 'node:fs'
 import {pathToFileURL} from 'node:url'
 import {initStepSummary} from './step-summary.js'
-import {kebabToCamel} from './utils.js'
+import {kebabToCamel, reorderKeys} from './utils.js'
 
 /**
  * Represents a dynamically loaded module with its configuration and environment.
@@ -126,14 +126,20 @@ export default class ModuleLoader {
   /**
    * Injects the module configuration into `process.env`, dynamically imports
    * the module file, runs its default export, and cleans up the environment.
+   *
+   * The toolkit object is reordered before being passed as arguments (using `.apply()`) to the module's default export
+   * to ensure consistent key order. See {@link reorderKeys} for the key reordering logic.
+   *
+   * See the [official documentation]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply}
+   * for more information about using {@link Function.prototype.apply}.
+   *
+   * @example
+   * const module = new ModuleLoader(moduleConfig, modulePath)
+   * await module.load(toolkit)
+   *
    * @async
    * @param {GitHubToolkit} toolkit - The GitHub Actions toolkit.
    * @returns {Promise<void>}
-   * @example
-   * ```js
-   * const module = new ModuleLoader(moduleConfig, modulePath)
-   * await module.load(toolkit)
-   * ```
    */
   async load(toolkit) {
     const workspacePath = this.workspacePath + '/'
@@ -204,7 +210,21 @@ export default class ModuleLoader {
       initStepSummary.call(this, this.summaryPath, this.stepSummaryEnabled)
 
       await run
-        .apply(module, Object.values(toolkit?.github ? toolkit : {github: this.github, ...toolkit}))
+        .apply(
+          module,
+          Object.values(
+            reorderKeys(toolkit?.github ? toolkit : {github: this.github, ...toolkit}, [
+              'github',
+              // 'context',
+              // 'core',
+              // 'exec',
+              // 'glob',
+              // 'io',
+              // 'getOctokit',
+              // 'require',
+            ]),
+          ),
+        )
         .then(result =>
           console.log(
             `\n\x1b[1;92m"${module.name}" succeeded results ...\x1b[0m\n"${module.id || module.name}":`,

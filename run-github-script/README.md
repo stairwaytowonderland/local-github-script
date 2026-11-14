@@ -4,7 +4,7 @@
 
 A playground to test GitHub scripts (`@actions/github-script`) locally.
 
-Official Repo: [🔗 stairwaytowonderland/local-github-script](https://github.com/stairwaytowonderland/local-github-script)
+🔗 Official Repo: [stairwaytowonderland/local-github-script](https://github.com/stairwaytowonderland/local-github-script)
 
 ## 📌 Overview
 

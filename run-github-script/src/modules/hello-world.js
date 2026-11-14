@@ -10,6 +10,11 @@
  * @category GitHub Script Modules
  * @order 0
  *
+ * @example
+ * const {default: run} = await import('./hello-world.cjs')
+ * const result = await run(github, context, core, exec, glob, io, getOctokit, require)
+ * console.log(result)
+ *
  * @async
  * @param {object} github - The GitHub client.
  * @param {object} context - The GitHub Action context.
@@ -19,10 +24,6 @@
  * @param {object} io - The GitHub Actions io module.
  * @param {function} getOctokit - The function to get an authenticated Octokit instance.
  * @param {function} require - The CommonJS require wrapper for importing modules.
- * @example
- * const {default: run} = await import('./hello-world.cjs')
- * const result = await run(github, context, core, exec, glob, io, getOctokit, require)
- * console.log(result)
  * @returns {Promise<string>} A greeting message.
  */
 

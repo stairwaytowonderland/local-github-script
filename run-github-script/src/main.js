@@ -20,16 +20,16 @@ import * as glob from '@actions/glob'
 import * as io from '@actions/io'
 
 /**
- * Bootstrap environment variables immediately.
- *
- * ! This must be done before importing any other custom modules to ensure environment variables are available.
- */
-import config from './config.js'
-
-/**
  * Import the wrapped require function for module resolution.
  */
 import {wrapRequire} from './wrap-require.js'
+
+/**
+ * Bootstrap environment variables immediately.
+ *
+ * ! This must be done before importing modules.js to ensure environment variables are available.
+ */
+import config from './config.js'
 
 /**
  * Import the custom module loader.
@@ -96,14 +96,15 @@ if (process.env.CI) {
 
 /**
  * Runs the main GitHub Script logic with mocked context and modules.
+ *
  * Exits the process with code 0 on success and 1 on failure.
- * @async
- * @returns {Promise<void>} Resolves when the script completes successfully.
+ *
  * @example
- * ```js
  * import {run} from './main.js'
  * run()
- * ```
+ *
+ * @async
+ * @returns {Promise<void>} Resolves when the script completes successfully.
  */
 export async function run() {
   try {
@@ -120,14 +121,14 @@ export async function run() {
 
 /**
  * Loads custom modules based on the provided configuration.
+ *
+ * @example
+ * await loadModules(config)
+ *
  * @async
  * @param {ModulesYAMLConfig} config - The configuration object containing module details.
  * @returns {Promise<void>} Resolves when all modules are loaded successfully.
  * @throws {Error} Throws an error if module loading fails.
- * @example
- * ```js
- * await loadModules(config)
- * ```
  */
 async function loadModules(config) {
   try {
@@ -145,11 +146,8 @@ async function loadModules(config) {
       console.debug('Global Octokit: not enabled')
     }
 
-    /**
-     * 'github' needs to be the first key when present, so the .apply() works (see ModuleLoader::load()).
-     */
     const toolkit = {
-      ...(initOctokit ? {github: getOctokit(token)} : {}),
+      github: initOctokit ? getOctokit(token) : undefined,
       context,
       core,
       exec,

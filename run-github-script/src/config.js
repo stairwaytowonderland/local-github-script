@@ -16,10 +16,16 @@ import * as dotenvExpand from 'dotenv-expand'
 const __dirname = import.meta.dirname
 
 /**
+ * The sample yaml configuration file name.
+ * @constant {string} sampleConfigFileName - The default configuration file name.
+ */
+const sampleConfigFileName = 'config.sample.yaml'
+
+/**
  * The default yaml configuration file name.
  * @constant {string} defaultConfigFileName - The default configuration file name.
  */
-const defaultConfigFileName = 'config.sample.yaml'
+const defaultConfigFileName = 'config.yaml'
 
 // Read and parse YAML synchronously during initial module compilation/load
 
@@ -34,6 +40,7 @@ const configPath = getConfigPath()
  * @type {ModulesYAMLConfig}
  */
 const config = YAML.parse(fs.readFileSync(configPath, 'utf8'))
+export default config
 
 /**
  * The dotenv configuration options (See {@link DotEnvOptions}).
@@ -56,37 +63,61 @@ if (config?.['env-file']) {
 }
 
 /**
- * Parses command-line arguments to determine the configuration file path.
- * @returns {string} The configuration file path.
+ * Parses command-line arguments and returns an object with specified values or defaults.
+ *
+ * @returns {UserArgs} An object containing the parsed command-line arguments, specifically the configuration file path.
  */
 function parseArgs() {
-  const configIndex = process.argv.indexOf('--config')
-  if (configIndex !== -1 && configIndex + 1 < process.argv.length) {
-    return process.argv[configIndex + 1]
+  const opts = {
+    configIndex: process.argv.indexOf('--config'),
   }
-  return process.env.CONFIG || defaultConfigFileName
+
+  return {
+    config:
+      opts.configIndex !== -1 && opts.configIndex + 1 < process.argv.length
+        ? process.argv[opts.configIndex + 1]
+        : undefined,
+  }
 }
 
 /**
  * Determines the absolute path to the configuration file.
+ *
+ * @example
+ * const configPath = getConfigPath()
+ * console.log(configPath)
+ *
+ * @param {string[]} [configFile] - An array of configuration file paths to attempt to load in order of priority.
+ * @throws {Error} If no configuration file is found.
  * @returns {string} The absolute path to the configuration file.
  */
-function getConfigPath() {
-  const configFileName = parseArgs()
-  let configPath = path.resolve(__dirname, configFileName)
-  if (!fs.existsSync(configPath)) {
-    console.warn(
-      `Configuration file "${configFileName}" not found. Attempting to load default: "${defaultConfigFileName}"`,
-    )
-    configPath = path.resolve(__dirname, defaultConfigFileName)
-  }
-  if (!fs.existsSync(configPath)) {
+function getConfigPath(configFile = [parseArgs().config, defaultConfigFileName, sampleConfigFileName]) {
+  const [currentFile, ...remainingFiles] = configFile.filter(Boolean)
+
+  if (!currentFile) {
     throw new Error('Configuration file not found.')
   }
-  return configPath
+
+  const configPath = path.resolve(__dirname, currentFile)
+
+  if (fs.existsSync(configPath)) {
+    return configPath
+  }
+
+  if (remainingFiles.length > 0) {
+    console.warn(`Configuration file "${currentFile}" not found. Attempting to load: "${remainingFiles[0]}"`)
+  }
+
+  return getConfigPath(remainingFiles)
 }
 
-export default config
+/**
+ * Options for the user-provided command-line arguments.
+ * @category Configuration
+ * @global
+ * @typedef {Object} UserArgs
+ * @property {string} [config] - The path to the default configuration file.
+ */
 
 /**
  * Options for configuring dotenv behavior.
