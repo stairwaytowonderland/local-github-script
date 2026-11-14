@@ -2,7 +2,7 @@
  * @file Configuration loader for the GitHub Script environment.
  * Handles parsing of YAML configuration files and environment variables.
  *
- * @module config
+ * @namespace config
  */
 
 // Ensure the node built-in core path module is imported
@@ -16,55 +16,36 @@ import * as dotenvExpand from 'dotenv-expand'
 const __dirname = import.meta.dirname
 
 /**
- * The sample yaml configuration file name.
- * @constant {string} sampleConfigFileName - The default configuration file name.
+ * Loads environment variables from the specified environment file or defaults.
+ * @memberof config
+ * @param {string} configPath - The path to the YAML configuration file.
+ * @returns {ModulesConfig} The parsed configuration object from the YAML file.
  */
-const sampleConfigFileName = 'config.sample.yaml'
+export default (configPath => {
+  const dotenvConfig = {override: true, debug: true, encoding: 'utf8'}
 
-/**
- * The default yaml configuration file name.
- * @constant {string} defaultConfigFileName - The default configuration file name.
- */
-const defaultConfigFileName = 'config.yaml'
+  const config = YAML.parse(fs.readFileSync(configPath, 'utf8'))
 
-// Read and parse YAML synchronously during initial module compilation/load
-
-/**
- * Uses {@link getConfigPath} to determine the configuration file path based on command-line arguments and environment variables.
- * @type {string}
- */
-const configPath = getConfigPath()
-
-/**
- * The parsed YAML configuration object (See {@link ModulesYAMLConfig}).
- * @type {ModulesYAMLConfig}
- */
-const config = YAML.parse(fs.readFileSync(configPath, 'utf8'))
-export default config
-
-/**
- * The dotenv configuration options (See {@link DotEnvOptions}).
- * @type {DotEnvOptions}
- */
-const dotenvConfig = {override: true, debug: true, encoding: 'utf8'}
-
-if (config?.['env-file']) {
-  const envPath = path.resolve(config?.['env-file'])
-  if (fs.existsSync(envPath)) {
-    console.log(`Loading environment variables from: ${envPath}`)
-    dotenvExpand.expand(dotenv.config({path: envPath, ...dotenvConfig}))
+  if (config?.['env-file']) {
+    const envPath = path.resolve(config?.['env-file'])
+    if (fs.existsSync(envPath)) {
+      console.log(`Loading environment variables from: ${envPath}`)
+      dotenvExpand.expand(dotenv.config({path: envPath, ...dotenvConfig}))
+    } else {
+      console.warn(`Environment file "${envPath}" not found. Falling back to default environment variables.`)
+      dotenvExpand.expand(dotenv.config(dotenvConfig))
+    }
   } else {
-    console.warn(`Environment file "${envPath}" not found. Falling back to default environment variables.`)
+    console.warn(`No environment file specified. Loading default environment variables.`)
     dotenvExpand.expand(dotenv.config(dotenvConfig))
   }
-} else {
-  console.warn(`No environment file specified. Loading default environment variables.`)
-  dotenvExpand.expand(dotenv.config(dotenvConfig))
-}
+
+  return config
+})(getConfigPath() || process.env.CONFIG_PATH)
 
 /**
  * Parses command-line arguments and returns an object with specified values or defaults.
- *
+ * @memberof config
  * @returns {UserArgs} An object containing the parsed command-line arguments, specifically the configuration file path.
  */
 function parseArgs() {
@@ -87,11 +68,12 @@ function parseArgs() {
  * const configPath = getConfigPath()
  * console.log(configPath)
  *
+ * @memberof config
  * @param {string[]} [configFile] - An array of configuration file paths to attempt to load in order of priority.
  * @throws {Error} If no configuration file is found.
  * @returns {string} The absolute path to the configuration file.
  */
-function getConfigPath(configFile = [parseArgs().config, defaultConfigFileName, sampleConfigFileName]) {
+function getConfigPath(configFile = [parseArgs().config, 'config.yaml', 'config.sample.yaml']) {
   const [currentFile, ...remainingFiles] = configFile.filter(Boolean)
 
   if (!currentFile) {
@@ -113,19 +95,8 @@ function getConfigPath(configFile = [parseArgs().config, defaultConfigFileName, 
 
 /**
  * Options for the user-provided command-line arguments.
- * @category Configuration
- * @global
  * @typedef {Object} UserArgs
  * @property {string} [config] - The path to the default configuration file.
- */
-
-/**
- * Options for configuring dotenv behavior.
- * @category Configuration
- * @global
- * @typedef {Object} DotEnvOptions
- * @property {boolean} [override=false] - Whether to override existing environment variables.
- * @property {boolean} [debug=false] - Whether to enable debug mode.
  */
 
 /**
@@ -138,15 +109,14 @@ function getConfigPath(configFile = [parseArgs().config, defaultConfigFileName, 
  * @property {string} id - The identifier of the module.
  * @property {string} path - The path to the module file.
  * @property {boolean} [summary=false] - Whether to enable step summary for the module.
- * @property {array} [env] - The list of environment variables used by the module.
- * @property {array} [inputs] - The list of input parameters for the module.
+ * @property {Record<string, string>} [env] - The list of environment variables used by the module.
+ * @property {Record<string, *>} [inputs] - The list of input parameters for the module.
  */
 
 /**
  * Options for the main configuration object.
- * @category Configuration
  * @global
- * @typedef {Object} ModulesYAMLConfig
+ * @typedef {Object} ModulesConfig
  * @property {string} name - The name of the configuration.
  * @property {string} description - The description of the configuration.
  * @property {string} module-path - The path to the module file.

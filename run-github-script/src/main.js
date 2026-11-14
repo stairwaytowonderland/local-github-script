@@ -2,7 +2,7 @@
  * @file Main entry point for the GitHub Script runner.
  * It sets up the environment, mocks the GitHub context, instantiates Octokit, and loads the necessary modules.
  *
- * @module main
+ * @namespace main
  */
 
 /**
@@ -103,6 +103,7 @@ if (process.env.CI) {
  * import {run} from './main.js'
  * run()
  *
+ * @memberof main
  * @async
  * @returns {Promise<void>} Resolves when the script completes successfully.
  */
@@ -125,8 +126,9 @@ export async function run() {
  * @example
  * await loadModules(config)
  *
+ * @memberof main
  * @async
- * @param {ModulesYAMLConfig} config - The configuration object containing module details.
+ * @param {ModulesConfig} config - The configuration object containing module details.
  * @returns {Promise<void>} Resolves when all modules are loaded successfully.
  * @throws {Error} Throws an error if module loading fails.
  */
@@ -198,7 +200,6 @@ async function loadModules(config) {
 
 /**
  * Represents the context of an issue within the GitHub Actions workflow.
- * @global
  * @category GitHub Context
  * @typedef {Object} IssueContext
  * @property {number} number - The issue number.
@@ -208,7 +209,6 @@ async function loadModules(config) {
 
 /**
  * Represents the context of a repository within the GitHub Actions workflow.
- * @global
  * @category GitHub Context
  * @typedef {Object} RepositoryContext
  * @property {string} owner - The repository owner.
@@ -219,7 +219,6 @@ async function loadModules(config) {
  * Represents the payload of a GitHub webhook event.
  *
  * Also see: {@link https://github.com/actions/toolkit/blob/main/packages/github/src/interfaces.ts}
- * @global
  * @category GitHub Context
  * @typedef {Object} WebhookPayload
  * @property {PayloadRepository} repository - The repository associated with the webhook event.
@@ -227,7 +226,6 @@ async function loadModules(config) {
 
 /**
  * Represents the context of a repository within the GitHub Actions workflow.
- * @global
  * @category GitHub Context
  * @typedef {Object} PayloadRepository
  * @property {string} [full_name] - The full name of the repository (e.g., "owner/repo").
@@ -238,7 +236,6 @@ async function loadModules(config) {
 
 /**
  * Represents the owner of a repository within the GitHub Actions workflow.
- * @global
  * @category GitHub Context
  * @typedef {Object} PayloadRepositoryOwner
  * @property {string} login - The username of the repository owner.

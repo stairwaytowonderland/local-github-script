@@ -13,7 +13,6 @@ import globals from 'globals'
 export default [
 	// 1. Global Ignores
 	{
-		// '**/.rollup.cache/**',
 		ignores: ['node_modules/**', 'docs/**'],
 	},
 

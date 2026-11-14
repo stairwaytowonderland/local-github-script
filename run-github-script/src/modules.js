@@ -3,7 +3,6 @@
  * Handles dynamic loading and execution of custom modules based on configuration.
  *
  * @module ModuleLoader
- * @category Module Loading
  */
 
 /**
@@ -31,7 +30,6 @@ export default class ModuleLoader {
    * Also see: {@link https://github.com/actions/github-script#this-action}
    * @typedef GitHubToolkit
    * @memberof ModuleLoader
-   * @category Module Loading
    * @property {Octokit} [github] - Pre-authenticated [octokit/rest.js]{@link https://octokit.github.io/rest.js/} client.
    * @property {GitHubContext} context - The workflow run [context]{@link https://github.com/actions/toolkit/blob/main/packages/github/src/context.ts}.
    * @property {Object} core - Actions [core]{@link https://github.com/actions/toolkit/tree/main/packages/core} task library.
