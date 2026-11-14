@@ -12,6 +12,7 @@ import * as path from 'node:path'
 import * as YAML from 'yaml'
 import * as dotenv from 'dotenv'
 import * as dotenvExpand from 'dotenv-expand'
+import args from './args.js'
 
 const __dirname = import.meta.dirname
 
@@ -44,24 +45,6 @@ export default (configPath => {
 })(getConfigPath() || process.env.CONFIG_PATH)
 
 /**
- * Parses command-line arguments and returns an object with specified values or defaults.
- * @memberof config
- * @returns {UserArgs} An object containing the parsed command-line arguments, specifically the configuration file path.
- */
-function parseArgs() {
-  const opts = {
-    configIndex: process.argv.indexOf('--config'),
-  }
-
-  return {
-    config:
-      opts.configIndex !== -1 && opts.configIndex + 1 < process.argv.length
-        ? process.argv[opts.configIndex + 1]
-        : undefined,
-  }
-}
-
-/**
  * Determines the absolute path to the configuration file.
  *
  * @example
@@ -73,7 +56,7 @@ function parseArgs() {
  * @throws {Error} If no configuration file is found.
  * @returns {string} The absolute path to the configuration file.
  */
-function getConfigPath(configFile = [parseArgs().config, 'config.yaml', 'config.sample.yaml']) {
+function getConfigPath(configFile = [args.config, 'config.yaml', 'config.sample.yaml']) {
   const [currentFile, ...remainingFiles] = configFile.filter(Boolean)
 
   if (!currentFile) {
@@ -94,14 +77,7 @@ function getConfigPath(configFile = [parseArgs().config, 'config.yaml', 'config.
 }
 
 /**
- * Options for the user-provided command-line arguments.
- * @typedef {Object} UserArgs
- * @property {string} [config] - The path to the default configuration file.
- */
-
-/**
  * Options for the module object.
- * @global
  * @typedef {Object} Module
  * @property {string} name - The name of the module.
  * @property {string} [description] - The description of the module.
@@ -115,7 +91,6 @@ function getConfigPath(configFile = [parseArgs().config, 'config.yaml', 'config.
 
 /**
  * Options for the main configuration object.
- * @global
  * @typedef {Object} ModulesConfig
  * @property {string} name - The name of the configuration.
  * @property {string} description - The description of the configuration.

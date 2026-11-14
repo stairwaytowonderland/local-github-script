@@ -2,12 +2,11 @@
  * Module loader for the GitHub Script environment.
  * Handles dynamic loading and execution of custom modules based on configuration.
  *
- * @module ModuleLoader
+ * @module module
  */
 
 /**
  * @external Octokit
- * @global
  * @see https://github.com/octokit/core.js/blob/main/src/index.ts
  */
 

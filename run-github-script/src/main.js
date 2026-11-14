@@ -58,41 +58,47 @@ if (!owner || !repo) {
  * Represents the GitHub [context]{@link GitHubContext}.
  *
  * This context is either derived from the actual GitHub Actions environment or mocked for local development.
+ * @memberof main
+ * @private
  * @type {GitHubContext}
  */
-let context
+const context = (() => {
+  let ctx
 
-if (process.env.CI) {
-  context = githubContext
-} else {
-  const mockContext = {
-    actor: githubContext.actor || 'localhost',
-    eventName: 'push',
-    ref: 'refs/heads/main',
-    sha: githubContext.sha || 'HEAD',
-    workflow: 'mock-workflow',
-    action: 'mock-action',
-    job: 'mock-job',
-    runAttempt: 1,
-    runId: 1,
-    runNumber: 1,
-    issue: githubContext.issue?.number ? {...githubContext.issue} : {}, // { owner, repo, number: 1 }
-    repo: githubContext.repo ? {...githubContext.repo} : {owner, repo}, // { owner, repo } (also derived from GITHUB_REPOSITORY if available, which is why referencing githubContext.repo is safe)
-    payload: {
-      repository: {
-        owner: {
-          login: owner,
-          name: owner,
+  if (process.env.CI) {
+    ctx = githubContext
+  } else {
+    const mockContext = {
+      actor: githubContext.actor || 'localhost',
+      eventName: 'push',
+      ref: 'refs/heads/main',
+      sha: githubContext.sha || 'HEAD',
+      workflow: 'mock-workflow',
+      action: 'mock-action',
+      job: 'mock-job',
+      runAttempt: 1,
+      runId: 1,
+      runNumber: 1,
+      issue: githubContext.issue?.number ? {...githubContext.issue} : {}, // { owner, repo, number: 1 }
+      repo: githubContext.repo ? {...githubContext.repo} : {owner, repo}, // { owner, repo } (also derived from GITHUB_REPOSITORY if available, which is why referencing githubContext.repo is safe)
+      payload: {
+        repository: {
+          owner: {
+            login: owner,
+            name: owner,
+          },
+          name: repo,
+          full_name: `${owner}/${repo}`,
+          html_url: `https://github.com/${owner}/${repo}`,
         },
-        name: repo,
-        full_name: `${owner}/${repo}`,
-        html_url: `https://github.com/${owner}/${repo}`,
       },
-    },
+    }
+
+    ctx = {...githubContext, ...mockContext}
   }
 
-  context = {...githubContext, ...mockContext}
-}
+  return ctx
+})()
 
 /**
  * Runs the main GitHub Script logic with mocked context and modules.
@@ -180,7 +186,6 @@ async function loadModules(config) {
  * Represents the GitHub Actions context object.
  *
  * Also see: {@link https://github.com/actions/toolkit/blob/main/packages/github/src/context.ts}
- * @global
  * @category GitHub Context
  * @typedef {Object} GitHubContext
  * @property {WebhookPayload} payload - The webhook payload.
