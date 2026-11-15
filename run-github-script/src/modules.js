@@ -2,7 +2,7 @@
  * Module loader for the GitHub Script environment.
  * Handles dynamic loading and execution of custom modules based on configuration.
  *
- * @module module
+ * @module modules
  */
 
 /**
@@ -95,10 +95,20 @@ export default class ModuleLoader {
     this.summary = moduleConfig?.summary == true
   }
 
+  /**
+   * The camel-cased ID of the module.
+   * @readonly
+   * @type {string}
+   */
   get moduleCamelId() {
     return kebabToCamel(this.id)
   }
 
+  /**
+   * The path to the step summary file for the module.
+   * @readonly
+   * @type {string}
+   */
   get summaryPath() {
     const moduleFileWithoutExt = path.basename(this.path, path.extname(this.path))
 
@@ -108,17 +118,23 @@ export default class ModuleLoader {
     return summaryPath
   }
 
+  /**
+   * The absolute path to the workspace directory.
+   * @readonly
+   * @type {string}
+   */
   get workspacePath() {
     return path.resolve(realpathSync(process.env.GITHUB_WORKSPACE))
   }
 
   /**
-   * The authenticated {@link Octokit} client.
-   * @type {Octokit|null}
+   * An authenticated {@link Octokit} client.
+   * @readonly
+   * @type {Octokit|undefined}
    */
   get github() {
     console.debug(`\x1b[0;33mModule initializing GitHub client with token\x1b[0m`)
-    return process.env.GITHUB_TOKEN ? getOctokit(process.env.GITHUB_TOKEN) : null
+    return process.env.GITHUB_TOKEN ? getOctokit(process.env.GITHUB_TOKEN) : undefined
   }
 
   /**

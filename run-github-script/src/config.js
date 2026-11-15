@@ -18,9 +18,10 @@ const __dirname = import.meta.dirname
 
 /**
  * Loads environment variables from the specified environment file or defaults.
+ *
+ * See {@link ModulesConfig} for the structure of the configuration object.
  * @memberof config
- * @param {string} configPath - The path to the YAML configuration file.
- * @returns {ModulesConfig} The parsed configuration object from the YAML file.
+ * @type {ModulesConfig}
  */
 export default (configPath => {
   const dotenvConfig = {override: true, debug: true, encoding: 'utf8'}
