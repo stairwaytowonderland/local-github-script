@@ -47,7 +47,7 @@ export const cliArgs = parseArgs(argsConfig).values
  */
 
 /**
- * @typedef {Object} ParseArgsConfigOpts
+ * @typedef {Object} ParseArgsConfig
  * @see https://nodejs.org/api/util.html#utilparseargsconfig
  * @see https://nodejs-api-docs-tooling.vercel.app/util/parseArgs
  */
