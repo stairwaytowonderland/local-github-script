@@ -14,7 +14,7 @@ import * as path from 'node:path'
 import * as YAML from 'yaml'
 import * as dotenv from 'dotenv'
 import * as dotenvExpand from 'dotenv-expand'
-import {cliArgs} from './args.js'
+import * as cliArgs from './args.js'
 import {level} from './loglevel.js'
 
 const __dirname = import.meta.dirname
@@ -25,7 +25,7 @@ const loglevel = (process.env.LOG_LEVEL ?? cliArgs.level)?.toLowerCase()
 // Initialize the log level for file based on environment variables or CLI arguments.
 level(loglevel)
 
-// Set the LOG_LEVEL environment variable to the resolved log level.
+// ! Set the LOG_LEVEL environment variable to the resolved log level.
 // This is done to avoid importing args.js multiple times and to ensure the log level is consistently set.
 process.env.LOG_LEVEL = loglevel
 

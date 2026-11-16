@@ -22,9 +22,11 @@ const originalConsole = Object.freeze({
 
 /**
  * Log levels for controlling console output.
+ *
+ * @see LogLevelValue
  * @private
- * @constant
- * @type {Object<string, number>}
+ * @readonly
+ * @type {LogLevelValue}
  * @memberof module:loglevel
  */
 const levels = Object.freeze({
@@ -39,14 +41,17 @@ const levels = Object.freeze({
 /**
  * Auto-initialize the log level
  *
+ * @see LogLevel
+ * @see LogLevelValue
+ *
  * @example
  * level('debug') // Sets the log level to debug
  *
  * @memberof module:loglevel
- * @param {string} [logLevel] - The desired log level (e.g., 'debug', 'info', 'warn', 'error', 'silent').
+ * @param {LogLevel} [logLevel='info'] - The desired log level (e.g., 'debug', 'info', 'warn', 'error', 'silent').
  * @returns {void}
  */
-export const level = logLevel => {
+export const level = (logLevel = 'info') => {
   const resolvedLevel = logLevel?.toLowerCase()
   const currentLevel = levels[resolvedLevel] ?? levels.info
 
@@ -60,3 +65,13 @@ export const level = logLevel => {
 }
 
 level(process.env.LOG_LEVEL)
+
+/**
+ * @typedef {0 | 1 | 2 | 3 | 4} LogLevelValue
+ * @global
+ */
+
+/**
+ * @typedef {'debug' | 'info' | 'log' | 'warn' | 'error' | 'silent'} LogLevel
+ * @global
+ */

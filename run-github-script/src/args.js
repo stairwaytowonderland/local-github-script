@@ -26,7 +26,7 @@ export const argsConfig = {
     debug: {
       type: 'boolean',
     },
-    level: {
+    'log-level': {
       type: 'string',
     },
   },
@@ -38,7 +38,7 @@ export const argsConfig = {
  * @type {UserArgs}
  * @memberof module:args
  */
-export const cliArgs = parseArgs(argsConfig).values
+export const {config, debug, 'log-level': level} = parseArgs(argsConfig).values
 
 /**
  * User-provided command-line arguments.
