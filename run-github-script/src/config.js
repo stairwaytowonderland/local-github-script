@@ -18,6 +18,7 @@ import * as cliArgs from './args.js'
 import {level} from './loglevel.js'
 
 const __dirname = import.meta.dirname
+const projectDir = path.resolve(__dirname, '..')
 
 // Determine the effective log level from environment variables or CLI arguments.
 const loglevel = (process.env.LOG_LEVEL ?? cliArgs.level)?.toLowerCase()
@@ -41,9 +42,12 @@ process.env.LOG_LEVEL = loglevel
 export const opts = {
   /**
    * Determines the path to the configuration file.
+   *
+   * Using `getConfigPath()` (with no arguments) will resolve to a path relative to current (src) directory.
+   *
    * @type {string}
    */
-  config: process.env.CONFIG_PATH ?? getConfigPath(),
+  config: process.env.CONFIG_PATH ?? getConfigPath(undefined, projectDir),
 
   /**
    * Determines the log level for the application.
@@ -100,17 +104,26 @@ if (config?.['env-file']) {
  *
  * @private
  * @param {string[]} [configFile] - An array of configuration file paths to attempt to load in order of priority.
+ * @param {string} [baseDir=path.resolve(__dirname)] - The base directory to resolve configuration file paths against.
  * @throws {Error} If no configuration file is found.
  * @returns {string} The absolute path to the configuration file.
  */
-function getConfigPath(configFile = [cliArgs.config, 'config.yaml', 'config.sample.yaml']) {
+function getConfigPath(
+  configFile = [cliArgs.config, 'src/config.yaml', 'src/config.sample.yaml'],
+  baseDir = path.resolve(__dirname),
+) {
+  console.debug(`Attempting to resolve configuration file from: ${configFile}`)
+  console.debug(`Base Directory: ${baseDir}`)
+
   const [currentFile, ...remainingFiles] = configFile.filter(Boolean)
 
   if (!currentFile) {
     throw new Error('Configuration file not found.')
   }
 
-  const resolvedPath = path.resolve(__dirname, currentFile)
+  const resolvedPath = path.resolve(baseDir, currentFile)
+
+  console.debug(`Resolved Config Path: ${resolvedPath}`)
 
   if (fs.existsSync(resolvedPath)) {
     return resolvedPath
@@ -120,7 +133,7 @@ function getConfigPath(configFile = [cliArgs.config, 'config.yaml', 'config.samp
     console.warn(`Configuration file "${currentFile}" not found. Attempting to load: "${remainingFiles[0]}"`)
   }
 
-  return getConfigPath(remainingFiles)
+  return getConfigPath(remainingFiles, baseDir)
 }
 
 /**
