@@ -3,11 +3,11 @@
  *
  * This file simply imports and runs the main logic of the action.
  *
+ * See [main.run](./module/main#run) for more details.
+ *
  * @example
- * ```bash
- * # From a shell with Node.js installed
+ * // From a shell with Node.js installed
  * $ node index.js [--config <config-file>]
- * ```
  */
 
 import {run} from './main.js'

@@ -39,6 +39,8 @@
 			"Modules",
 			"GitHub Script Modules",
 			"GitHub Context",
+			"Helpers",
+			"Utilities",
 			"Typedefs"
 		],
 		"colors": {"bg": "oklch(1.00 0.00 95)", "accent": "oklch(0.55 0.2 250)"},

@@ -37,6 +37,8 @@
 			"Namespaces",
 			"Classes",
 			"Modules",
+			"Helper Modules",
+			"Utility Modules",
 			"GitHub Script Modules",
 			"GitHub Context",
 			"Typedefs"

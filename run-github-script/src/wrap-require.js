@@ -2,10 +2,9 @@
  * Wraps the Node.js require function to resolve relative module paths
  * and handle module resolution in a Webpack-compatible way.
  *
- * **See:** https://github.com/actions/github-script/blob/main/src/wrap-require.ts
- *
+ * @see https://github.com/actions/github-script/blob/main/src/wrap-require.ts
  * @module wrap-require
- * @category Helpers
+ * @category Helper Modules
  */
 
 import * as path from 'node:path'
@@ -13,7 +12,8 @@ import {createRequire} from 'node:module'
 
 /**
  * The wrapped require function with enhanced module resolution.
- *
+ * @memberof module:wrap-require
+ * @function
  * @param {string} moduleID - The module identifier to require.
  * @returns {*} The required module.
  */

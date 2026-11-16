@@ -2,7 +2,7 @@
  * Utility functions for the GitHub script.
  *
  * @module utils
- * @category Utilities
+ * @category Utility Modules
  */
 
 /**
@@ -12,6 +12,8 @@
  * const camelCaseString = kebabToCamel('kebab-case-string')
  * console.log(camelCaseString) // 'kebabCaseString'
  *
+ * @memberof module:utils
+ * @function
  * @param {string} str - The kebab-case string.
  * @returns {string} The camelCase string.
  */
@@ -26,6 +28,8 @@ export const kebabToCamel = str => str.replace(/-./g, m => m[1].toUpperCase())
  * const ordered = reorderKeys(obj, keyOrder)
  * console.log(ordered) // { a: 1, b: 2, c: 3 }
  *
+ * @memberof module:utils
+ * @function
  * @param {Object} obj - The object to reorder.
  * @param {string[]} keyOrder - The desired key order.
  * @returns {Object} The object with reordered keys.

@@ -2,7 +2,7 @@
  * Initializes the GitHub step summary for a given module file.
  *
  * @module step-summary
- * @category Helpers
+ * @category Helper Modules
  */
 
 import path from 'node:path'
@@ -11,12 +11,11 @@ import {summary} from '@actions/core'
 
 /**
  * Initializes the GitHub step summary for a given module.
- *
+ * @memberof module:step-summary
  * @param {string} summaryPath - The path to the step summary file.
  * @param {boolean} stepSummaryEnabled - Whether to enable the step summary for the module.
  * @returns {void} Does not return a value.
  */
-// export const initStepSummary = async moduleFile => {
 export function initStepSummary(summaryPath, stepSummaryEnabled) {
   if (stepSummaryEnabled && !fs.existsSync(summaryPath)) {
     fs.writeFileSync(summaryPath, '')

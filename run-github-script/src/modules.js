@@ -1,13 +1,7 @@
 /**
- * Module loader for the GitHub Script environment.
- * Handles dynamic loading and execution of custom modules based on configuration.
+ * Exports the [ModuleLoader](./modules/moduleloader/) class for dynamically loading and managing custom modules in the GitHub Script environment.
  *
  * @module modules
- */
-
-/**
- * @external Octokit
- * @see https://github.com/octokit/core.js/blob/main/src/index.ts
  */
 
 import {getOctokit} from '@actions/github'
@@ -18,27 +12,15 @@ import {initStepSummary} from './step-summary.js'
 import {kebabToCamel, reorderKeys} from './utils.js'
 
 /**
- * Represents a dynamically loaded module with its configuration and environment.
- * @class
+ * Module loader for the GitHub Script environment.
+ *
+ * Handles dynamic loading and execution of custom modules based on configuration.
+ *
+ * @see Module
+ *
  * @implements {Module}
  */
-export default class ModuleLoader {
-  /**
-   * Represents the GitHub Actions toolkit passed to modules.
-   *
-   * Also see: {@link https://github.com/actions/github-script#this-action}
-   * @typedef GitHubToolkit
-   * @memberof ModuleLoader
-   * @property {Octokit} [github] - Pre-authenticated [octokit/rest.js]{@link https://octokit.github.io/rest.js/} client.
-   * @property {GitHubContext} context - The workflow run [context]{@link https://github.com/actions/toolkit/blob/main/packages/github/src/context.ts}.
-   * @property {Object} core - Actions [core]{@link https://github.com/actions/toolkit/tree/main/packages/core} task library.
-   * @property {Object} exec - Actions [exec]{@link https://github.com/actions/toolkit/tree/main/packages/exec} tool utilities.
-   * @property {Object} glob - Actions [glob]{@link https://github.com/actions/toolkit/tree/main/packages/glob} tool utilities.
-   * @property {Object} io - Actions [io]{@link https://github.com/actions/toolkit/tree/main/packages/io} core I/O utilities.
-   * @property {Function} getOctokit - A factory function to create additional authenticated [Octokit]{@link https://github.com/actions/toolkit/blob/main/packages/github/src/github.ts} clients with different tokens (see [Creating additional clients]{@link https://github.com/marketplace/actions/github-script#creating-additional-clients-with-getoctokit}).
-   * @property {Function} require - The CommonJS require wrapper for importing modules.
-   */
-
+export class ModuleLoader {
   /**
    * Constructs a new ModuleLoader instance.
    *
@@ -128,7 +110,7 @@ export default class ModuleLoader {
   }
 
   /**
-   * An authenticated {@link Octokit} client.
+   * An authenticated [Octokit]{@link Octokit} client.
    * @readonly
    * @type {Octokit|undefined}
    */
@@ -262,3 +244,24 @@ export default class ModuleLoader {
     }
   }
 }
+
+/**
+ * @typedef {Object} Octokit
+ * @see https://github.com/octokit/core.js/blob/main/src/index.ts
+ */
+
+/**
+ * Represents the GitHub Actions toolkit passed to modules.
+ *
+ * Also see: {@link https://github.com/actions/github-script#this-action}
+ *
+ * @typedef {Object} GitHubToolkit
+ * @property {Octokit|undefined} [github] - Pre-authenticated [octokit/rest.js]{@link https://github.io} client.
+ * @property {GitHubContext} context - The workflow run [context]{@link https://github.com}.
+ * @property {Object} core - Actions [core]{@link https://github.com} task library.
+ * @property {Object} exec - Actions [exec]{@link https://github.com} tool utilities.
+ * @property {Object} glob - Actions [glob]{@link https://github.com} tool utilities.
+ * @property {Object} io - Actions [io]{@link https://github.com} core I/O utilities.
+ * @property {Function} getOctokit - A factory function to create additional authenticated [Octokit]{@link https://github.com} clients with different tokens (see [Creating additional clients]{@link https://github.com}).
+ * @property {Function} require - The CommonJS require wrapper for importing modules.
+ */
