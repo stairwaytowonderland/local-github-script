@@ -11,37 +11,43 @@ import {parseArgs} from 'node:util' // Use require('node:util') if using CommonJ
 console.debug('Parsing command-line arguments...')
 
 /**
- * Parsed command-line argument values.
+ * Command-line argument options for parsing.
+ * @see ParseArgsConfig
+ * @type {ParseArgsConfig}
+ * @memberof module:args
  */
-const {values} = parseArgs({
+export const argsConfig = {
   // Strict mode is true by default, throwing an error for unknown flags
   strict: true,
   options: {
     config: {
-      type: 'string', // Expects a value after --config
+      type: 'string',
     },
     debug: {
-      type: 'boolean', // Behaves as a standalone flag
+      type: 'boolean',
+    },
+    level: {
+      type: 'string',
     },
   },
-})
+}
 
 /**
- * Individual command-line argument values.
- * @type {string|undefined}
+ * Parsed command-line argument values.
+ * @see UserArgs
+ * @type {UserArgs}
  * @memberof module:args
  */
-export const config = values.config
-
-/**
- * Individual command-line argument values.
- * @type {boolean|undefined}
- * @memberof module:args
- */
-export const debug = values.debug
+export const cliArgs = parseArgs(argsConfig).values
 
 /**
  * User-provided command-line arguments.
  * @typedef {Object} UserArgs
  * @extends {ConfigOpts}
+ */
+
+/**
+ * @typedef {Object} ParseArgsConfigOpts
+ * @see https://nodejs.org/api/util.html#utilparseargsconfig
+ * @see https://nodejs-api-docs-tooling.vercel.app/util/parseArgs
  */

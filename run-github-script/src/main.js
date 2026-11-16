@@ -19,12 +19,12 @@ import * as io from '@actions/io'
 // Import the logger to set the log level for console output.
 import './loglevel.js'
 
-// Import the wrapped require function for module resolution.
-import {wrapRequire} from './wrap-require.js'
-
 // Bootstrap environment variables immediately.
 // ! This must be done before importing modules.js to ensure environment variables are available.
 import {config} from './config.js'
+
+// Import the wrapped require function for module resolution.
+import {wrapRequire} from './wrap-require.js'
 
 // Import the custom module loader.
 import {ModuleLoader} from './modules.js'

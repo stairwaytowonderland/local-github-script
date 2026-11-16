@@ -14,9 +14,20 @@ import * as path from 'node:path'
 import * as YAML from 'yaml'
 import * as dotenv from 'dotenv'
 import * as dotenvExpand from 'dotenv-expand'
-import * as args from './args.js'
+import {cliArgs} from './args.js'
+import {level} from './loglevel.js'
 
 const __dirname = import.meta.dirname
+
+// Determine the effective log level from environment variables or CLI arguments.
+const loglevel = (process.env.LOG_LEVEL ?? cliArgs.level)?.toLowerCase()
+
+// Initialize the log level for file based on environment variables or CLI arguments.
+level(loglevel)
+
+// Set the LOG_LEVEL environment variable to the resolved log level.
+// This is done to avoid importing args.js multiple times and to ensure the log level is consistently set.
+process.env.LOG_LEVEL = loglevel
 
 /**
  * Configuration options for the GitHub Script environment.
@@ -32,14 +43,20 @@ export const opts = {
    * Determines the path to the configuration file.
    * @type {string}
    */
-  config: process.env.CONFIG_PATH || getConfigPath(),
+  config: process.env.CONFIG_PATH ?? getConfigPath(),
+
+  /**
+   * Determines the log level for the application.
+   * @type {string}
+   */
+  level: loglevel,
 
   /**
    * Determines whether debug mode is enabled.
    * @type {boolean}
    * @default false
    */
-  debug: process.env.DEBUG === 'true' || (args.debug && process.env.DEBUG !== 'false'),
+  debug: process.env.DEBUG === 'true' || (cliArgs.debug && process.env.DEBUG !== 'false'),
 }
 
 /**
@@ -86,7 +103,7 @@ if (config?.['env-file']) {
  * @throws {Error} If no configuration file is found.
  * @returns {string} The absolute path to the configuration file.
  */
-function getConfigPath(configFile = [args.config, 'config.yaml', 'config.sample.yaml']) {
+function getConfigPath(configFile = [cliArgs.config, 'config.yaml', 'config.sample.yaml']) {
   const [currentFile, ...remainingFiles] = configFile.filter(Boolean)
 
   if (!currentFile) {
@@ -120,6 +137,7 @@ function getConfigPath(configFile = [args.config, 'config.yaml', 'config.sample.
  * @typedef {Object} ConfigOpts
  * @property {string} config - The path to the configuration file.
  * @property {boolean} debug - Whether debug mode is enabled.
+ * @property {string} level - The log level for the application.
  */
 
 /**
