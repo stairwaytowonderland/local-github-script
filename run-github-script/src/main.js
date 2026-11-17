@@ -16,13 +16,9 @@ import {getOctokit, context as githubContext} from '@actions/github'
 import * as glob from '@actions/glob'
 import * as io from '@actions/io'
 
-// Import the logger to set the log level for console output.
-// * Controls `console` log levels for everything loaded after this import.
-import './loglevel.js'
-
 // Bootstrap environment variables immediately.
-// ! This must be done before importing modules.js to ensure environment variables are available.
-import {config} from './config.js'
+// ! Import this before any other custom modules to ensure environment variables, configurations, and other settings are properly initialized.
+import config from './config.js'
 
 // Import the wrapped require function for module resolution.
 import {wrapRequire} from './wrap-require.js'
@@ -113,7 +109,7 @@ export async function run() {
     if (!process.env.CI) {
       console.debug(`GitHub Context: ${JSON.stringify(context, null, 2)}\n`)
     }
-    await loadModules(config)
+    await loadModules(config.yaml)
     process.exit(0)
   } catch (err) {
     core.setFailed(err.message)

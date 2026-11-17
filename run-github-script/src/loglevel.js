@@ -1,6 +1,13 @@
 /**
  * Log level management for the GitHub Script environment.
  *
+ * @example
+ * import './loglevel.js' // Auto-initializes the log level based on process.env.LOG_LEVEL
+ *
+ * @example
+ * import {level} from './loglevel.js'
+ * level('debug') // Sets the log level to debug
+ *
  * @module loglevel
  * @category Utility Modules
  */

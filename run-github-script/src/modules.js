@@ -56,13 +56,13 @@ export class ModuleLoader {
 
     /**
      * The input parameters for the module.
-     * @type {Record<string, *>}
+     * @type {Object<string, *>}
      */
     this.inputs = moduleConfig?.inputs
 
     /**
      * The environment variables for the module.
-     * @type {Record<string, string>}
+     * @type {Object<string, string>}
      */
     this.env = moduleConfig?.env
 
