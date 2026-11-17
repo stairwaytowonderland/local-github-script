@@ -7,6 +7,8 @@
 
 import {parseArgs} from 'node:util' // Use require('node:util') if using CommonJS
 
+// Controlled by loglevel.js if loglevel.js is loaded before this file (args.js),
+// or any file that loads it (e.g. config.js)
 console.debug('Parsing command-line arguments...')
 
 /**

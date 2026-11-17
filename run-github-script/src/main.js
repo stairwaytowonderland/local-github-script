@@ -17,6 +17,7 @@ import * as glob from '@actions/glob'
 import * as io from '@actions/io'
 
 // Import the logger to set the log level for console output.
+// * Controls `console` log levels for everything loaded after this import.
 import './loglevel.js'
 
 // Bootstrap environment variables immediately.
