@@ -9,7 +9,7 @@
 // Node.js path module for handling and transforming file paths.
 import * as path from 'node:path'
 
-// Import GitHub `@actions/` modules.
+// Import necessary GitHub `@actions/` modules.
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 import {getOctokit, context as githubContext} from '@actions/github'
@@ -17,7 +17,8 @@ import * as glob from '@actions/glob'
 import * as io from '@actions/io'
 
 // Bootstrap environment variables immediately.
-// ! Import this before any other custom modules to ensure environment variables, configurations, and other settings are properly initialized.
+// Also loads loglevel.js internally.
+// ! Import this before modules.js to ensure environment variables, configurations, and other settings are properly initialized.
 import config from './config.js'
 
 // Import the wrapped require function for module resolution.
