@@ -9,7 +9,7 @@ import * as path from 'node:path'
 import {realpathSync} from 'node:fs'
 import {pathToFileURL} from 'node:url'
 import {initStepSummary} from './step-summary.js'
-import {kebabToCamel, reorderKeys} from './utils.js'
+import {kebabToCamel} from './utils.js'
 
 /**
  * Module loader for the GitHub Script environment.
@@ -125,12 +125,6 @@ export class ModuleLoader {
    * Injects the module configuration into `process.env`, dynamically imports
    * the module file, runs its default export, and cleans up the environment.
    *
-   * The toolkit object is reordered before being passed as arguments (using `.apply()`) to the module's default export
-   * to ensure consistent key order. See {@link reorderKeys} for the key reordering logic.
-   *
-   * See the [official documentation]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply}
-   * for more information about using {@link Function.prototype.apply}.
-   *
    * @example
    * const module = new ModuleLoader(moduleConfig, modulePath)
    * await module.load(toolkit)
@@ -207,8 +201,17 @@ export class ModuleLoader {
     if (typeof run === 'function') {
       initStepSummary.call(this, this.summaryPath, this.summary)
 
+      /**
+       * Calls the module's default export function with the appropriate toolkit arguments.
+       * //
+       * The toolkit object is reordered before being passed as arguments (using `.apply()`) to the module's default export
+       * //to ensure consistent key order. See {@link reorderKeys} for the key reordering logic.
+       * //
+       * See the [official documentation]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply}
+       * //for more information about using {@link Function.prototype.apply}.
+       */
       await run
-        .apply(
+        /*.apply(
           module,
           Object.values(
             reorderKeys(toolkit?.github ? toolkit : {github: this.github, ...toolkit}, [
@@ -222,6 +225,17 @@ export class ModuleLoader {
               // 'require',
             ]),
           ),
+        )*/
+        .call(
+          module,
+          toolkit?.github ?? this.github,
+          toolkit.context,
+          toolkit.core,
+          toolkit.exec,
+          toolkit.glob,
+          toolkit.io,
+          toolkit.getOctokit,
+          toolkit.require,
         )
         .then(result =>
           console.log(
