@@ -16,6 +16,8 @@ import {kebabToCamel, reorderKeys} from './utils.js'
  *
  * Handles dynamic loading and execution of custom modules based on configuration.
  *
+ * For full compatibility, implement each property defined in the {@link Module} interface (the module configuration object in the `YAML` file).
+ *
  * @see Module
  *
  * @implements {Module}
@@ -155,8 +157,8 @@ export class ModuleLoader {
     const absoluteModulePath = module.path
     const moduleUrl = pathToFileURL(absoluteModulePath)
 
-    // Dynamically import the module and destructure 'default' as 'run'
-    const {default: run} = await import(moduleUrl)
+    // Dynamically import the module and retrieve its default export as 'run'
+    const run = (await import(moduleUrl)).default
 
     // Keep track of dynamically modified env keys and their prior values for perfect cleanup
     const activeEnvKeys = []

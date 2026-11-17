@@ -8,9 +8,13 @@
 /**
  * Store references to the native console methods so they can be restored later.
  * @private
- * @constant
- * @type {Object<string, Function>}
+ * @readonly
  * @memberof module:loglevel
+ * @property {Function} debug=console.debug - The original console.debug method.
+ * @property {Function} info=console.info - The original console.info method.
+ * @property {Function} log=console.log - The original console.log method.
+ * @property {Function} warn=console.warn - The original console.warn method.
+ * @property {Function} error=console.error - The original console.error method.
  */
 const originalConsole = Object.freeze({
   debug: console.debug,
@@ -26,12 +30,12 @@ const originalConsole = Object.freeze({
  * @private
  * @readonly
  * @memberof module:loglevel
- * @property {number} debug - Debug level (0).
- * @property {number} info - Info level (1).
- * @property {number} log - Log level (1).
- * @property {number} warn - Warn level (2).
- * @property {number} error - Error level (3).
- * @property {number} silent - Silent level (4).
+ * @property {number} debug=0 - Debug level (0).
+ * @property {number} info=1 - Info level (1).
+ * @property {number} log=1 - Log level (1).
+ * @property {number} warn=2 - Warn level (2).
+ * @property {number} error=3 - Error level (3).
+ * @property {number} silent=4 - Silent level (4).
  */
 const levels = Object.freeze({
   debug: 0,
