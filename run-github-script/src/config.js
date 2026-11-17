@@ -2,8 +2,6 @@
  * Configuration loader for the GitHub Script environment.
  * Handles parsing of YAML configuration files and environment variables.
  *
- * See {@link ModulesConfig} for the structure of the configuration object.
- *
  * @module config
  */
 
@@ -20,53 +18,36 @@ import {level} from './loglevel.js'
 const __dirname = import.meta.dirname
 const projectDir = path.resolve(__dirname, '..')
 
-// Determine the effective log level from environment variables or CLI arguments.
-const loglevel = (process.env.LOG_LEVEL ?? cliArgs.level)?.toLowerCase()
-
-// Initialize the log level for file based on environment variables or CLI arguments.
-level(loglevel)
-
-// ! Set the LOG_LEVEL environment variable to the resolved log level.
-// This is done to avoid importing args.js multiple times and to ensure the log level is consistently set.
-process.env.LOG_LEVEL = loglevel
-
 /**
  * Configuration options for the GitHub Script environment.
  *
  * Provides normalized options derived from environment variables and command-line arguments.
  *
- * @see ConfigOpts
  * @memberof module:config
- * @type {ConfigOpts}
+ * @property {string} config='src/config.yaml' - The path to the configuration file.
+ * @property {string} level='info' - The log level for the application.
+ * @property {boolean} debug=false - Whether debug mode is enabled.
  */
 export const opts = {
-  /**
-   * Determines the path to the configuration file.
-   *
-   * Using `getConfigPath()` (with no arguments) will resolve to a path relative to current (src) directory.
-   *
-   * @type {string}
-   */
+  // Path to the configuration file.
   config: process.env.CONFIG_PATH ?? getConfigPath(undefined, projectDir),
 
-  /**
-   * Determines the log level for the application.
-   * @type {string}
-   */
-  level: loglevel,
+  // Log level for the application.
+  level: level((process.env.LOG_LEVEL ?? cliArgs.level)?.toLowerCase()) ?? 'info',
 
-  /**
-   * Determines whether debug mode is enabled.
-   * @type {boolean}
-   * @default false
-   */
+  // Debug mode for the application.
   debug: process.env.DEBUG === 'true' || (cliArgs.debug && process.env.DEBUG !== 'false'),
 }
+
+// ! Set the LOG_LEVEL environment variable to the resolved log level.
+// This is done to avoid importing args.js multiple times and to ensure the log level is consistently set.
+process.env.LOG_LEVEL = opts.level
 
 /**
  * Final dotenv configuration object.
  * @private
- * @type {DotenvConfig}
+ * @property {boolean} override - Whether to override existing environment variables.
+ * @property {string} encoding - The encoding to use when reading the .env file.
  */
 const dotenvConfig = {override: true, debug: opts.debug, encoding: 'utf8'}
 
@@ -75,9 +56,13 @@ console.debug(`Using dotenv configuration: ${JSON.stringify(dotenvConfig)}`)
 /**
  * Parsed YAML configuration from the configuration file.
  *
- * @see YamlConfig
  * @memberof module:config
- * @type {YamlConfig}
+ * @property {string} name - The name of the configuration.
+ * @property {string} description - The description of the configuration.
+ * @property {string} "module-path" - The path to the module file.
+ * @property {string} ["env-file"] - The path to the environment file.
+ * @property {boolean} ["global-octokit"=false] - Whether to use a global Octokit instance for all modules.
+ * @property {Module[]} modules - The imported module objects.
  */
 export const config = YAML.parse(fs.readFileSync(opts.config, 'utf8')) ?? {}
 
@@ -103,15 +88,13 @@ if (config?.['env-file']) {
  * console.log(configPath)
  *
  * @private
- * @param {string[]} [configFile] - An array of configuration file paths to attempt to load in order of priority.
+ * @memberof module:config
+ * @param {string[]} [configFile=[cliArgs.config, 'src/config.yaml']] - An array of configuration file paths to attempt to load in order of priority.
  * @param {string} [baseDir=path.resolve(__dirname)] - The base directory to resolve configuration file paths against.
  * @throws {Error} If no configuration file is found.
  * @returns {string} The absolute path to the configuration file.
  */
-function getConfigPath(
-  configFile = [cliArgs.config, 'src/config.yaml', 'src/config.sample.yaml'],
-  baseDir = path.resolve(__dirname),
-) {
+function getConfigPath(configFile = [cliArgs.config, 'src/config.yaml'], baseDir = path.resolve(__dirname)) {
   console.debug(`Attempting to resolve configuration file from: ${configFile}`)
   console.debug(`Base Directory: ${baseDir}`)
 
@@ -137,23 +120,6 @@ function getConfigPath(
 }
 
 /**
- * Final dotenv configuration after merging user-defined settings.
- * @global
- * @typedef {Object} DotenvConfig
- * @property {boolean} override - Whether to override existing environment variables.
- * @property {string} encoding - The encoding to use when reading the .env file.
- */
-
-/**
- * Options for the configuration loader.
- * @global
- * @typedef {Object} ConfigOpts
- * @property {string} config - The path to the configuration file.
- * @property {boolean} debug - Whether debug mode is enabled.
- * @property {string} level - The log level for the application.
- */
-
-/**
  * Options for the module object.
  * @global
  * @typedef {Object} Module
@@ -165,16 +131,4 @@ function getConfigPath(
  * @property {boolean} [summary=false] - Whether to enable step summary for the module.
  * @property {Record<string, string>} [env] - The list of environment variables used by the module.
  * @property {Record<string, *>} [inputs] - The list of input parameters for the module.
- */
-
-/**
- * Options for the main configuration object.
- * @global
- * @typedef {Object} YamlConfig
- * @property {string} name - The name of the configuration.
- * @property {string} description - The description of the configuration.
- * @property {string} "module-path" - The path to the module file.
- * @property {string} ["env-file"] - The path to the environment file.
- * @property {boolean} ["global-octokit"=false] - Whether to use a global Octokit instance for all modules.
- * @property {Module[]} modules - The imported module objects.
  */

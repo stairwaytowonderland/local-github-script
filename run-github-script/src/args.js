@@ -2,7 +2,6 @@
  * Parses command-line arguments and returns an object with specified values or defaults.
  *
  * @module args
- * @implements {UserArgs}
  * @category Helper Modules
  */
 
@@ -34,17 +33,12 @@ export const argsConfig = {
 
 /**
  * Parsed command-line argument values.
- * @see UserArgs
- * @type {UserArgs}
  * @memberof module:args
+ * @property {string} config - Path to the configuration file.
+ * @property {boolean} debug - Enable debug mode.
+ * @property {LogLevel} level - Log level.
  */
 export const {config, debug, 'log-level': level} = parseArgs(argsConfig).values
-
-/**
- * User-provided command-line arguments.
- * @typedef {Object} UserArgs
- * @extends {ConfigOpts}
- */
 
 /**
  * @typedef {Object} ParseArgsConfig
