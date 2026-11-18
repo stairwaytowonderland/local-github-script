@@ -60,7 +60,7 @@ const debug = process.env.DEBUG === 'true' || (cliArgs.debug && process.env.DEBU
  * Parsed YAML configuration from the configuration file.
  * @private
  * @memberof module:config
- * @type {YamlConfig}
+ * @type {Object<string, any>}
  */
 const yamlConfig = YAML.parse(fs.readFileSync(configPath, 'utf8')) ?? {}
 
@@ -93,13 +93,28 @@ if (yamlConfig?.['env-file']) {
 }
 
 /**
- * Exported configuration object.
- * @namespace {Object} config
+ * Configuration options for the GitHub Script environment.
+ *
+ * Provides normalized options derived from environment variables and command-line arguments.
+ *
+ * @private
  * @memberof module:config
+ * @type {Object<string, any>}
+ */
+const opts = {
+  config: configPath,
+  level: loglevel,
+  debug,
+}
+
+/**
+ * Exported configuration object.
+ * @memberof module:config
+ * @type {Object}
  * @property {Object<string, any>} opts - The normalized configuration options.
- * @property {string} opts.config - The path to the configuration file.
- * @property {boolean} opts.debug - Whether debug mode is enabled.
- * @property {string} opts.level - The log level for the application.
+ * @property {string} opts.config='src/config.yaml' - The path to the configuration file.
+ * @property {boolean} opts.debug=false - Whether debug mode is enabled.
+ * @property {string} opts.level='info' - The log level for the application.
  * @property {Object<string, any>} yaml - The parsed YAML configuration.
  * @property {string} yaml.name - The name of the configuration.
  * @property {string} yaml.description - The description of the configuration.
@@ -108,46 +123,8 @@ if (yamlConfig?.['env-file']) {
  * @property {boolean} [yaml."global-octokit"=false] - Whether to use a global Octokit instance for all modules.
  * @property {ModuleConfig[]} yaml.modules - The imported module objects.
  */
-export default {
-  /**
-   * Configuration options for the GitHub Script environment.
-   *
-   * Provides normalized options derived from environment variables and command-line arguments.
-   *
-   * @memberof config
-   * @type {ConfigOpts}
-   */
-  opts: {
-    /**
-     * Determines the path to the configuration file.
-     *
-     * Using `getConfigPath()` (with no arguments) will resolve to a path relative to current (src) directory.
-     *
-     * @type {string}
-     * @default 'src/config.yaml' (relative to project directory)
-     */
-    config: configPath,
-
-    /**
-     * Determines the log level for the application.
-     * @type {string}
-     * @default 'info'
-     */
-    level: loglevel,
-
-    /**
-     * Determines whether debug mode is enabled.
-     * @type {boolean}
-     * @default false
-     */
-    debug,
-  },
-
-  /**
-   * Parsed YAML configuration from the configuration file.
-   * @memberof config
-   * @type {YamlConfig}
-   */
+export const config = {
+  opts: opts,
   yaml: yamlConfig,
 }
 

@@ -19,7 +19,7 @@ import * as io from '@actions/io'
 // Bootstrap environment variables immediately.
 // Also loads loglevel.js internally.
 // ! Import this before modules.js to ensure environment variables, configurations, and other settings are properly initialized.
-import config from './config.js'
+import {config} from './config.js'
 
 // Import the wrapped require function for module resolution.
 import {wrapRequire} from './wrap-require.js'
