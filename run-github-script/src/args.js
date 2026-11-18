@@ -34,13 +34,30 @@ export const argsConfig = {
 }
 
 /**
- * Parsed command-line argument values.
- * @memberof module:args
- * @property {string} config - Path to the configuration file.
- * @property {boolean} debug - Enable debug mode.
- * @property {LogLevel} level - Log level.
+ * Parse command-line arguments using the specified configuration.
  */
-export const {config, debug, 'log-level': level} = parseArgs(argsConfig).values
+const {values} = parseArgs(argsConfig)
+
+/**
+ * Destructured command-line argument value for the configuration file.
+ * @memberof module:args
+ * @type {string|undefined}
+ */
+export const config = values.config
+
+/**
+ * Destructured command-line argument value for the debug flag.
+ * @memberof module:args
+ * @type {boolean}
+ */
+export const debug = values.debug
+
+/**
+ * Destructured command-line argument value for the log level.
+ * @memberof module:args
+ * @type {string|undefined}
+ */
+export const logLevel = values['log-level']
 
 /**
  * @typedef {Object} ParseArgsConfig

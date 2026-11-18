@@ -1,8 +1,5 @@
 /**
- * Log level management for the GitHub Script environment.
- *
- * @example
- * import './loglevel.js' // Auto-initializes the log level based on process.env.LOG_LEVEL
+ * Log level management for the console output.
  *
  * @example
  * import {level} from './loglevel.js'
@@ -32,55 +29,124 @@ const originalConsole = Object.freeze({
 })
 
 /**
- * Log levels for controlling console output.
+ * Enum representing log levels.
  *
- * @private
+ * See [LogLevel](/module/loglevel/loglevel) for details.
+ *
  * @readonly
- * @memberof module:loglevel
- * @property {number} debug=0 - Debug level (0).
- * @property {number} info=1 - Info level (1).
- * @property {number} log=1 - Log level (1).
- * @property {number} warn=2 - Warn level (2).
- * @property {number} error=3 - Error level (3).
- * @property {number} silent=4 - Silent level (4).
+ * @enum {LogLevel}
+ * @class
  */
-const levels = Object.freeze({
-  debug: 0,
-  info: 1,
-  log: 1,
-  warn: 2,
-  error: 3,
-  silent: 4,
-})
+class LogLevel {
+  /**
+   * Debug level (0).
+   * @readonly
+   * @type {LogLevel}
+   */
+  static debug = new LogLevel('debug', 0)
+  /**
+   * Info level (1).
+   * @readonly
+   * @type {LogLevel}
+   */
+  static info = new LogLevel('info', 1)
+  /**
+   * Log level (1).
+   * @readonly
+   * @type {LogLevel}
+   */
+  static log = new LogLevel('log', 1)
+  /**
+   * Warn level (2).
+   * @readonly
+   * @type {LogLevel}
+   */
+  static warn = new LogLevel('warn', 2)
+  /**
+   * Error level (3).
+   * @readonly
+   * @type {LogLevel}
+   */
+  static error = new LogLevel('error', 3)
+  /**
+   * Silent level (4).
+   * @readonly
+   * @type {LogLevel}
+   */
+  static silent = new LogLevel('silent', 4)
+
+  /**
+   * Creates an instance of LogLevel.
+   *
+   * @param {LogLevels} name - The name of the log level.
+   * @param {0|1|2|3|4} value - The numeric value of the log level.
+   */
+  constructor(name, value) {
+    this.name = name
+    this.value = value
+
+    // Freeze the instance to prevent modification of its properties.
+    Object.freeze(this)
+  }
+
+  static get [Symbol.toStringTag]() {
+    return 'LogLevel'
+  }
+
+  valueOf() {
+    return this.value
+  }
+
+  toString() {
+    return this.name
+  }
+}
+
+// Freeze the LogLevel class to prevent modification of its static properties.
+Object.freeze(LogLevel)
 
 /**
- * Auto-initialize the log level
+ * @memberof module:loglevel
+ */
+export {LogLevel}
+
+/**
+ * Sets the log level for the console output.
  *
  * @example
  * level('debug') // Sets the log level to debug
  *
  * @memberof module:loglevel
- * @param {LogLevel} [logLevel='info'] - The desired log level (e.g., 'debug', 'info', 'warn', 'error', 'silent').
- * @returns {string|undefined} - The current log level as a string.
+ * @param {LogLevels|LogLevel} [logLevel='info'] - The desired log level (e.g., 'debug', 'info', 'warn', 'error', 'silent').
+ * @param {string} [fileName] - The name of the file setting the log level.
+ * @returns {LogLevels} - The current log level as a string.
+ * @default 'info'
  */
-export const level = (logLevel = 'info') => {
-  const resolvedLevel = logLevel?.toLowerCase()
-  const currentLevel = levels[resolvedLevel] ?? levels.info
+export const level = (logLevel = 'info', fileName = undefined) => {
+  if (fileName === 'loglevel.js') {
+    console.error(`Auto-initializing log level to: ${logLevel}`)
+  } else {
+    console.error(`Manually setting log level to: ${logLevel}`)
+  }
+
+  const resolvedLevel = String(logLevel)?.toLowerCase()
+  const currentLevel = LogLevel[resolvedLevel] ?? LogLevel.info
 
   Object.keys(originalConsole).forEach(method => {
-    if (levels[method] < currentLevel) {
+    if (LogLevel[method].value < currentLevel.value) {
       console[method] = () => {}
     } else {
       console[method] = originalConsole[method]
     }
   })
 
-  return currentLevel
+  return currentLevel.name
 }
 
-level(process.env.LOG_LEVEL)
+// level(process.env.LOG_LEVEL, import.meta.filename.split('/').pop())
 
 /**
- * @typedef {'debug' | 'info' | 'log' | 'warn' | 'error' | 'silent'} LogLevel
+ * Valid log levels: `'debug'`, `'info'`, `'log'`, `'warn'`, `'error'`, or `'silent'`.
+ * @typedef {string} LogLevels
  * @global
  */

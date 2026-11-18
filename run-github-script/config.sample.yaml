@@ -5,7 +5,7 @@ description: Configuration file for the run-github-script project.
 module-path: modules
 
 # Path to the environment file containing necessary variables.
-env-file: .env
+# env-file: .env
 
 # Whether to use a global Octokit instance for all modules.
 global-octokit: true
