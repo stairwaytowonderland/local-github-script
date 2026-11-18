@@ -57,9 +57,10 @@ console.debug(`Resolved configuration path: ${configPath}`)
 
 /**
  * Parsed YAML configuration from the configuration file.
+ * @see YamlConfig
  * @private
  * @memberof module:config
- * @type {Object<string, any>}
+ * @type {YamlConfig}
  */
 const yamlConfig = YAML.parse(fs.readFileSync(configPath, 'utf8')) ?? {}
 
@@ -75,8 +76,11 @@ const debug = process.env.DEBUG === 'true' || (cliArgs.debug && process.env.DEBU
 /**
  * Final dotenv configuration object.
  * @private
- * @property {boolean} override - Whether to override existing environment variables.
- * @property {string} encoding - The encoding to use when reading the .env file.
+ * @memberof module:config
+ * @type {Object<string, any>}
+ * @property {boolean} override=true - Whether to override existing environment variables.
+ * @property {boolean} debug=false - Whether debug mode is enabled.
+ * @property {string} encoding='utf8' - The encoding to use when reading the .env file.
  */
 const dotenvConfig = {override: true, debug: debug, encoding: 'utf8'}
 
@@ -85,6 +89,7 @@ const dotenvConfig = {override: true, debug: debug, encoding: 'utf8'}
  * @private
  * @memberof module:config
  * @type {string}
+ * @default '.env' (relative to project directory)
  */
 const envPath = path.resolve(yamlConfig?.['env-file'] ?? baseDir + '/.env')
 
@@ -120,7 +125,7 @@ const opts = {
  * @property {string} opts.config='config.yaml' - The path to the configuration file.
  * @property {boolean} opts.debug=false - Whether debug mode is enabled.
  * @property {string} opts.level='info' - The log level for the application.
- * @property {Object<string, any>} yaml - The parsed YAML configuration.
+ * @property {YamlConfig} yaml - The parsed YAML configuration.
  * @property {string} yaml.name - The name of the configuration.
  * @property {string} yaml.description - The description of the configuration.
  * @property {string} yaml."module-path" - The path to the module file.
@@ -184,4 +189,16 @@ function getConfigPath(configFile = [cliArgs.config, 'config.yaml'], baseDir = b
  * @property {boolean} [summary=false] - Whether to enable step summary for the module.
  * @property {Object<string, string>} [env] - The list of environment variables used by the module.
  * @property {Object<string, *>} [inputs] - The list of input parameters for the module.
+ */
+
+/**
+ * Options for the main configuration object.
+ * @global
+ * @typedef {Object<string, any>} YamlConfig
+ * @property {string} name - The name of the configuration.
+ * @property {string} description - The description of the configuration.
+ * @property {string} "module-path" - The path to the module file.
+ * @property {string} ["env-file"] - The path to the environment file.
+ * @property {boolean} ["global-octokit"=false] - Whether to use a global Octokit instance for all modules.
+ * @property {Module[]} modules - The imported module objects.
  */
