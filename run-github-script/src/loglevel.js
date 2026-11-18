@@ -122,7 +122,7 @@ export {LogLevel}
  * @returns {LogLevels} - The current log level as a string.
  * @default 'info'
  */
-export const level = (logLevel = 'info', fileName = undefined) => {
+export function level(logLevel = 'info', fileName = undefined) {
   if (fileName === 'loglevel.js') {
     console.error(`Auto-initializing log level to: ${logLevel}`)
   } else {
