@@ -95,6 +95,7 @@ if (yamlConfig?.['env-file']) {
 /**
  * Exported configuration object.
  * @namespace {Object} config
+ * @memberof module:config
  * @property {Object<string, any>} opts - The normalized configuration options.
  * @property {string} opts.config - The path to the configuration file.
  * @property {boolean} opts.debug - Whether debug mode is enabled.
@@ -105,8 +106,7 @@ if (yamlConfig?.['env-file']) {
  * @property {string} yaml."module-path" - The path to the module file.
  * @property {string} [yaml."env-file"] - The path to the environment file.
  * @property {boolean} [yaml."global-octokit"=false] - Whether to use a global Octokit instance for all modules.
- * @property {Module[]} yaml.modules - The imported module objects.
- * @memberof module:config
+ * @property {ModuleConfig[]} yaml.modules - The imported module objects.
  */
 export default {
   /**
@@ -193,7 +193,7 @@ function getConfigPath(configFile = [cliArgs.config, 'src/config.yaml'], baseDir
 /**
  * Options for the module object.
  * @global
- * @interface Module
+ * @interface ModuleConfig
  * @property {string} name - The name of the module.
  * @property {string} [description] - The description of the module.
  * @property {boolean} [ci=false] - Whether the module should run in CI.

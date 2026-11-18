@@ -1,5 +1,5 @@
 /**
- * Exports the [ModuleLoader](./modules/moduleloader/) class for dynamically loading and managing custom modules in the GitHub Script environment.
+ * Exports the [Module](./modules/module) class for dynamically loading and managing custom modules in the GitHub Script environment.
  *
  * @module modules
  */
@@ -16,17 +16,17 @@ import {kebabToCamel} from './utils.js'
  *
  * Handles dynamic loading and execution of custom modules based on configuration.
  *
- * For full compatibility, implement each property defined in the {@link Module} interface (the module configuration object in the `YAML` file).
+ * For full compatibility, implement each property defined in the {@link ModuleConfig} interface (the module configuration object in the `YAML` file).
  *
- * @see Module
+ * See [Module](/module/modules/module) for more details.
  *
- * @implements {Module}
+ * @implements {ModuleConfig}
  */
-export class ModuleLoader {
+export class Module {
   /**
-   * Constructs a new ModuleLoader instance.
+   * Constructs a new Module instance.
    *
-   * @param {Module} moduleConfig - The configuration object for the module.
+   * @param {ModuleConfig} moduleConfig - The configuration object for the module.
    * @param {string} modulePath - The absolute path to the module file.
    */
   constructor(moduleConfig, modulePath) {
@@ -126,7 +126,7 @@ export class ModuleLoader {
    * the module file, runs its default export, and cleans up the environment.
    *
    * @example
-   * const module = new ModuleLoader(moduleConfig, modulePath)
+   * const module = new Module(moduleConfig, modulePath)
    * await module.load(toolkit)
    *
    * @async

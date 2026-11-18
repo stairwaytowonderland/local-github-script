@@ -25,7 +25,7 @@ import config from './config.js'
 import {wrapRequire} from './wrap-require.js'
 
 // Import the custom module loader.
-import {ModuleLoader} from './modules.js'
+import {Module} from './modules.js'
 
 const __dirname = import.meta.dirname
 
@@ -166,7 +166,7 @@ async function loadModules(config) {
       console.debug(`Module path: ${m.path}`)
 
       const absoluteModulePath = path.resolve(__dirname, config['module-path'], m.path)
-      const module = new ModuleLoader(m, absoluteModulePath)
+      const module = new Module(m, absoluteModulePath)
       await module.load(toolkit)
     }
   } catch (error) {
