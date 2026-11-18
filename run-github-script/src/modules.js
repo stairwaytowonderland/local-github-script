@@ -24,47 +24,6 @@ import {kebabToCamel} from './utils.js'
  */
 export class Module {
   /**
-   * The ID of the module.
-   * @type {string}
-   */
-  id
-  /**
-   * The name of the module.
-   * @type {string}
-   */
-  name
-  /**
-   * The description of the module.
-   * @type {string}
-   */
-  description
-  /**
-   * Whether the module should run in CI.
-   * @type {boolean}
-   */
-  ci
-  /**
-   * The input parameters for the module.
-   * @type {Object<string, *>}
-   */
-  inputs
-  /**
-   * The environment variables for the module.
-   * @type {Object<string, string>}
-   */
-  env
-  /**
-   * The absolute path to the module file.
-   * @type {string}
-   */
-  path
-  /**
-   * Whether to enable step summary for the module.
-   * @type {boolean}
-   */
-  summary
-
-  /**
    * Constructs a new Module instance.
    *
    * @param {ModuleConfig} moduleConfig - The configuration object for the module.

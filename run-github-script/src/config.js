@@ -55,7 +55,6 @@ console.debug(`Resolved configuration path: ${configPath}`)
  * Parsed YAML configuration from the configuration file.
  * @see YamlConfig
  * @memberof module:config
- * @type {YamlConfig}
  */
 export const yaml = YAML.parse(fs.readFileSync(configPath, 'utf8')) ?? {}
 
@@ -72,12 +71,11 @@ const debug = process.env.DEBUG === 'true' || (cliArgs.debugEnabled && process.e
  * Final dotenv configuration object.
  * @private
  * @memberof module:config
- * @type {Object<string, any>}
  * @property {boolean} override=true - Whether to override existing environment variables.
  * @property {boolean} debug=false - Whether debug mode is enabled.
  * @property {string} encoding='utf8' - The encoding to use when reading the .env file.
  */
-const dotenvConfig = {override: true, debug: debug, encoding: 'utf8'}
+const dotenvConfigDefaults = {override: true, debug: debug, encoding: 'utf8'}
 
 /**
  * Path to the environment file.
@@ -88,14 +86,14 @@ const dotenvConfig = {override: true, debug: debug, encoding: 'utf8'}
  */
 const envPath = path.resolve(yaml?.['env-file'] ?? baseDir + '/.env')
 
-console.debug(`Using dotenv configuration: ${JSON.stringify(dotenvConfig)}`)
+console.debug(`Using dotenv configuration: ${JSON.stringify(dotenvConfigDefaults)}`)
 let env
 if (fs.existsSync(envPath)) {
   console.log(`Loading environment variables from: ${envPath}`)
-  env = dotenvExpand.expand(dotenv.config({path: envPath, ...dotenvConfig}))
+  env = dotenvExpand.expand(dotenv.config({path: envPath, ...dotenvConfigDefaults}))
 } else {
   console.warn(`Environment file "${envPath}" not found. Falling back to default environment variables.`)
-  env = dotenvExpand.expand(dotenv.config(dotenvConfig))
+  env = dotenvExpand.expand(dotenv.config(dotenvConfigDefaults))
 }
 
 /**
@@ -116,8 +114,8 @@ export const opts = {
     path: Object.keys(env.parsed).length > 0 ? envPath : undefined,
     keys: Object.keys(env.parsed) ?? undefined,
   },
-  config: configPath,
-  level: logLevel,
+  configPath,
+  logLevel,
   debug,
 }
 
@@ -132,12 +130,12 @@ console.debug(`Using configuration options: ${JSON.stringify(opts, null, 2)}`)
  *
  * @private
  * @memberof module:config
- * @param {string[]} [configFile=[cliArgs.config, 'config.yaml']] - An array of configuration file paths to attempt to load in order of priority.
+ * @param {string[]} [configFile=[cliArgs.configPath, 'config.yaml']] - An array of configuration file paths to attempt to load in order of priority.
  * @param {string} [loadBase=baseDir] - The base directory to resolve configuration file paths against.
  * @throws {Error} If no configuration file is found.
  * @returns {string} The absolute path to the configuration file.
  */
-function getConfigPath(configFile = [cliArgs.config, 'config.yaml'], loadBase = baseDir) {
+function getConfigPath(configFile = [cliArgs.configPath, 'config.yaml'], loadBase = baseDir) {
   console.debug(`Attempting to resolve configuration file from: ${configFile}`)
   console.debug(`Using base directory: ${loadBase}`)
 

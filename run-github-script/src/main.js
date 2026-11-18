@@ -114,7 +114,7 @@ export async function run() {
     if (!process.env.CI) {
       console.debug(`GitHub Context: ${JSON.stringify(context, null, 2)}\n`)
     }
-    console.log(`Log level: ${config.opts.level}`)
+    console.log(`Log level: ${config.opts.logLevel}`)
     await loadModules(config.yaml)
     process.exit(0)
   } catch (err) {

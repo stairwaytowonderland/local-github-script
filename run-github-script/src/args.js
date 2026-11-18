@@ -1,5 +1,7 @@
 /**
- * Parses command-line arguments and returns an object with specified values or defaults.
+ * Parses command-line arguments and returns an object with specified values.
+ *
+ * Defaults aren't enforced here; only the provided command-line arguments are parsed.
  *
  * @module args
  * @category Helper Modules
@@ -14,7 +16,6 @@ console.debug('Parsing command-line arguments...')
 /**
  * Command-line argument options for parsing.
  * @see ParseArgsConfig
- * @type {ParseArgsConfig}
  * @memberof module:args
  */
 export const argsConfig = {
@@ -43,14 +44,14 @@ const {values} = parseArgs(argsConfig)
  * @memberof module:args
  * @type {string|undefined}
  */
-export const config = values.config
+export const configPath = values.config
 
 /**
  * Destructured command-line argument value for the debug flag.
  * @memberof module:args
  * @type {boolean}
  */
-export const debug = values.debug
+export const debugEnabled = values.debug
 
 /**
  * Destructured command-line argument value for the log level.
