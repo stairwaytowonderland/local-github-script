@@ -18,6 +18,19 @@ import {level} from './loglevel.js'
 const __dirname = import.meta.dirname
 
 /**
+ * Determines the log level for the application.
+ * @private
+ * @memberof module:config
+ * @type {string}
+ * @default 'info'
+ */
+const logLevel = (process.env.LOG_LEVEL = level((process.env.LOG_LEVEL ?? cliArgs.level)?.toLowerCase() ?? 'info'))
+
+console.debug(`Resolved log level: ${logLevel}`)
+
+console.debug(`Dir name for configuration files: ${__dirname}`)
+
+/**
  * Base directory for configuration files.
  * @private
  * @memberof module:config
@@ -25,6 +38,8 @@ const __dirname = import.meta.dirname
  * @default '..'
  */
 const baseDir = path.resolve(__dirname, '..')
+
+console.debug(`Base directory for configuration files: ${baseDir}`)
 
 /**
  * Determines the path to the configuration file.
@@ -34,18 +49,19 @@ const baseDir = path.resolve(__dirname, '..')
  * @private
  * @memberof module:config
  * @type {string}
- * @default 'src/config.yaml' (relative to project directory)
+ * @default 'config.yaml' (relative to project directory)
  */
 const configPath = process.env.CONFIG_PATH ?? getConfigPath(undefined, baseDir)
 
+console.debug(`Resolved configuration path: ${configPath}`)
+
 /**
- * Determines the log level for the application.
+ * Parsed YAML configuration from the configuration file.
  * @private
  * @memberof module:config
- * @type {string}
- * @default 'info'
+ * @type {Object<string, any>}
  */
-const loglevel = level((process.env.LOG_LEVEL ?? cliArgs.level)?.toLowerCase()) ?? 'info'
+const yamlConfig = YAML.parse(fs.readFileSync(configPath, 'utf8')) ?? {}
 
 /**
  * Determines whether debug mode is enabled.
@@ -57,18 +73,6 @@ const loglevel = level((process.env.LOG_LEVEL ?? cliArgs.level)?.toLowerCase()) 
 const debug = process.env.DEBUG === 'true' || (cliArgs.debug && process.env.DEBUG !== 'false')
 
 /**
- * Parsed YAML configuration from the configuration file.
- * @private
- * @memberof module:config
- * @type {Object<string, any>}
- */
-const yamlConfig = YAML.parse(fs.readFileSync(configPath, 'utf8')) ?? {}
-
-// ! Set the LOG_LEVEL environment variable to the resolved log level.
-// This is done to avoid importing args.js multiple times and to ensure the log level is consistently set.
-process.env.LOG_LEVEL = loglevel
-
-/**
  * Final dotenv configuration object.
  * @private
  * @property {boolean} override - Whether to override existing environment variables.
@@ -76,19 +80,20 @@ process.env.LOG_LEVEL = loglevel
  */
 const dotenvConfig = {override: true, debug: debug, encoding: 'utf8'}
 
-console.debug(`Using dotenv configuration: ${JSON.stringify(dotenvConfig)}`)
+/**
+ * Path to the environment file.
+ * @private
+ * @memberof module:config
+ * @type {string}
+ */
+const envPath = path.resolve(yamlConfig?.['env-file'] ?? baseDir + '/.env')
 
-if (yamlConfig?.['env-file']) {
-  const envPath = path.resolve(yamlConfig['env-file'])
-  if (fs.existsSync(envPath)) {
-    console.log(`Loading environment variables from: ${envPath}`)
-    dotenvExpand.expand(dotenv.config({path: envPath, ...dotenvConfig}))
-  } else {
-    console.warn(`Environment file "${envPath}" not found. Falling back to default environment variables.`)
-    dotenvExpand.expand(dotenv.config(dotenvConfig))
-  }
+console.debug(`Using dotenv configuration: ${JSON.stringify(dotenvConfig)}`)
+if (fs.existsSync(envPath)) {
+  console.log(`Loading environment variables from: ${envPath}`)
+  dotenvExpand.expand(dotenv.config({path: envPath, ...dotenvConfig}))
 } else {
-  console.warn(`No environment file specified. Loading default environment variables.`)
+  console.warn(`Environment file "${envPath}" not found. Falling back to default environment variables.`)
   dotenvExpand.expand(dotenv.config(dotenvConfig))
 }
 
@@ -103,7 +108,7 @@ if (yamlConfig?.['env-file']) {
  */
 const opts = {
   config: configPath,
-  level: loglevel,
+  level: logLevel,
   debug,
 }
 
@@ -112,7 +117,7 @@ const opts = {
  * @memberof module:config
  * @type {Object}
  * @property {Object<string, any>} opts - The normalized configuration options.
- * @property {string} opts.config='src/config.yaml' - The path to the configuration file.
+ * @property {string} opts.config='config.yaml' - The path to the configuration file.
  * @property {boolean} opts.debug=false - Whether debug mode is enabled.
  * @property {string} opts.level='info' - The log level for the application.
  * @property {Object<string, any>} yaml - The parsed YAML configuration.
@@ -137,14 +142,14 @@ export const config = {
  *
  * @private
  * @memberof module:config
- * @param {string[]} [configFile=[cliArgs.config, 'src/config.yaml']] - An array of configuration file paths to attempt to load in order of priority.
- * @param {string} [baseDir=path.resolve(__dirname)] - The base directory to resolve configuration file paths against.
+ * @param {string[]} [configFile=[cliArgs.config, 'config.yaml']] - An array of configuration file paths to attempt to load in order of priority.
+ * @param {string} [baseDir=baseDir] - The base directory to resolve configuration file paths against.
  * @throws {Error} If no configuration file is found.
  * @returns {string} The absolute path to the configuration file.
  */
-function getConfigPath(configFile = [cliArgs.config, 'src/config.yaml'], baseDir = path.resolve(__dirname)) {
+function getConfigPath(configFile = [cliArgs.config, 'config.yaml'], baseDir = baseDir) {
   console.debug(`Attempting to resolve configuration file from: ${configFile}`)
-  console.debug(`Base Directory: ${baseDir}`)
+  console.debug(`Using base directory: ${baseDir}`)
 
   const [currentFile, ...remainingFiles] = configFile.filter(Boolean)
 

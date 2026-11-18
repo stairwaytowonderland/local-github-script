@@ -50,4 +50,4 @@ jobs:
       - name: Test sample module
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm --prefix run-github-script start -- --config src/config.sample.yaml
+        run: npm --prefix run-github-script start -- --config config.sample.yaml --log-level debug --debug

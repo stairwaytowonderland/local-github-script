@@ -36,7 +36,7 @@ export default async (github, context, core, exec, glob, io, getOctokit, require
   const workspace = process.env.GITHUB_WORKSPACE
   core.info(`Workspace: ${workspace}`)
 
-  const count = await require('./src/modules/_require-test.cjs')({github, context, core})
+  const count = await require(`${workspace}/src/modules/_require-test.cjs`)({github, context, core})
   core.info(`Total issues: ${count}`)
 
   const summary = `\
