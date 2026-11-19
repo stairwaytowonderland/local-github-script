@@ -65,7 +65,7 @@ export const yaml = YAML.parse(fs.readFileSync(configPath, 'utf8')) ?? {}
  * @type {boolean}
  * @default false
  */
-const debug = process.env.DEBUG === 'true' || (cliArgs.debugEnabled && process.env.DEBUG !== 'false')
+const debugEnabled = process.env.DEBUG === 'true' || (cliArgs.debugEnabled && process.env.DEBUG !== 'false')
 
 /**
  * Final dotenv configuration object.
@@ -75,7 +75,7 @@ const debug = process.env.DEBUG === 'true' || (cliArgs.debugEnabled && process.e
  * @property {boolean} debug=false - Whether debug mode is enabled.
  * @property {string} encoding='utf8' - The encoding to use when reading the .env file.
  */
-const dotenvConfigDefaults = {override: true, debug: debug, encoding: 'utf8'}
+const dotenvConfigDefaults = {override: true, debug: debugEnabled, encoding: 'utf8'}
 
 /**
  * Path to the environment file.
@@ -105,9 +105,9 @@ if (fs.existsSync(envPath)) {
  * @property {Object<string, any>} env - The path to the environment file.
  * @property {string|undefined} [env.path] - The path to the environment file.
  * @property {string[]|undefined} [env.keys] - The keys of the environment variables loaded from the file.
- * @property {string} config='config.yaml' - The path to the configuration file.
- * @property {string} level='info' - The log level for the application.
- * @property {boolean} debug=false - Whether debug mode is enabled.
+ * @property {string} configPath='config.yaml' - The path to the configuration file.
+ * @property {string} logLevel='info' - The log level for the application.
+ * @property {boolean} debugEnabled=false - Whether debug mode is enabled.
  */
 export const opts = {
   env: {
@@ -116,7 +116,7 @@ export const opts = {
   },
   configPath,
   logLevel,
-  debug,
+  debugEnabled,
 }
 
 console.debug(`Using configuration options: ${JSON.stringify(opts, null, 2)}`)
