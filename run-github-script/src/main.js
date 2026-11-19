@@ -9,7 +9,7 @@
 // Bootstrap environment variables immediately.
 // Also loads loglevel.js internally.
 // ! Import this before modules.js to ensure environment variables, configurations, and other settings are properly initialized.
-// import {config} from './config.js'
+import * as config from './config.js'
 
 // Node.js path module for handling and transforming file paths.
 import * as path from 'node:path'
@@ -20,10 +20,6 @@ import * as exec from '@actions/exec'
 import {getOctokit, context as githubContext} from '@actions/github'
 import * as glob from '@actions/glob'
 import * as io from '@actions/io'
-
-import * as config from './config.js'
-
-// import './loglevel.js'
 
 // Import the wrapped require function for module resolution.
 import {wrapRequire} from './wrap-require.js'
